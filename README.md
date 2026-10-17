@@ -10,12 +10,12 @@ Start a run, add ingredients from the shelf to the cauldron, watch the three par
 
 Work is cumulative. You may stop after any finished level.
 
-| Stage | What you add | Total score |
-| --- | --- | ---: |
-| **Precondition 1** | Repository setup, tooling, folder structure, quality checks | 58 |
-| **Level 1 — Basic** | One full playable game with a fixed rule set | 228 |
-| **Level 2 — Extended** | Difficulty selection and save / continue | 278 |
-| **Level 3 — Full game** | Drag & drop, tooltip, reactions, Pour Out, shortcuts, visual feedback | 393 |
+| Stage                   | What you add                                                          | Total score |
+| ----------------------- | --------------------------------------------------------------------- | ----------: |
+| **Precondition 1**      | Repository setup, tooling, folder structure, quality checks           |          58 |
+| **Level 1 — Basic**     | One full playable game with a fixed rule set                          |         228 |
+| **Level 2 — Extended**  | Difficulty selection and save / continue                              |         278 |
+| **Level 3 — Full game** | Drag & drop, tooltip, reactions, Pour Out, shortcuts, visual feedback |         393 |
 
 Maximum score: **393**.
 

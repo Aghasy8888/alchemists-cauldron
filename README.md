@@ -27,4 +27,11 @@ Maximum score: **393**.
 
 ## How to run
 
-Install and run scripts will be added after the bundler and TypeScript tooling are set up.
+```bash
+npm install
+npm run dev      # development server
+npm run build    # production build → dist/
+npm run preview  # preview the production build
+```
+
+Production builds use base path `/alchemists-cauldron/` for GitHub Pages. Deploy by publishing the `dist/` folder to the `gh-pages` branch.

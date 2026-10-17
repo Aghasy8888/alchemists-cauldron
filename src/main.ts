@@ -1,6 +1,9 @@
 import './styles/globals.scss';
+import './styles/icons.scss';
+import './styles/game.scss';
+import { createApp } from './ui/app';
 
 const root = document.createElement('div');
 root.id = 'app';
-root.textContent = "Alchemist's Cauldron";
 document.body.append(root);
+createApp(root);

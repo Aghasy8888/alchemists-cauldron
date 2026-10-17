@@ -1,10 +1,20 @@
 export type Difficulty = 'easy' | 'medium' | 'hard';
 export type GameStatus = 'menu' | 'playing' | 'paused' | 'game-over';
 
+export type IngredientIconId =
+  | 'dragon-tears'
+  | 'fairy-dust'
+  | 'frost-lotus'
+  | 'mandrake-root'
+  | 'caustic-acid'
+  | 'essence-of-the-void'
+  | 'phoenix-feather'
+  | 'toad-slime';
+
 export interface IIngredient {
   id: string;
   name: string;
-  icon: string;
+  icon: IngredientIconId;
   temperature: number;
   density: number;
   magicPower: number;

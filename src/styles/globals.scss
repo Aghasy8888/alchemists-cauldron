@@ -35,6 +35,15 @@
   --color-error: #{$color-error};
   --color-price-free: #{$color-price-free};
 
+  // Cauldron parameters (shared across shelf / recipe / bars)
+  --color-param-temperature: #{$color-param-temperature};
+  --color-param-density: #{$color-param-density};
+  --color-param-magic: #{$color-param-magic};
+  --color-param-zone: #{$color-param-zone};
+  --color-param-icon-muted: #{$color-param-icon-muted};
+  --color-param-density-highlight: #{$color-param-density-highlight};
+  --color-param-magic-highlight: #{$color-param-magic-highlight};
+
   // Borders
   --color-outline: #{$color-outline};
   --color-outline-variant: #{$color-outline-variant};
@@ -127,6 +136,8 @@
 
 html {
   margin: 0;
+  height: 100%;
+  overflow: hidden;
 }
 
 *,
@@ -169,9 +180,17 @@ select {
 }
 
 body {
-  min-height: 100vh;
+  height: 100%;
+  max-height: 100dvh;
+  overflow: hidden;
   font-family: var(--font-family-text);
   font-weight: var(--font-weight-regular);
   background-color: var(--color-bg);
   color: var(--color-on-bg);
+}
+
+#app {
+  height: 100%;
+  max-height: 100dvh;
+  overflow: hidden;
 }

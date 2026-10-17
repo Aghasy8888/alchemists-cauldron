@@ -86,10 +86,13 @@ export function renderShelf(
       const stats = document.createElement('span');
       stats.className = 'shelf-card__stats';
       const temp = document.createElement('span');
+      temp.className = 'param-chip param-chip--temperature';
       temp.textContent = `T ${formatSigned(ingredient.temperature)}`;
       const density = document.createElement('span');
+      density.className = 'param-chip param-chip--density';
       density.textContent = `D ${formatSigned(ingredient.density)}`;
       const magic = document.createElement('span');
+      magic.className = 'param-chip param-chip--magic';
       magic.textContent = `M ${formatSigned(ingredient.magicPower)}`;
       stats.append(temp, density, magic);
       button.append(stats);

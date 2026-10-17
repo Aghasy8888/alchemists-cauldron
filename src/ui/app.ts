@@ -1,6 +1,7 @@
 import { addIngredient } from '../logic/add-ingredient';
 import { createMenuState, startNewGame } from '../state/game-state';
 import type { IGameState } from '../data/types';
+import { renderBars } from './bars';
 import { renderCauldron } from './cauldron';
 import { renderStartControls } from './menu';
 import { renderRecipePanel } from './recipe-panel';
@@ -37,7 +38,12 @@ export function createApp(root: HTMLElement): void {
   cauldronSlot.className = 'game__cauldron';
   cauldronSlot.setAttribute('aria-label', 'Cauldron');
 
-  main.append(recipeSlot, shelfSlot, cauldronSlot);
+  const barsSlot = document.createElement('section');
+  barsSlot.className = 'game__bars';
+  barsSlot.setAttribute('aria-label', 'Parameter bars');
+
+  // Composition matches example: shelf | cauldron | recipe, bars below.
+  main.append(shelfSlot, cauldronSlot, recipeSlot, barsSlot);
   layout.append(header, startSlot, main);
   root.replaceChildren(layout);
 
@@ -52,6 +58,7 @@ export function createApp(root: HTMLElement): void {
       render();
     });
     renderCauldron(cauldronSlot, state);
+    renderBars(barsSlot, state);
   };
 
   render();

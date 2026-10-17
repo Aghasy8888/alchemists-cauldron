@@ -42,7 +42,16 @@ export function renderCauldron(container: HTMLElement, state: IGameState): void 
 
     const stats = document.createElement('span');
     stats.className = 'cauldron__stats';
-    stats.textContent = `${formatSigned(ingredient.temperature)} / ${formatSigned(ingredient.density)} / ${formatSigned(ingredient.magicPower)}`;
+    const temp = document.createElement('span');
+    temp.className = 'param-chip param-chip--temperature';
+    temp.textContent = `T ${formatSigned(ingredient.temperature)}`;
+    const density = document.createElement('span');
+    density.className = 'param-chip param-chip--density';
+    density.textContent = `D ${formatSigned(ingredient.density)}`;
+    const magic = document.createElement('span');
+    magic.className = 'param-chip param-chip--magic';
+    magic.textContent = `M ${formatSigned(ingredient.magicPower)}`;
+    stats.append(temp, density, magic);
 
     item.append(iconWrap, name, stats);
     list.append(item);

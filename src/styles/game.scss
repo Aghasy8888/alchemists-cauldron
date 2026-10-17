@@ -2,46 +2,64 @@
 @use './mixins' as *;
 @use './functions' as *;
 
+// Play board: one no-scroll viewport (375–1920). Dialogs may scroll later; the board does not.
+
 .game {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 100dvh;
   max-width: var(--layout-max-width);
   margin-inline: auto;
-  padding: var(--size-2);
+  padding: var(--size-1);
+  overflow: hidden;
 
   @include media-up('tablet') {
-    padding: var(--size-4);
+    padding: var(--size-2);
   }
 }
 
 .game__header {
-  margin-bottom: var(--size-3);
+  flex-shrink: 0;
+  margin-bottom: var(--size-1);
   text-align: center;
 }
 
 .game__title {
-  font-size: var(--font-size-headline-medium);
+  font-size: var(--font-size-headline-small);
   font-weight: var(--font-weight-bold);
   color: var(--color-on-bg);
+  line-height: 1.2;
 
   @include media-up('tablet') {
+    font-size: var(--font-size-headline-medium);
+  }
+
+  @include media-up('desktop') {
     font-size: var(--font-size-headline-large);
   }
 }
 
 .game__start {
   display: flex;
+  flex-shrink: 0;
   justify-content: center;
-  margin-bottom: var(--size-3);
-  min-height: space(6);
+  margin-bottom: var(--size-1);
+  min-height: space(5);
 }
 
 .start-game {
   cursor: pointer;
-  padding: var(--btn-padding-medium);
+  padding: var(--btn-padding-small);
   border: var(--border-width) solid var(--color-outline);
   border-radius: var(--corner-medium);
   background-color: var(--color-primary);
   color: var(--color-on-primary);
   font-weight: var(--font-weight-bold);
+
+  @include media-up('tablet') {
+    padding: var(--btn-padding-medium);
+  }
 
   @include hover {
     background-color: var(--color-primary-high);
@@ -58,70 +76,373 @@
 }
 
 .game__main {
+  flex: 1 1 auto;
+  min-height: 0;
   display: grid;
-  gap: var(--size-3);
+  gap: var(--size-1);
+  // Mobile: shelf | (cauldron + recipe), bars full width under.
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) minmax(0, auto) auto;
+  grid-template-areas:
+    'shelf cauldron'
+    'shelf recipe'
+    'bars bars';
+  overflow: hidden;
 
   @include media-up('tablet') {
-    grid-template-columns: 1fr 1.2fr 1fr;
-    align-items: start;
+    gap: var(--size-2);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) auto;
+    grid-template-areas:
+      'shelf cauldron recipe'
+      'bars bars bars';
   }
+}
+
+.game__shelf {
+  grid-area: shelf;
+}
+
+.game__cauldron {
+  grid-area: cauldron;
+}
+
+.game__recipe {
+  grid-area: recipe;
+}
+
+.game__bars {
+  grid-area: bars;
 }
 
 .game__recipe,
 .game__shelf,
-.game__cauldron {
-  padding: var(--size-2);
+.game__cauldron,
+.game__bars {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  padding: var(--size-1);
   border: var(--border-width) solid var(--color-outline);
   border-radius: var(--corner-large);
   background-color: var(--color-white);
+  overflow: hidden;
+
+  @include media-up('tablet') {
+    padding: var(--size-2);
+  }
 }
 
 .shelf__title,
 .cauldron__title,
-.recipe-panel__title {
-  margin-bottom: var(--size-2);
-  font-size: var(--font-size-headline-small);
+.recipe-panel__title,
+.bars__title {
+  flex-shrink: 0;
+  margin-bottom: var(--size-1);
+  font-size: var(--font-size-body-large);
   font-weight: var(--font-weight-bold);
   color: var(--color-on-bg);
+  line-height: 1.2;
+
+  @include media-up('tablet') {
+    font-size: var(--font-size-headline-small);
+  }
 }
 
 .shelf__hint,
 .cauldron__empty,
 .recipe-panel__hint {
-  font-size: var(--font-size-body-small);
+  font-size: var(--font-size-label-medium);
   color: var(--color-on-bg-low);
+
+  @include media-up('tablet') {
+    font-size: var(--font-size-body-small);
+  }
 }
 
 .recipe-panel__counter {
-  font-size: var(--font-size-body-large);
+  flex-shrink: 0;
+  font-size: var(--font-size-body-medium);
   font-weight: var(--font-weight-medium);
+
+  @include media-up('tablet') {
+    font-size: var(--font-size-body-large);
+  }
+}
+
+.recipe-panel__counter--full {
+  color: var(--color-tertiary);
+  font-weight: var(--font-weight-bold);
+}
+
+.recipe-panel__name {
+  flex-shrink: 0;
+  margin-top: var(--size-05);
+  font-size: var(--font-size-body-medium);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-tertiary);
+  line-height: 1.2;
+
+  @include media-up('tablet') {
+    font-size: var(--font-size-body-large);
+  }
+}
+
+.recipe-panel__ranges {
+  flex-shrink: 0;
+  margin-top: var(--size-05);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: var(--font-size-label-small);
+
+  @include media-up('tablet') {
+    gap: var(--size-05);
+    font-size: var(--font-size-body-small);
+  }
+}
+
+.recipe-panel__range {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  column-gap: var(--size-05);
+  padding-block: 2px;
+  border-bottom: var(--border-width) solid var(--color-outline);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.recipe-panel__range-label {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-on-bg);
+}
+
+.recipe-panel__range-value {
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+}
+
+// Shared T / D / M colors — same hues on shelf, recipe, bars, cauldron list.
+.param-chip {
+  display: inline-block;
+  padding: 1px 4px;
+  border-radius: var(--corner-extra-small);
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+  color: var(--color-white);
+}
+
+.param-chip--temperature {
+  background-color: var(--color-param-temperature);
+}
+
+.param-chip--density {
+  background-color: var(--color-param-density);
+}
+
+.param-chip--magic {
+  background-color: var(--color-param-magic);
+}
+
+.param-label--temperature {
+  color: var(--color-param-temperature);
+}
+
+.param-label--density {
+  color: var(--color-param-density);
+}
+
+.param-label--magic {
+  color: var(--color-param-magic);
+}
+
+.bars__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-1);
+  min-height: 0;
+
+  @include media-up('tablet') {
+    gap: var(--size-2);
+  }
+}
+
+.param-bar__heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 2px;
+}
+
+.param-bar__body {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: var(--size-1);
+}
+
+.param-bar__label {
+  font-size: var(--font-size-label-medium);
+  font-weight: var(--font-weight-bold);
+
+  @include media-up('tablet') {
+    font-size: var(--font-size-label-large);
+  }
+}
+
+.param-bar__value {
+  font-size: var(--font-size-label-medium);
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+
+  @include media-up('tablet') {
+    font-size: var(--font-size-body-medium);
+  }
+}
+
+.param-bar__track {
+  position: relative;
+  height: var(--size-2);
+  overflow: hidden;
+  border: var(--border-width) solid var(--color-outline);
+  border-radius: var(--corner-full);
+  background-color: var(--color-surface-low);
+
+  @include media-up('tablet') {
+    height: var(--size-3);
+  }
+}
+
+.param-bar__track--temperature {
+  background: linear-gradient(90deg, #90caf9 0%, #ef9a9a 45%, #c62828 100%);
+}
+
+.param-bar__track--density {
+  background: linear-gradient(90deg, #0d47a1 0%, #42a5f5 55%, #bbdefb 100%);
+}
+
+.param-bar__track--magic {
+  background: linear-gradient(90deg, #4a148c 0%, #ab47bc 55%, #e1bee7 100%);
+}
+
+.param-bar__zero {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: var(--border-width);
+  transform: translateX(-50%);
+  background-color: var(--color-on-bg);
+  opacity: 0.45;
+  z-index: 2;
+  pointer-events: none;
+  transition: left 0.35s ease;
+}
+
+.param-bar__zone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: var(--corner-small);
+  background-color: var(--color-param-zone);
+  opacity: 0.55;
+  z-index: 1;
+  pointer-events: none;
+  transition:
+    left 0.35s ease,
+    width 0.35s ease;
+}
+
+.param-bar__fill {
+  position: absolute;
+  top: 20%;
+  bottom: 20%;
+  border-radius: var(--corner-full);
+  background-color: rgb(255 255 255 / 45%);
+  z-index: 2;
+  pointer-events: none;
+  transition:
+    left 0.35s ease,
+    width 0.35s ease;
+}
+
+.param-bar__marker {
+  position: absolute;
+  top: 50%;
+  width: var(--size-1);
+  height: var(--size-1);
+  border: var(--border-width) solid var(--color-on-primary);
+  border-radius: var(--corner-full);
+  background-color: var(--color-primary);
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  pointer-events: none;
+  transition: left 0.35s ease;
+
+  @include media-up('tablet') {
+    width: var(--size-125);
+    height: var(--size-125);
+  }
+}
+
+.param-bar--in-zone .param-bar__track {
+  box-shadow: 0 0 0 3px rgb(82 183 136 / 55%);
+}
+
+.param-bar--in-zone .param-bar__marker {
+  background-color: var(--color-param-zone);
+  border-color: #2d6a4f; // darker green; no exact token
+}
+
+.param-bar--in-zone .param-bar__value {
+  color: #2d6a4f; // darker green; no exact token
 }
 
 .shelf__list {
+  flex: 1 1 auto;
+  min-height: 0;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--size-1);
+  grid-auto-rows: minmax(0, 1fr);
+  gap: var(--size-05);
+  overflow: hidden;
 
   @include media-up('tablet') {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--size-1);
   }
+}
+
+.shelf__item {
+  min-height: 0;
+  display: flex;
 }
 
 .shelf-card {
   position: relative;
   display: flex;
+  flex: 1 1 auto;
   flex-direction: column;
   align-items: center;
-  gap: var(--size-05);
+  justify-content: center;
+  gap: 2px;
   width: 100%;
-  min-height: space(18);
-  padding: var(--size-1);
+  min-height: 0;
+  padding: var(--size-05);
   border: var(--border-width) solid var(--color-outline-variant);
   border-radius: var(--corner-medium);
   background-color: var(--color-surface-low);
   color: var(--color-on-bg);
   cursor: pointer;
   text-align: center;
+
+  @include media-up('tablet') {
+    gap: var(--size-05);
+    padding: var(--size-1);
+  }
 
   @include hover {
     background-color: var(--color-surface);
@@ -148,68 +469,155 @@
 
 .shelf-card__badge {
   position: absolute;
-  top: var(--size-05);
-  right: var(--size-05);
+  top: 2px;
+  right: 2px;
   display: grid;
   place-items: center;
-  width: var(--size-25);
-  height: var(--size-25);
+  width: var(--size-2);
+  height: var(--size-2);
   border-radius: var(--corner-full);
   background-color: var(--color-secondary);
   color: var(--color-tertiary);
-  font-size: var(--font-size-label-medium);
+  font-size: var(--font-size-label-small);
   font-weight: var(--font-weight-bold);
+
+  @include media-up('tablet') {
+    top: var(--size-05);
+    right: var(--size-05);
+    width: var(--size-25);
+    height: var(--size-25);
+    font-size: var(--font-size-label-medium);
+  }
 }
 
 .shelf-card__icon {
-  margin-top: var(--size-1);
+  display: flex;
+  flex-shrink: 1;
+  min-height: 0;
 }
 
 .shelf-card__name {
-  font-size: var(--font-size-label-large);
+  font-size: var(--font-size-label-small);
   font-weight: var(--font-weight-medium);
+  line-height: 1.15;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+
+  @include media-up('tablet') {
+    font-size: var(--font-size-label-large);
+  }
 }
 
 .shelf-card__stats {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: var(--size-05);
-  font-size: var(--font-size-label-small);
-  color: var(--color-on-bg-low);
+  gap: 2px;
+  font-size: 0.625rem; // denser than label-small for mobile fit
+  line-height: 1.1;
+
+  @include media-up('tablet') {
+    gap: var(--size-05);
+    font-size: var(--font-size-label-small);
+  }
 }
 
 .cauldron__list {
+  flex: 1 1 auto;
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--size-1);
+  gap: var(--size-05);
+  overflow: hidden;
+
+  @include media-up('tablet') {
+    gap: var(--size-1);
+  }
 }
 
 .cauldron__item {
   display: grid;
-  grid-template-columns: auto 1fr;
+  flex: 1 1 0;
+  grid-template-columns: auto minmax(0, 1fr);
   grid-template-rows: auto auto;
-  column-gap: var(--size-1);
+  column-gap: var(--size-05);
   align-items: center;
-  padding: var(--size-1);
+  min-height: 0;
+  padding: var(--size-05);
   border: var(--border-width) solid var(--color-outline);
   border-radius: var(--corner-medium);
   background-color: var(--color-surface-low);
+
+  @include media-up('tablet') {
+    column-gap: var(--size-1);
+    padding: var(--size-1);
+  }
 }
 
 .cauldron__icon {
   grid-row: 1 / span 2;
+  display: flex;
+  min-height: 0;
 }
 
 .cauldron__name {
+  font-size: var(--font-size-label-medium);
   font-weight: var(--font-weight-medium);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  @include media-up('tablet') {
+    font-size: var(--font-size-body-medium);
+  }
 }
 
 .cauldron__stats {
-  font-size: var(--font-size-label-medium);
-  color: var(--color-on-bg-low);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  font-size: 0.625rem;
+
+  @include media-up('tablet') {
+    gap: var(--size-05);
+    font-size: var(--font-size-label-small);
+  }
 }
 
-.ingredient-icon {
-  display: block;
+// Short viewports (landscape phones, small laptops): compress chrome further.
+@media (max-height: 700px) {
+  .game {
+    padding: var(--size-05) var(--size-1);
+  }
+
+  .game__header,
+  .game__start {
+    margin-bottom: var(--size-05);
+  }
+
+  .game__start {
+    min-height: 0;
+  }
+
+  .game__title {
+    font-size: var(--font-size-body-large);
+  }
+
+  .shelf__title,
+  .cauldron__title,
+  .recipe-panel__title,
+  .bars__title {
+    margin-bottom: var(--size-05);
+    font-size: var(--font-size-body-medium);
+  }
+
+  .param-bar__track {
+    height: var(--size-2);
+  }
+
+  .bars__list {
+    gap: var(--size-05);
+  }
 }

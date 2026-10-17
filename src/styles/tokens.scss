@@ -23,6 +23,15 @@ $color-like: #ff4b4b; // like icon
 $color-error: #b3261e; // validation error
 $color-price-free: #0b8a8f; // price
 
+// Cauldron parameters — same hue in shelf chips, recipe ranges, and bars (example screen)
+$color-param-temperature: #c62828; // Temperature / T — red
+$color-param-density: #1565c0; // Density / D — blue
+$color-param-magic: #7b1fa2; // Magic Power / M — purple
+$color-param-zone: #52b788; // recipe target zone on bars (green)
+$color-param-icon-muted: #9e9e9e; // thermometer outline
+$color-param-density-highlight: #90caf9; // droplet glare
+$color-param-magic-highlight: #e1bee7; // star core
+
 // Borders — Place: border
 $color-outline: #e5e7eb;
 $color-outline-variant: #d2d2d2;

@@ -1,7 +1,6 @@
 import './styles/globals.scss';
 
-const app = document.querySelector('#app');
-
-if (app !== null) {
-  app.textContent = "Alchemist's Cauldron";
-}
+const root = document.createElement('div');
+root.id = 'app';
+root.textContent = "Alchemist's Cauldron";
+document.body.append(root);

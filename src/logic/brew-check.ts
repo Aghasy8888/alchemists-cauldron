@@ -23,7 +23,7 @@ export function expandRecipeRanges(recipe: IRecipe, tolerance: number): IChecked
   };
 }
 
-function isInRange(value: number, range: IRecipeRange): boolean {
+export function isInRange(value: number, range: IRecipeRange): boolean {
   return value >= range.min && value <= range.max;
 }
 

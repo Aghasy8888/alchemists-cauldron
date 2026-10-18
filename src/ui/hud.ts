@@ -1,7 +1,8 @@
 import { createClockIcon, createHeartIcon } from '../assets/hud-icons';
 import { DIFFICULTY_CONFIG } from '../data/difficulty';
 import { GAME_STATUS, type IGameState } from '../data/types';
-import { formatTime, LOW_TIME_THRESHOLD_SEC } from '../logic/timer';
+import { LOW_TIME_THRESHOLD_SEC } from '../logic/timer';
+import { formatTime } from '../utils/format-time';
 
 const { menu, playing } = GAME_STATUS;
 

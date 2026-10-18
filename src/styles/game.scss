@@ -7,6 +7,7 @@
 
 // Local tokens — reused only in this file (see token-frequency-and-comments).
 $opacity-muted: 0.45;
+$opacity-disabled: 0.5;
 $opacity-zone: 0.55;
 $param-bar-fill-inset: 20%;
 $param-bar-motion: 0.35s ease; // no exact $duration-* match
@@ -171,7 +172,9 @@ $viewport-short-max-height: 700px; // no exact $breakpoints match (height MQ)
 }
 
 .game-over,
-.pause-dialog {
+.pause-dialog,
+.leaderboard,
+.leaderboard-confirm {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -185,8 +188,16 @@ $viewport-short-max-height: 700px; // no exact $breakpoints match (height MQ)
   text-align: center;
 }
 
+.leaderboard {
+  max-width: space(56);
+  max-height: 100%;
+  overflow: auto;
+}
+
 .game-over__title,
-.pause-dialog__title {
+.pause-dialog__title,
+.leaderboard__title,
+.leaderboard-confirm__title {
   font-size: var(--font-size-headline-small);
   font-weight: var(--font-weight-bold);
   color: var(--color-on-bg);
@@ -204,15 +215,82 @@ $viewport-short-max-height: 700px; // no exact $breakpoints match (height MQ)
   color: var(--color-tertiary);
 }
 
-.pause-dialog__actions {
+.game-over__name-form {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--size-1);
+  width: 100%;
+  text-align: left;
+}
+
+.game-over__name-label {
+  font-size: var(--font-size-body-small);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-on-bg);
+}
+
+.game-over__name-input {
+  width: 100%;
+  padding: var(--size-1);
+  border: var(--border-width) solid var(--color-outline);
+  border-radius: var(--corner-medium);
+  background-color: var(--color-surface-low);
+  color: var(--color-on-bg);
+  font-size: var(--font-size-body-medium);
+
+  &:focus-visible {
+    outline: var(--border-width-md) solid var(--color-tertiary);
+    outline-offset: var(--size-05);
+  }
+}
+
+.game-over__name-error {
+  margin: 0;
+  font-size: var(--font-size-body-small);
+  color: var(--color-error);
+}
+
+.game-over__actions,
+.pause-dialog__actions,
+.leaderboard__actions,
+.leaderboard-confirm__actions {
   display: flex;
   flex-direction: column;
   gap: var(--size-1);
   width: 100%;
 }
 
+.leaderboard__empty,
+.leaderboard-confirm__message {
+  margin: 0;
+  font-size: var(--font-size-body-medium);
+  color: var(--color-on-bg);
+}
+
+.leaderboard__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-body-small);
+  text-align: left;
+
+  th,
+  td {
+    padding: var(--size-05) var(--size-1);
+    border-bottom: var(--border-width-xs) solid var(--color-outline);
+  }
+
+  th {
+    font-weight: var(--font-weight-bold);
+  }
+}
+
 .game-over__play-again,
-.pause-dialog__button {
+.game-over__leaderboard,
+.game-over__submit,
+.pause-dialog__button,
+.leaderboard__button,
+.leaderboard-confirm__button {
   cursor: pointer;
   padding: var(--btn-padding-medium);
   border: var(--border-width) solid var(--color-outline);
@@ -230,12 +308,20 @@ $viewport-short-max-height: 700px; // no exact $breakpoints match (height MQ)
     outline-offset: var(--size-05);
   }
 
-  &:active {
+  &:active:not(:disabled) {
     background-color: var(--color-primary-high);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: $opacity-disabled;
   }
 }
 
-.pause-dialog__button--exit {
+.pause-dialog__button--exit,
+.game-over__leaderboard,
+.leaderboard__button--back,
+.leaderboard-confirm__button--cancel {
   background-color: var(--color-surface-low);
   color: var(--color-on-bg);
 
@@ -243,8 +329,19 @@ $viewport-short-max-height: 700px; // no exact $breakpoints match (height MQ)
     background-color: var(--color-surface);
   }
 
-  &:active {
+  &:active:not(:disabled) {
     background-color: var(--color-surface);
+  }
+}
+
+.leaderboard__button--clear,
+.leaderboard-confirm__button--confirm {
+  background-color: var(--color-error);
+  color: var(--color-on-primary);
+
+  @include hover {
+    background-color: var(--color-error);
+    filter: brightness(0.92); // no exact $opacity-* match
   }
 }
 
@@ -272,6 +369,7 @@ $viewport-short-max-height: 700px; // no exact $breakpoints match (height MQ)
 }
 
 .game__start,
+.game__leaderboard,
 .brew-controls__button,
 .brew-controls__pause {
   cursor: pointer;
@@ -301,7 +399,7 @@ $viewport-short-max-height: 700px; // no exact $breakpoints match (height MQ)
 
   &:disabled {
     cursor: not-allowed;
-    opacity: 0.5; // no exact $opacity-* match
+    opacity: $opacity-disabled;
   }
 }
 

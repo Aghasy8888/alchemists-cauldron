@@ -23,17 +23,29 @@ export function renderActionControls(
     onStart: () => void;
     onBrew: () => void;
     onPause: () => void;
+    onOpenLeaderboard: () => void;
   },
 ): void {
   container.replaceChildren();
 
   if (options.status === menu) {
+    const row = document.createElement('div');
+    row.className = 'brew-controls__row';
+
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'game__start';
     button.textContent = 'Start Game';
     button.addEventListener('click', options.onStart);
-    container.append(button);
+
+    const leaderboard = document.createElement('button');
+    leaderboard.type = 'button';
+    leaderboard.className = 'game__leaderboard';
+    leaderboard.textContent = 'Leaderboard';
+    leaderboard.addEventListener('click', options.onOpenLeaderboard);
+
+    row.append(button, leaderboard);
+    container.append(row);
     return;
   }
 

@@ -1,130 +1,97 @@
+import { useGameTimer } from '../hooks/use-game-timer';
+import { useVisibilityPause } from '../hooks/use-visibility-pause';
 import { addIngredient } from '../logic/add-ingredient';
 import { brew, type BrewOutcome } from '../logic/brew';
 import { applyEndChecks } from '../logic/game-over';
 import { pauseRun, resumeRun } from '../logic/pause';
-import { getTimeLeftSec } from '../logic/timer';
 import { createMenuState, startNewGame } from '../state/game-state';
+import { loadLeaderboard, qualifiesForLeaderboard } from '../storage/leaderboard';
 import { GAME_STATUS, type IGameState } from '../data/types';
 import { renderBars } from './bars';
 import { renderActionControls } from './brew';
 import { renderCauldron } from './cauldron';
 import { renderGameOver } from './game-over';
 import { renderHud } from './hud';
+import { createGameLayout } from './layout';
+import { renderClearLeaderboardConfirm, renderLeaderboard } from './leaderboard';
 import { renderPauseDialog } from './pause-dialog';
 import { renderRecipePanel } from './recipe-panel';
 import { renderShelf } from './shelf';
 
-const { playing, paused, gameOver } = GAME_STATUS;
+const { menu, playing, paused, gameOver } = GAME_STATUS;
 
-const TIME_SYNC_RESULT = {
-  unchanged: 'unchanged',
-  updated: 'updated',
-  ended: 'ended',
+const UI_OVERLAY = {
+  none: 'none',
+  leaderboard: 'leaderboard',
+  clearConfirm: 'clear-confirm',
 } as const;
 
-type TimeSyncResult = (typeof TIME_SYNC_RESULT)[keyof typeof TIME_SYNC_RESULT];
+type UiOverlay = (typeof UI_OVERLAY)[keyof typeof UI_OVERLAY];
 
-const { unchanged, updated, ended } = TIME_SYNC_RESULT;
+const { none, leaderboard, clearConfirm } = UI_OVERLAY;
 
 export function createApp(root: HTMLElement): void {
   let state: IGameState = createMenuState();
   let lastOutcome: BrewOutcome | null = null;
-  let rafId = 0;
+  let uiOverlay: UiOverlay = none;
+  let scoreSubmitted = false;
+  let previousStatus: typeof menu | typeof playing | typeof paused | typeof gameOver = menu;
 
-  const layout = document.createElement('div');
-  layout.className = 'game';
-
-  const header = document.createElement('header');
-  header.className = 'game__header';
-  const heading = document.createElement('h1');
-  heading.className = 'game__title';
-  heading.textContent = "Alchemist's Cauldron";
-  const hudSlot = document.createElement('div');
-  hudSlot.className = 'game__hud';
-  header.append(heading, hudSlot);
-
-  const board = document.createElement('div');
-  board.className = 'game__board';
-
-  const actionSlot = document.createElement('div');
-  actionSlot.className = 'game__actions';
-
-  const main = document.createElement('main');
-  main.className = 'game__main';
-
-  const overlaySlot = document.createElement('div');
-  overlaySlot.className = 'game__overlay';
-  overlaySlot.hidden = true;
-
-  const recipeSlot = document.createElement('section');
-  recipeSlot.className = 'game__recipe';
-  recipeSlot.setAttribute('aria-label', 'Recipe panel');
-
-  const shelfSlot = document.createElement('section');
-  shelfSlot.className = 'game__shelf';
-  shelfSlot.setAttribute('aria-label', 'Shelf');
-
-  const cauldronSlot = document.createElement('section');
-  cauldronSlot.className = 'game__cauldron';
-  cauldronSlot.setAttribute('aria-label', 'Cauldron');
-
-  const barsSlot = document.createElement('section');
-  barsSlot.className = 'game__bars';
-  barsSlot.setAttribute('aria-label', 'Parameter bars');
-
-  main.append(shelfSlot, cauldronSlot, recipeSlot, barsSlot);
-  board.append(main, actionSlot, overlaySlot);
-  layout.append(header, board);
+  const {
+    root: layout,
+    hudSlot,
+    board,
+    actionSlot,
+    overlaySlot,
+    recipeSlot,
+    shelfSlot,
+    cauldronSlot,
+    barsSlot,
+  } = createGameLayout();
   root.replaceChildren(layout);
 
-  const stopTimerLoop = (): void => {
-    if (rafId !== 0) {
-      cancelAnimationFrame(rafId);
-      rafId = 0;
-    }
-  };
-
-  const syncTimeFromEnd = (): TimeSyncResult => {
-    if (state.status !== playing || state.endTime === null) {
-      return unchanged;
-    }
-
-    const nextLeft = getTimeLeftSec(state.endTime);
-    if (nextLeft === state.timeLeft) {
-      return unchanged;
-    }
-
-    state = applyEndChecks({ ...state, timeLeft: nextLeft });
-    return state.status === gameOver ? ended : updated;
-  };
-
-  const tick = (): void => {
-    rafId = 0;
-    if (state.status !== playing) {
-      return;
-    }
-
-    const tickResult = syncTimeFromEnd();
-    if (tickResult === ended) {
-      render();
-      return;
-    }
-    if (tickResult === updated) {
+  const timer = useGameTimer({
+    getState: () => state,
+    setState: (next) => {
+      state = next;
+    },
+    onHudTick: () => {
       renderHud(hudSlot, state);
-    }
+    },
+    onEnded: () => {
+      render();
+    },
+  });
 
-    rafId = requestAnimationFrame(tick);
+  const openLeaderboard = (): void => {
+    uiOverlay = leaderboard;
+    render();
   };
 
-  const startTimerLoop = (): void => {
-    stopTimerLoop();
-    if (state.status === playing) {
-      rafId = requestAnimationFrame(tick);
-    }
+  const closeLeaderboard = (): void => {
+    uiOverlay = none;
+    render();
+  };
+
+  const requestClearLeaderboard = (): void => {
+    uiOverlay = clearConfirm;
+    render();
+  };
+
+  const cancelClearLeaderboard = (): void => {
+    uiOverlay = leaderboard;
+    render();
+  };
+
+  const confirmClearLeaderboard = (): void => {
+    uiOverlay = leaderboard;
+    render();
   };
 
   const playAgain = (): void => {
     lastOutcome = null;
+    scoreSubmitted = false;
+    uiOverlay = none;
     state = startNewGame(state);
     render();
   };
@@ -133,6 +100,7 @@ export function createApp(root: HTMLElement): void {
     if (state.status !== playing) {
       return;
     }
+    uiOverlay = none;
     state = pauseRun(state);
     render();
   };
@@ -147,28 +115,74 @@ export function createApp(root: HTMLElement): void {
 
   const exitToMenu = (): void => {
     lastOutcome = null;
+    scoreSubmitted = false;
+    uiOverlay = none;
     state = createMenuState();
     render();
   };
 
-  const render = (): void => {
-    const isGameOver = state.status === gameOver;
-    const isPaused = state.status === paused;
-    const showOverlay = isGameOver || isPaused;
+  useVisibilityPause({
+    getStatus: () => state.status,
+    onPause: pauseGame,
+  });
 
+  const renderOverlay = (): void => {
+    if (uiOverlay === clearConfirm) {
+      overlaySlot.hidden = false;
+      renderClearLeaderboardConfirm(overlaySlot, {
+        onConfirm: confirmClearLeaderboard,
+        onCancel: cancelClearLeaderboard,
+      });
+      return;
+    }
+
+    if (uiOverlay === leaderboard) {
+      overlaySlot.hidden = false;
+      renderLeaderboard(overlaySlot, {
+        onBack: closeLeaderboard,
+        onRequestClear: requestClearLeaderboard,
+      });
+      return;
+    }
+
+    if (state.status === gameOver) {
+      overlaySlot.hidden = false;
+      const showNameEntry =
+        !scoreSubmitted && qualifiesForLeaderboard(state.score, loadLeaderboard());
+      renderGameOver(overlaySlot, state, {
+        showNameEntry,
+        onPlayAgain: playAgain,
+        onSubmitScore: () => {
+          scoreSubmitted = true;
+          render();
+        },
+        onOpenLeaderboard: openLeaderboard,
+      });
+      return;
+    }
+
+    if (state.status === paused) {
+      overlaySlot.hidden = false;
+      renderPauseDialog(overlaySlot, resumeGame, exitToMenu);
+      return;
+    }
+
+    overlaySlot.replaceChildren();
+    overlaySlot.hidden = true;
+  };
+
+  const render = (): void => {
+    if (previousStatus !== gameOver && state.status === gameOver) {
+      scoreSubmitted = false;
+      uiOverlay = none;
+    }
+    previousStatus = state.status;
+
+    const isPaused = state.status === paused;
     board.classList.toggle('game__board--paused', isPaused);
 
     renderHud(hudSlot, state);
-    overlaySlot.hidden = !showOverlay;
-    if (isGameOver) {
-      renderGameOver(overlaySlot, state, playAgain);
-      stopTimerLoop();
-    } else if (isPaused) {
-      renderPauseDialog(overlaySlot, resumeGame, exitToMenu);
-      stopTimerLoop();
-    } else {
-      overlaySlot.replaceChildren();
-    }
+    renderOverlay();
 
     renderActionControls(actionSlot, {
       status: state.status,
@@ -176,6 +190,8 @@ export function createApp(root: HTMLElement): void {
       lastOutcome,
       onStart: () => {
         lastOutcome = null;
+        scoreSubmitted = false;
+        uiOverlay = none;
         state = startNewGame(state);
         render();
       },
@@ -189,6 +205,7 @@ export function createApp(root: HTMLElement): void {
         render();
       },
       onPause: pauseGame,
+      onOpenLeaderboard: openLeaderboard,
     });
     renderRecipePanel(recipeSlot, state);
     renderShelf(shelfSlot, state, (ingredientId) => {
@@ -203,17 +220,11 @@ export function createApp(root: HTMLElement): void {
     renderBars(barsSlot, state);
 
     if (state.status === playing) {
-      startTimerLoop();
+      timer.start();
     } else {
-      stopTimerLoop();
+      timer.stop();
     }
   };
-
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden && state.status === playing) {
-      pauseGame();
-    }
-  });
 
   render();
 }

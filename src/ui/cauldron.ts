@@ -1,11 +1,8 @@
 import { createIngredientIcon } from '../assets/ingredient-icons';
 import { GAME_STATUS, type IGameState } from '../data/types';
+import { formatSigned } from '../utils/format-signed';
 
 const { menu } = GAME_STATUS;
-
-function formatSigned(value: number): string {
-  return value > 0 ? `+${value}` : String(value);
-}
 
 export function renderCauldron(container: HTMLElement, state: IGameState): void {
   container.replaceChildren();

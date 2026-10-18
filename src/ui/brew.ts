@@ -1,14 +1,17 @@
 import { BREW_OUTCOME, type BrewOutcome } from '../logic/brew';
 import { GAME_STATUS, type GameStatus } from '../data/types';
 
+const { menu, playing } = GAME_STATUS;
+const { success, failure } = BREW_OUTCOME;
+
 const BREW_STATUS_CLASS = {
-  [BREW_OUTCOME.success]: 'brew-controls__status--success',
-  [BREW_OUTCOME.failure]: 'brew-controls__status--failure',
+  [success]: 'brew-controls__status--success',
+  [failure]: 'brew-controls__status--failure',
 } as const;
 
 const BREW_STATUS_MESSAGE = {
-  [BREW_OUTCOME.success]: 'Brew succeeded!',
-  [BREW_OUTCOME.failure]: 'Brew failed — mixture was off.',
+  [success]: 'Brew succeeded!',
+  [failure]: 'Brew failed — mixture was off.',
 } as const;
 
 export function renderActionControls(
@@ -23,7 +26,7 @@ export function renderActionControls(
 ): void {
   container.replaceChildren();
 
-  if (options.status === GAME_STATUS.menu) {
+  if (options.status === menu) {
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'game__start';
@@ -33,7 +36,7 @@ export function renderActionControls(
     return;
   }
 
-  if (options.status !== GAME_STATUS.playing) {
+  if (options.status !== playing) {
     return;
   }
 
@@ -56,10 +59,7 @@ export function renderActionControls(
 
   wrap.append(button);
 
-  if (
-    options.lastOutcome === BREW_OUTCOME.success ||
-    options.lastOutcome === BREW_OUTCOME.failure
-  ) {
+  if (options.lastOutcome === success || options.lastOutcome === failure) {
     const status = document.createElement('p');
     status.className = 'brew-controls__status';
     status.classList.add(BREW_STATUS_CLASS[options.lastOutcome]);

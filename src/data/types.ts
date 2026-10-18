@@ -1,4 +1,4 @@
-/** Canonical difficulty values — compare / assign via `DIFFICULTY.*`, not string literals. */
+/** Canonical difficulty values — destructure in consumers; use bare names (see domain-constants). */
 export const DIFFICULTY = {
   easy: 'easy',
   medium: 'medium',
@@ -7,7 +7,7 @@ export const DIFFICULTY = {
 
 export type Difficulty = (typeof DIFFICULTY)[keyof typeof DIFFICULTY];
 
-/** Canonical game statuses — compare / assign via `GAME_STATUS.*`, not string literals. */
+/** Canonical game statuses — destructure in consumers; use bare names (see domain-constants). */
 export const GAME_STATUS = {
   menu: 'menu',
   playing: 'playing',
@@ -54,12 +54,16 @@ export interface IGameState {
   status: GameStatus;
   score: number;
   timeLeft: number;
+  /** Absolute timestamp when the run timer hits 0; null when not timing. */
+  endTime: number | null;
   lives: number;
   activeRecipe: IRecipe | null;
   cauldronIngredients: IIngredient[];
   shelfStock: Record<string, number>;
   difficulty: Difficulty;
   lastReactionId?: string | null;
+  /** Set when status is game-over; cleared on a new run. */
+  gameOverReason: string | null;
 }
 
 export interface IDifficultyConfig {

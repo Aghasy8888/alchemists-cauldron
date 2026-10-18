@@ -2,12 +2,14 @@ import { getIngredientById } from '../data/ingredients';
 import { DIFFICULTY_CONFIG } from '../data/difficulty';
 import { GAME_STATUS, type IGameState } from '../data/types';
 
+const { playing } = GAME_STATUS;
+
 /**
  * Adds one portion of an ingredient to the cauldron when allowed.
  * Returns a new state object; does not mutate the input.
  */
 export function addIngredient(state: IGameState, ingredientId: string): IGameState {
-  if (state.status !== GAME_STATUS.playing) {
+  if (state.status !== playing) {
     return state;
   }
 

@@ -147,6 +147,15 @@ $viewport-short-max-height: 700px; // no exact $breakpoints match (height MQ)
   min-height: 0;
 }
 
+.game__board--paused {
+  .game__main,
+  .game__actions {
+    filter: blur(var(--size-05));
+    pointer-events: none;
+    user-select: none;
+  }
+}
+
 .game__overlay {
   position: absolute;
   inset: 0;
@@ -161,7 +170,8 @@ $viewport-short-max-height: 700px; // no exact $breakpoints match (height MQ)
   display: none;
 }
 
-.game-over {
+.game-over,
+.pause-dialog {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -175,7 +185,8 @@ $viewport-short-max-height: 700px; // no exact $breakpoints match (height MQ)
   text-align: center;
 }
 
-.game-over__title {
+.game-over__title,
+.pause-dialog__title {
   font-size: var(--font-size-headline-small);
   font-weight: var(--font-weight-bold);
   color: var(--color-on-bg);
@@ -193,7 +204,15 @@ $viewport-short-max-height: 700px; // no exact $breakpoints match (height MQ)
   color: var(--color-tertiary);
 }
 
-.game-over__play-again {
+.pause-dialog__actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-1);
+  width: 100%;
+}
+
+.game-over__play-again,
+.pause-dialog__button {
   cursor: pointer;
   padding: var(--btn-padding-medium);
   border: var(--border-width) solid var(--color-outline);
@@ -216,6 +235,19 @@ $viewport-short-max-height: 700px; // no exact $breakpoints match (height MQ)
   }
 }
 
+.pause-dialog__button--exit {
+  background-color: var(--color-surface-low);
+  color: var(--color-on-bg);
+
+  @include hover {
+    background-color: var(--color-surface);
+  }
+
+  &:active {
+    background-color: var(--color-surface);
+  }
+}
+
 .game__actions {
   display: flex;
   flex-shrink: 0;
@@ -231,8 +263,17 @@ $viewport-short-max-height: 700px; // no exact $breakpoints match (height MQ)
   gap: var(--size-05);
 }
 
+.brew-controls__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--size-1);
+}
+
 .game__start,
-.brew-controls__button {
+.brew-controls__button,
+.brew-controls__pause {
   cursor: pointer;
   padding: var(--btn-padding-small);
   border: var(--border-width) solid var(--color-outline);

@@ -1,6 +1,7 @@
 import { addIngredient } from '../logic/add-ingredient';
 import { brew, type BrewOutcome } from '../logic/brew';
 import { applyEndChecks } from '../logic/game-over';
+import { pauseRun, resumeRun } from '../logic/pause';
 import { getTimeLeftSec } from '../logic/timer';
 import { createMenuState, startNewGame } from '../state/game-state';
 import { GAME_STATUS, type IGameState } from '../data/types';
@@ -9,10 +10,11 @@ import { renderActionControls } from './brew';
 import { renderCauldron } from './cauldron';
 import { renderGameOver } from './game-over';
 import { renderHud } from './hud';
+import { renderPauseDialog } from './pause-dialog';
 import { renderRecipePanel } from './recipe-panel';
 import { renderShelf } from './shelf';
 
-const { playing, gameOver } = GAME_STATUS;
+const { playing, paused, gameOver } = GAME_STATUS;
 
 const TIME_SYNC_RESULT = {
   unchanged: 'unchanged',
@@ -127,13 +129,42 @@ export function createApp(root: HTMLElement): void {
     render();
   };
 
+  const pauseGame = (): void => {
+    if (state.status !== playing) {
+      return;
+    }
+    state = pauseRun(state);
+    render();
+  };
+
+  const resumeGame = (): void => {
+    if (state.status !== paused) {
+      return;
+    }
+    state = resumeRun(state);
+    render();
+  };
+
+  const exitToMenu = (): void => {
+    lastOutcome = null;
+    state = createMenuState();
+    render();
+  };
+
   const render = (): void => {
     const isGameOver = state.status === gameOver;
+    const isPaused = state.status === paused;
+    const showOverlay = isGameOver || isPaused;
+
+    board.classList.toggle('game__board--paused', isPaused);
 
     renderHud(hudSlot, state);
-    overlaySlot.hidden = !isGameOver;
+    overlaySlot.hidden = !showOverlay;
     if (isGameOver) {
       renderGameOver(overlaySlot, state, playAgain);
+      stopTimerLoop();
+    } else if (isPaused) {
+      renderPauseDialog(overlaySlot, resumeGame, exitToMenu);
       stopTimerLoop();
     } else {
       overlaySlot.replaceChildren();
@@ -149,14 +180,21 @@ export function createApp(root: HTMLElement): void {
         render();
       },
       onBrew: () => {
+        if (state.status !== playing) {
+          return;
+        }
         const result = brew(state);
         state = result.state;
         lastOutcome = result.outcome;
         render();
       },
+      onPause: pauseGame,
     });
     renderRecipePanel(recipeSlot, state);
     renderShelf(shelfSlot, state, (ingredientId) => {
+      if (state.status !== playing) {
+        return;
+      }
       lastOutcome = null;
       state = applyEndChecks(addIngredient(state, ingredientId));
       render();
@@ -170,6 +208,12 @@ export function createApp(root: HTMLElement): void {
       stopTimerLoop();
     }
   };
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden && state.status === playing) {
+      pauseGame();
+    }
+  });
 
   render();
 }

@@ -22,6 +22,7 @@ export function renderActionControls(
     lastOutcome: BrewOutcome | null;
     onStart: () => void;
     onBrew: () => void;
+    onPause: () => void;
   },
 ): void {
   container.replaceChildren();
@@ -43,6 +44,9 @@ export function renderActionControls(
   const wrap = document.createElement('div');
   wrap.className = 'brew-controls';
 
+  const row = document.createElement('div');
+  row.className = 'brew-controls__row';
+
   const button = document.createElement('button');
   button.type = 'button';
   button.className = 'brew-controls__button';
@@ -57,7 +61,15 @@ export function renderActionControls(
     button.addEventListener('click', options.onBrew);
   }
 
-  wrap.append(button);
+  const pause = document.createElement('button');
+  pause.type = 'button';
+  pause.className = 'brew-controls__pause';
+  pause.textContent = 'Pause';
+  pause.setAttribute('aria-label', 'Pause the game');
+  pause.addEventListener('click', options.onPause);
+
+  row.append(button, pause);
+  wrap.append(row);
 
   if (options.lastOutcome === success || options.lastOutcome === failure) {
     const status = document.createElement('p');

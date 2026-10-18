@@ -60,7 +60,7 @@ export function renderShelf(
       button.disabled = true;
       button.setAttribute(
         'aria-label',
-        !canAdd ? `${ingredient.name}, game over` : `${ingredient.name}, cauldron is full`,
+        !canAdd ? `${ingredient.name}, game not in play` : `${ingredient.name}, cauldron is full`,
       );
     } else {
       button.setAttribute(

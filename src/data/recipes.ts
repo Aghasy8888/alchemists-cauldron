@@ -1,11 +1,11 @@
-import type { Difficulty, IRecipe } from './types';
+import { DIFFICULTY, type Difficulty, type IRecipe } from './types';
 
 /** Fixed pool of 20 recipes from the README (order preserved). */
 export const RECIPES: readonly IRecipe[] = [
   {
     id: 'moon-mist',
     name: 'Moon Mist',
-    difficulty: 'easy',
+    difficulty: DIFFICULTY.easy,
     temperature: { min: 32, max: 42 },
     density: { min: 12, max: 22 },
     magicPower: { min: 17, max: 27 },
@@ -13,7 +13,7 @@ export const RECIPES: readonly IRecipe[] = [
   {
     id: 'root-bloom',
     name: 'Root Bloom',
-    difficulty: 'easy',
+    difficulty: DIFFICULTY.easy,
     temperature: { min: 2, max: 12 },
     density: { min: 24, max: 34 },
     magicPower: { min: 15, max: 25 },
@@ -21,7 +21,7 @@ export const RECIPES: readonly IRecipe[] = [
   {
     id: 'frost-steam',
     name: 'Frost Steam',
-    difficulty: 'easy',
+    difficulty: DIFFICULTY.easy,
     temperature: { min: 2, max: 12 },
     density: { min: 7, max: 17 },
     magicPower: { min: 19, max: 29 },
@@ -29,7 +29,7 @@ export const RECIPES: readonly IRecipe[] = [
   {
     id: 'quiet-swirl',
     name: 'Quiet Swirl',
-    difficulty: 'easy',
+    difficulty: DIFFICULTY.easy,
     temperature: { min: -28, max: -18 },
     density: { min: 19, max: 29 },
     magicPower: { min: 17, max: 27 },
@@ -37,7 +37,7 @@ export const RECIPES: readonly IRecipe[] = [
   {
     id: 'bright-dew',
     name: 'Bright Dew',
-    difficulty: 'easy',
+    difficulty: DIFFICULTY.easy,
     temperature: { min: 27, max: 37 },
     density: { min: 32, max: 42 },
     magicPower: { min: 25, max: 35 },
@@ -45,7 +45,7 @@ export const RECIPES: readonly IRecipe[] = [
   {
     id: 'snow-dust',
     name: 'Snow Dust',
-    difficulty: 'easy',
+    difficulty: DIFFICULTY.easy,
     temperature: { min: -16, max: -6 },
     density: { min: 28, max: 38 },
     magicPower: { min: 29, max: 39 },
@@ -53,7 +53,7 @@ export const RECIPES: readonly IRecipe[] = [
   {
     id: 'acid-spark',
     name: 'Acid Spark',
-    difficulty: 'medium',
+    difficulty: DIFFICULTY.medium,
     temperature: { min: 17, max: 27 },
     density: { min: 18, max: 28 },
     magicPower: { min: 29, max: 39 },
@@ -61,7 +61,7 @@ export const RECIPES: readonly IRecipe[] = [
   {
     id: 'void-ember',
     name: 'Void Ember',
-    difficulty: 'medium',
+    difficulty: DIFFICULTY.medium,
     temperature: { min: 0, max: 10 },
     density: { min: 0, max: 10 },
     magicPower: { min: 45, max: 55 },
@@ -69,7 +69,7 @@ export const RECIPES: readonly IRecipe[] = [
   {
     id: 'heavy-acid',
     name: 'Heavy Acid',
-    difficulty: 'medium',
+    difficulty: DIFFICULTY.medium,
     temperature: { min: 0, max: 10 },
     density: { min: 29, max: 39 },
     magicPower: { min: 25, max: 35 },
@@ -77,7 +77,7 @@ export const RECIPES: readonly IRecipe[] = [
   {
     id: 'frost-acid',
     name: 'Frost Acid',
-    difficulty: 'medium',
+    difficulty: DIFFICULTY.medium,
     temperature: { min: -13, max: -3 },
     density: { min: 13, max: 23 },
     magicPower: { min: 31, max: 41 },
@@ -85,7 +85,7 @@ export const RECIPES: readonly IRecipe[] = [
   {
     id: 'dusty-void',
     name: 'Dusty Void',
-    difficulty: 'medium',
+    difficulty: DIFFICULTY.medium,
     temperature: { min: -13, max: -3 },
     density: { min: 0, max: 10 },
     magicPower: { min: 47, max: 57 },
@@ -93,7 +93,7 @@ export const RECIPES: readonly IRecipe[] = [
   {
     id: 'dragon-void',
     name: 'Dragon Void',
-    difficulty: 'medium',
+    difficulty: DIFFICULTY.medium,
     temperature: { min: 25, max: 35 },
     density: { min: 1, max: 11 },
     magicPower: { min: 55, max: 65 },
@@ -101,7 +101,7 @@ export const RECIPES: readonly IRecipe[] = [
   {
     id: 'rooted-night',
     name: 'Rooted Night',
-    difficulty: 'medium',
+    difficulty: DIFFICULTY.medium,
     temperature: { min: -18, max: -8 },
     density: { min: 14, max: 24 },
     magicPower: { min: 55, max: 65 },
@@ -109,7 +109,7 @@ export const RECIPES: readonly IRecipe[] = [
   {
     id: 'phoenix-pulse',
     name: 'Phoenix Pulse',
-    difficulty: 'hard',
+    difficulty: DIFFICULTY.hard,
     temperature: { min: 57, max: 67 },
     density: { min: 0, max: 10 },
     magicPower: { min: 37, max: 47 },
@@ -117,7 +117,7 @@ export const RECIPES: readonly IRecipe[] = [
   {
     id: 'slime-crown',
     name: 'Slime Crown',
-    difficulty: 'hard',
+    difficulty: DIFFICULTY.hard,
     temperature: { min: -5, max: 5 },
     density: { min: 45, max: 55 },
     magicPower: { min: 3, max: 13 },
@@ -125,7 +125,7 @@ export const RECIPES: readonly IRecipe[] = [
   {
     id: 'void-flame',
     name: 'Void Flame',
-    difficulty: 'hard',
+    difficulty: DIFFICULTY.hard,
     temperature: { min: 25, max: 35 },
     density: { min: 0, max: 10 },
     magicPower: { min: 60, max: 70 },
@@ -133,7 +133,7 @@ export const RECIPES: readonly IRecipe[] = [
   {
     id: 'acid-bog',
     name: 'Acid Bog',
-    difficulty: 'hard',
+    difficulty: DIFFICULTY.hard,
     temperature: { min: 10, max: 20 },
     density: { min: 39, max: 49 },
     magicPower: { min: 17, max: 27 },
@@ -141,7 +141,7 @@ export const RECIPES: readonly IRecipe[] = [
   {
     id: 'frozen-ash',
     name: 'Frozen Ash',
-    difficulty: 'hard',
+    difficulty: DIFFICULTY.hard,
     temperature: { min: 27, max: 37 },
     density: { min: 0, max: 10 },
     magicPower: { min: 39, max: 49 },
@@ -149,7 +149,7 @@ export const RECIPES: readonly IRecipe[] = [
   {
     id: 'triple-eclipse',
     name: 'Triple Eclipse',
-    difficulty: 'hard',
+    difficulty: DIFFICULTY.hard,
     temperature: { min: -20, max: -10 },
     density: { min: 19, max: 29 },
     magicPower: { min: 60, max: 70 },
@@ -157,7 +157,7 @@ export const RECIPES: readonly IRecipe[] = [
   {
     id: 'ember-soup',
     name: 'Ember Soup',
-    difficulty: 'hard',
+    difficulty: DIFFICULTY.hard,
     temperature: { min: 62, max: 72 },
     density: { min: 24, max: 34 },
     magicPower: { min: 37, max: 47 },

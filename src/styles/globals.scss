@@ -40,9 +40,19 @@
   --color-param-density: #{$color-param-density};
   --color-param-magic: #{$color-param-magic};
   --color-param-zone: #{$color-param-zone};
+  --color-param-zone-strong: #{$color-param-zone-strong};
   --color-param-icon-muted: #{$color-param-icon-muted};
   --color-param-density-highlight: #{$color-param-density-highlight};
   --color-param-magic-highlight: #{$color-param-magic-highlight};
+
+  // Parameter bar track gradients
+  --color-bar-temperature-start: #{$color-bar-temperature-start};
+  --color-bar-temperature-mid: #{$color-bar-temperature-mid};
+  --color-bar-density-start: #{$color-bar-density-start};
+  --color-bar-density-mid: #{$color-bar-density-mid};
+  --color-bar-density-end: #{$color-bar-density-end};
+  --color-bar-magic-start: #{$color-bar-magic-start};
+  --color-bar-magic-mid: #{$color-bar-magic-mid};
 
   // Borders
   --color-outline: #{$color-outline};
@@ -82,6 +92,7 @@
   --font-weight-extra-bold: #{$font-weight-extra-bold};
 
   // Sizes
+  --size-025: #{$size-025};
   --size-05: #{$size-05};
   --size-1: #{$size-1};
   --size-125: #{$size-125};
@@ -132,6 +143,7 @@
 
   // Layout
   --layout-max-width: #{$layout-max-width};
+  --layout-viewport-height: #{$layout-viewport-height};
 }
 
 html {
@@ -181,7 +193,7 @@ select {
 
 body {
   height: 100%;
-  max-height: 100dvh;
+  max-height: var(--layout-viewport-height);
   overflow: hidden;
   font-family: var(--font-family-text);
   font-weight: var(--font-weight-regular);
@@ -191,6 +203,6 @@ body {
 
 #app {
   height: 100%;
-  max-height: 100dvh;
+  max-height: var(--layout-viewport-height);
   overflow: hidden;
 }

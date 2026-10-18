@@ -2,11 +2,11 @@ import { DIFFICULTY_CONFIG, LEVEL_1_DIFFICULTY } from '../data/difficulty';
 import { getShelfIngredients } from '../data/ingredients';
 import { pickRandomRecipe } from '../logic/recipe-generator';
 import { createStock } from '../logic/stock';
-import type { IGameState } from '../data/types';
+import { GAME_STATUS, type IGameState } from '../data/types';
 
 export function createMenuState(): IGameState {
   return {
-    status: 'menu',
+    status: GAME_STATUS.menu,
     score: 0,
     timeLeft: 0,
     lives: 0,
@@ -26,7 +26,7 @@ export function startNewGame(previous: IGameState = createMenuState()): IGameSta
 
   return {
     ...previous,
-    status: 'playing',
+    status: GAME_STATUS.playing,
     score: 0,
     timeLeft: config.startingTime,
     lives: config.lives,

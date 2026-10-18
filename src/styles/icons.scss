@@ -1,11 +1,15 @@
 // Icon fills live in CSS so themes can override without editing SVG markup.
+// Local color tokens — reused only in this file (see token-frequency-and-comments).
+$ingredient-ember: #f48c06; // no exact $color-* match
+$ingredient-lilac: #e0aaff; // no exact $color-* match
 
 .ingredient-icon {
   display: block;
   width: 1em;
   height: auto;
   flex-shrink: 0;
-  font-size: clamp(1.25rem, 3.5vh, 2.5rem);
+  // no exact $size-* match for vh middle stop
+  font-size: clamp(var(--size-25), 3.5vh, var(--size-5));
 }
 
 .ingredient-icon--dragon-tears {
@@ -14,7 +18,7 @@
   }
 
   .ingredient-icon__secondary {
-    fill: #f48c06; // no exact $color-* match
+    fill: $ingredient-ember;
   }
 }
 
@@ -24,7 +28,7 @@
   }
 
   .ingredient-icon__secondary {
-    fill: #e0aaff; // no exact $color-* match
+    fill: $ingredient-lilac;
   }
 }
 
@@ -54,7 +58,7 @@
 
 .ingredient-icon--caustic-acid {
   .ingredient-icon__primary {
-    fill: #52b788; // no exact $color-* match (same hex as $color-param-zone)
+    fill: var(--color-param-zone);
   }
 
   .ingredient-icon__secondary {
@@ -76,7 +80,7 @@
   }
 
   .ingredient-icon__accent {
-    fill: #e0aaff; // no exact $color-* match
+    fill: $ingredient-lilac;
   }
 }
 
@@ -86,7 +90,7 @@
   }
 
   .ingredient-icon__stroke {
-    stroke: #f48c06; // no exact $color-* match
+    stroke: $ingredient-ember;
   }
 }
 
@@ -105,7 +109,8 @@
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  font-size: clamp(1rem, 2.8vh, 1.5rem);
+  // no exact $size-* match for vh middle stop
+  font-size: clamp(var(--size-2), 2.8vh, var(--size-3));
 }
 
 .param-icon__svg {
@@ -131,7 +136,7 @@
 
   .param-icon__highlight {
     fill: var(--color-param-density-highlight);
-    opacity: 0.85;
+    opacity: 0.85; // no exact $opacity-* match
   }
 }
 

@@ -28,9 +28,19 @@ $color-param-temperature: #c62828; // Temperature / T — red
 $color-param-density: #1565c0; // Density / D — blue
 $color-param-magic: #7b1fa2; // Magic Power / M — purple
 $color-param-zone: #52b788; // recipe target zone on bars (green)
+$color-param-zone-strong: #2d6a4f; // in-zone / brew success darker green
 $color-param-icon-muted: #9e9e9e; // thermometer outline
 $color-param-density-highlight: #90caf9; // droplet glare
 $color-param-magic-highlight: #e1bee7; // star core
+
+// Parameter bar track gradients (cool → hot / deep → pale)
+$color-bar-temperature-start: #90caf9;
+$color-bar-temperature-mid: #ef9a9a;
+$color-bar-density-start: #0d47a1;
+$color-bar-density-mid: #42a5f5;
+$color-bar-density-end: #bbdefb;
+$color-bar-magic-start: #4a148c;
+$color-bar-magic-mid: #ab47bc;
 
 // Borders — Place: border
 $color-outline: #e5e7eb;
@@ -70,6 +80,7 @@ $font-weight-bold: 700;
 $font-weight-extra-bold: 800;
 
 // Sizes
+$size-025: 0.125rem; // 2px — tight mobile gaps (shelf / recipe / chips)
 $size-05: 0.25rem;
 $size-1: 0.5rem;
 $size-125: 0.625rem;
@@ -136,3 +147,6 @@ $breakpoints: (
 
 // Content shell max width — Pixel Perfect at 1920; ≥1921 stays centered (side space grows).
 $layout-max-width: 1920px;
+
+// Full viewport height for the no-scroll play shell (html / body / #app / .game).
+$layout-viewport-height: 100dvh;

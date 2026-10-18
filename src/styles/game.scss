@@ -54,10 +54,198 @@ $viewport-short-max-height: 700px; // no exact $breakpoints match (height MQ)
   min-height: var(--size-25);
 }
 
+.game__hud-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--size-2);
+}
+
 .game__hud-score {
   font-size: var(--font-size-body-medium);
   font-weight: var(--font-weight-bold);
   color: var(--color-tertiary);
+}
+
+.game__hud-time {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--size-05);
+  min-width: space(16);
+}
+
+.game__hud-time-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--size-05);
+  font-size: var(--font-size-body-medium);
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+}
+
+.game__hud-time-track {
+  height: var(--size-1);
+  overflow: hidden;
+  border: var(--border-width-xs) solid var(--color-outline);
+  border-radius: var(--corner-full);
+  background-color: var(--color-surface-low);
+}
+
+.game__hud-time-fill {
+  height: 100%;
+  border-radius: var(--corner-full);
+  background-color: var(--color-primary);
+  transition: width 0.2s linear; // no exact $duration-* match
+}
+
+.game__hud-time--urgent .game__hud-time-label {
+  color: var(--color-error);
+  animation: hud-time-pulse 1s ease-in-out infinite; // no exact $duration-* match
+}
+
+.game__hud-time--urgent .game__hud-time-fill {
+  background-color: var(--color-error);
+}
+
+@keyframes hud-time-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.55; // no exact $opacity-* match
+  }
+}
+
+.game__hud-lives {
+  display: flex;
+  align-items: center;
+  gap: var(--size-05);
+  color: var(--color-like);
+}
+
+.game__hud-lives-empty {
+  font-size: var(--font-size-label-large);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-on-bg-low);
+}
+
+.hud-icon {
+  display: block;
+  flex-shrink: 0;
+}
+
+.game__board {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.game__board--paused {
+  .game__main,
+  .game__actions {
+    filter: blur(var(--size-05));
+    pointer-events: none;
+    user-select: none;
+  }
+}
+
+.game__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  padding: var(--size-2);
+  background-color: rgb(36 33 69 / 72%); // no exact $color-* match for overlay
+}
+
+.game__overlay[hidden] {
+  display: none;
+}
+
+.game-over,
+.pause-dialog {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--size-2);
+  max-width: space(40);
+  width: 100%;
+  padding: var(--size-3);
+  border: var(--border-width) solid var(--color-outline);
+  border-radius: var(--corner-large);
+  background-color: var(--color-white);
+  text-align: center;
+}
+
+.game-over__title,
+.pause-dialog__title {
+  font-size: var(--font-size-headline-small);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-on-bg);
+}
+
+.game-over__reason {
+  font-size: var(--font-size-body-large);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-error);
+}
+
+.game-over__score {
+  font-size: var(--font-size-body-medium);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-tertiary);
+}
+
+.pause-dialog__actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-1);
+  width: 100%;
+}
+
+.game-over__play-again,
+.pause-dialog__button {
+  cursor: pointer;
+  padding: var(--btn-padding-medium);
+  border: var(--border-width) solid var(--color-outline);
+  border-radius: var(--corner-medium);
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  font-weight: var(--font-weight-bold);
+
+  @include hover {
+    background-color: var(--color-primary-high);
+  }
+
+  &:focus-visible {
+    outline: var(--border-width-md) solid var(--color-tertiary);
+    outline-offset: var(--size-05);
+  }
+
+  &:active {
+    background-color: var(--color-primary-high);
+  }
+}
+
+.pause-dialog__button--exit {
+  background-color: var(--color-surface-low);
+  color: var(--color-on-bg);
+
+  @include hover {
+    background-color: var(--color-surface);
+  }
+
+  &:active {
+    background-color: var(--color-surface);
+  }
 }
 
 .game__actions {
@@ -75,8 +263,17 @@ $viewport-short-max-height: 700px; // no exact $breakpoints match (height MQ)
   gap: var(--size-05);
 }
 
+.brew-controls__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--size-1);
+}
+
 .game__start,
-.brew-controls__button {
+.brew-controls__button,
+.brew-controls__pause {
   cursor: pointer;
   padding: var(--btn-padding-small);
   border: var(--border-width) solid var(--color-outline);

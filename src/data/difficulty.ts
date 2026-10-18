@@ -1,8 +1,10 @@
 import { DIFFICULTY, type Difficulty, type IDifficultyConfig } from './types';
 
+const { easy, medium, hard } = DIFFICULTY;
+
 /** Single source of numbers from the README difficulty table. */
 export const DIFFICULTY_CONFIG: Record<Difficulty, IDifficultyConfig> = {
-  [DIFFICULTY.easy]: {
+  [easy]: {
     shelfIngredientCount: 4,
     maxCauldronIngredients: 4,
     startingTime: 180,
@@ -12,7 +14,7 @@ export const DIFFICULTY_CONFIG: Record<Difficulty, IDifficultyConfig> = {
     timeBonusPerBrew: 15,
     reactionCount: 0,
   },
-  [DIFFICULTY.medium]: {
+  [medium]: {
     shelfIngredientCount: 6,
     maxCauldronIngredients: 4,
     startingTime: 150,
@@ -22,7 +24,7 @@ export const DIFFICULTY_CONFIG: Record<Difficulty, IDifficultyConfig> = {
     timeBonusPerBrew: 10,
     reactionCount: 2,
   },
-  [DIFFICULTY.hard]: {
+  [hard]: {
     shelfIngredientCount: 8,
     maxCauldronIngredients: 5,
     startingTime: 150,
@@ -35,4 +37,4 @@ export const DIFFICULTY_CONFIG: Record<Difficulty, IDifficultyConfig> = {
 };
 
 /** Level 1 always uses Medium. */
-export const LEVEL_1_DIFFICULTY: Difficulty = DIFFICULTY.medium;
+export const LEVEL_1_DIFFICULTY: Difficulty = medium;

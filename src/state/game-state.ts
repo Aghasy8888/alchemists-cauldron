@@ -2,19 +2,24 @@ import { DIFFICULTY_CONFIG, LEVEL_1_DIFFICULTY } from '../data/difficulty';
 import { getShelfIngredients } from '../data/ingredients';
 import { pickRandomRecipe } from '../logic/recipe-generator';
 import { createStock } from '../logic/stock';
+import { createEndTime } from '../logic/timer';
 import { GAME_STATUS, type IGameState } from '../data/types';
+
+const { menu, playing } = GAME_STATUS;
 
 export function createMenuState(): IGameState {
   return {
-    status: GAME_STATUS.menu,
+    status: menu,
     score: 0,
     timeLeft: 0,
+    endTime: null,
     lives: 0,
     activeRecipe: null,
     cauldronIngredients: [],
     shelfStock: {},
     difficulty: LEVEL_1_DIFFICULTY,
     lastReactionId: null,
+    gameOverReason: null,
   };
 }
 
@@ -23,17 +28,20 @@ export function startNewGame(previous: IGameState = createMenuState()): IGameSta
   const difficulty = previous.difficulty;
   const config = DIFFICULTY_CONFIG[difficulty];
   const shelfIngredients = getShelfIngredients(config.shelfIngredientCount);
+  const timeLeft = config.startingTime;
 
   return {
     ...previous,
-    status: GAME_STATUS.playing,
+    status: playing,
     score: 0,
-    timeLeft: config.startingTime,
+    timeLeft,
+    endTime: createEndTime(timeLeft),
     lives: config.lives,
     activeRecipe: pickRandomRecipe(difficulty),
     cauldronIngredients: [],
     shelfStock: createStock(shelfIngredients),
     difficulty,
     lastReactionId: null,
+    gameOverReason: null,
   };
 }

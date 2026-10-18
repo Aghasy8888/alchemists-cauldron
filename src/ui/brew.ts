@@ -1,14 +1,17 @@
 import { BREW_OUTCOME, type BrewOutcome } from '../logic/brew';
 import { GAME_STATUS, type GameStatus } from '../data/types';
 
+const { menu, playing } = GAME_STATUS;
+const { success, failure } = BREW_OUTCOME;
+
 const BREW_STATUS_CLASS = {
-  [BREW_OUTCOME.success]: 'brew-controls__status--success',
-  [BREW_OUTCOME.failure]: 'brew-controls__status--failure',
+  [success]: 'brew-controls__status--success',
+  [failure]: 'brew-controls__status--failure',
 } as const;
 
 const BREW_STATUS_MESSAGE = {
-  [BREW_OUTCOME.success]: 'Brew succeeded!',
-  [BREW_OUTCOME.failure]: 'Brew failed — mixture was off.',
+  [success]: 'Brew succeeded!',
+  [failure]: 'Brew failed — mixture was off.',
 } as const;
 
 export function renderActionControls(
@@ -19,11 +22,12 @@ export function renderActionControls(
     lastOutcome: BrewOutcome | null;
     onStart: () => void;
     onBrew: () => void;
+    onPause: () => void;
   },
 ): void {
   container.replaceChildren();
 
-  if (options.status === GAME_STATUS.menu) {
+  if (options.status === menu) {
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'game__start';
@@ -33,12 +37,15 @@ export function renderActionControls(
     return;
   }
 
-  if (options.status !== GAME_STATUS.playing) {
+  if (options.status !== playing) {
     return;
   }
 
   const wrap = document.createElement('div');
   wrap.className = 'brew-controls';
+
+  const row = document.createElement('div');
+  row.className = 'brew-controls__row';
 
   const button = document.createElement('button');
   button.type = 'button';
@@ -54,12 +61,17 @@ export function renderActionControls(
     button.addEventListener('click', options.onBrew);
   }
 
-  wrap.append(button);
+  const pause = document.createElement('button');
+  pause.type = 'button';
+  pause.className = 'brew-controls__pause';
+  pause.textContent = 'Pause';
+  pause.setAttribute('aria-label', 'Pause the game');
+  pause.addEventListener('click', options.onPause);
 
-  if (
-    options.lastOutcome === BREW_OUTCOME.success ||
-    options.lastOutcome === BREW_OUTCOME.failure
-  ) {
+  row.append(button, pause);
+  wrap.append(row);
+
+  if (options.lastOutcome === success || options.lastOutcome === failure) {
     const status = document.createElement('p');
     status.className = 'brew-controls__status';
     status.classList.add(BREW_STATUS_CLASS[options.lastOutcome]);

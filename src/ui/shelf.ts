@@ -4,6 +4,8 @@ import { createIngredientIcon } from '../assets/ingredient-icons';
 import { isCauldronFull } from '../logic/add-ingredient';
 import { GAME_STATUS, type IGameState } from '../data/types';
 
+const { menu, playing } = GAME_STATUS;
+
 function formatSigned(value: number): string {
   return value > 0 ? `+${value}` : String(value);
 }
@@ -20,7 +22,7 @@ export function renderShelf(
   title.textContent = 'Ingredient Shelf';
   container.append(title);
 
-  if (state.status === GAME_STATUS.menu) {
+  if (state.status === menu) {
     const empty = document.createElement('p');
     empty.className = 'shelf__hint';
     empty.textContent = 'Start a game to fill the shelf.';
@@ -35,6 +37,7 @@ export function renderShelf(
   const config = DIFFICULTY_CONFIG[state.difficulty];
   const shelfIngredients = getShelfIngredients(config.shelfIngredientCount);
   const cauldronFull = isCauldronFull(state);
+  const canAdd = state.status === playing;
 
   for (const ingredient of shelfIngredients) {
     const stock = state.shelfStock[ingredient.id] ?? 0;
@@ -53,9 +56,12 @@ export function renderShelf(
       button.disabled = true;
       button.tabIndex = -1;
       button.setAttribute('aria-label', `${ingredient.name}, out of stock`);
-    } else if (cauldronFull) {
+    } else if (!canAdd || cauldronFull) {
       button.disabled = true;
-      button.setAttribute('aria-label', `${ingredient.name}, cauldron is full`);
+      button.setAttribute(
+        'aria-label',
+        !canAdd ? `${ingredient.name}, game not in play` : `${ingredient.name}, cauldron is full`,
+      );
     } else {
       button.setAttribute(
         'aria-label',
@@ -104,7 +110,7 @@ export function renderShelf(
 
   container.append(list);
 
-  if (cauldronFull) {
+  if (canAdd && cauldronFull) {
     const note = document.createElement('p');
     note.className = 'shelf__hint';
     note.textContent = 'Cauldron is full. Clear it before adding more.';

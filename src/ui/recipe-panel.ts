@@ -1,12 +1,12 @@
 import { createParamIcon, type ParamIconId } from '../assets/param-icons';
 import { DIFFICULTY_CONFIG } from '../data/difficulty';
-import type { IGameState, IRecipeRange } from '../data/types';
+import { GAME_STATUS, type IGameState, type IRecipeRange } from '../data/types';
 
 function formatRange(range: IRecipeRange): string {
   return `${range.min}..${range.max}`;
 }
 
-/** Recipe name, ranges, and ingredient counter (Brew check comes in US 1.3). */
+/** Recipe name, ranges, and ingredient counter. */
 export function renderRecipePanel(container: HTMLElement, state: IGameState): void {
   container.replaceChildren();
 
@@ -16,18 +16,18 @@ export function renderRecipePanel(container: HTMLElement, state: IGameState): vo
   container.append(title);
 
   const config = DIFFICULTY_CONFIG[state.difficulty];
-  const added = state.status === 'menu' ? 0 : state.cauldronIngredients.length;
+  const added = state.status === GAME_STATUS.menu ? 0 : state.cauldronIngredients.length;
   const maximum = config.maxCauldronIngredients;
 
   const counter = document.createElement('p');
   counter.className = 'recipe-panel__counter';
-  if (added >= maximum && state.status === 'playing') {
+  if (added >= maximum && state.status === GAME_STATUS.playing) {
     counter.classList.add('recipe-panel__counter--full');
   }
   counter.textContent = `Ingredients: ${added} / ${maximum}`;
   container.append(counter);
 
-  if (state.status === 'menu' || state.activeRecipe === null) {
+  if (state.status === GAME_STATUS.menu || state.activeRecipe === null) {
     const hint = document.createElement('p');
     hint.className = 'recipe-panel__hint';
     hint.textContent = 'Start a game to get a recipe.';

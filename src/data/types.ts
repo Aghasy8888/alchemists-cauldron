@@ -1,5 +1,21 @@
-export type Difficulty = 'easy' | 'medium' | 'hard';
-export type GameStatus = 'menu' | 'playing' | 'paused' | 'game-over';
+/** Canonical difficulty values — compare / assign via `DIFFICULTY.*`, not string literals. */
+export const DIFFICULTY = {
+  easy: 'easy',
+  medium: 'medium',
+  hard: 'hard',
+} as const;
+
+export type Difficulty = (typeof DIFFICULTY)[keyof typeof DIFFICULTY];
+
+/** Canonical game statuses — compare / assign via `GAME_STATUS.*`, not string literals. */
+export const GAME_STATUS = {
+  menu: 'menu',
+  playing: 'playing',
+  paused: 'paused',
+  gameOver: 'game-over',
+} as const;
+
+export type GameStatus = (typeof GAME_STATUS)[keyof typeof GAME_STATUS];
 
 export type IngredientIconId =
   | 'dragon-tears'

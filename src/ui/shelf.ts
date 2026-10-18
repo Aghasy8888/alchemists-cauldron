@@ -2,7 +2,7 @@ import { DIFFICULTY_CONFIG } from '../data/difficulty';
 import { getShelfIngredients } from '../data/ingredients';
 import { createIngredientIcon } from '../assets/ingredient-icons';
 import { isCauldronFull } from '../logic/add-ingredient';
-import type { IGameState } from '../data/types';
+import { GAME_STATUS, type IGameState } from '../data/types';
 
 function formatSigned(value: number): string {
   return value > 0 ? `+${value}` : String(value);
@@ -20,7 +20,7 @@ export function renderShelf(
   title.textContent = 'Ingredient Shelf';
   container.append(title);
 
-  if (state.status === 'menu') {
+  if (state.status === GAME_STATUS.menu) {
     const empty = document.createElement('p');
     empty.className = 'shelf__hint';
     empty.textContent = 'Start a game to fill the shelf.';

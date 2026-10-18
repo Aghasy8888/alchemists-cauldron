@@ -1,6 +1,6 @@
 import { createParamIcon } from '../assets/param-icons';
 import { calculateCauldron } from '../logic/calculate-cauldron';
-import type { IGameState, IRecipeRange } from '../data/types';
+import { GAME_STATUS, type IGameState, type IRecipeRange } from '../data/types';
 
 /** Display scale for bipolar bars (0 is the center line). */
 export const BAR_SCALE = {
@@ -163,8 +163,10 @@ function updateBar(row: HTMLElement, value: number, range: IRecipeRange | null):
 
 export function renderBars(container: HTMLElement, state: IGameState): void {
   const list = ensureStructure(container);
-  const values = calculateCauldron(state.status === 'menu' ? [] : state.cauldronIngredients);
-  const recipe = state.status === 'menu' ? null : state.activeRecipe;
+  const values = calculateCauldron(
+    state.status === GAME_STATUS.menu ? [] : state.cauldronIngredients,
+  );
+  const recipe = state.status === GAME_STATUS.menu ? null : state.activeRecipe;
 
   for (const key of BAR_KEYS) {
     const row = list.querySelector<HTMLElement>(`[data-bar="${key}"]`);

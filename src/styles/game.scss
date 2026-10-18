@@ -1,14 +1,23 @@
+@use 'sass:math';
 @use './tokens' as *;
 @use './mixins' as *;
 @use './functions' as *;
 
 // Play board: one no-scroll viewport (375–1920). Dialogs may scroll later; the board does not.
 
+// Local tokens — reused only in this file (see token-frequency-and-comments).
+$opacity-muted: 0.45;
+$opacity-zone: 0.55;
+$param-bar-fill-inset: 20%;
+$param-bar-motion: 0.35s ease; // no exact $duration-* match
+$brew-status-motion: 0.45s ease-out; // no exact $duration-* match
+$viewport-short-max-height: 700px; // no exact $breakpoints match (height MQ)
+
 .game {
   display: flex;
   flex-direction: column;
   height: 100%;
-  max-height: 100dvh;
+  max-height: var(--layout-viewport-height);
   max-width: var(--layout-max-width);
   margin-inline: auto;
   padding: var(--size-1);
@@ -40,15 +49,34 @@
   }
 }
 
-.game__start {
+.game__hud {
+  margin-top: var(--size-05);
+  min-height: var(--size-25);
+}
+
+.game__hud-score {
+  font-size: var(--font-size-body-medium);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-tertiary);
+}
+
+.game__actions {
   display: flex;
   flex-shrink: 0;
   justify-content: center;
-  margin-bottom: var(--size-1);
+  margin-top: var(--size-1);
   min-height: space(5);
 }
 
-.start-game {
+.brew-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--size-05);
+}
+
+.game__start,
+.brew-controls__button {
   cursor: pointer;
   padding: var(--btn-padding-small);
   border: var(--border-width) solid var(--color-outline);
@@ -70,9 +98,46 @@
     outline-offset: var(--size-05);
   }
 
-  &:active {
+  &:active:not(:disabled) {
     background-color: var(--color-primary-high);
   }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5; // no exact $opacity-* match
+  }
+}
+
+@keyframes brew-status-pulse {
+  0% {
+    opacity: 0;
+    transform: scale(0.96); // no exact $size-* match
+  }
+
+  40% {
+    opacity: 1;
+    transform: scale(1.03); // no exact $size-* match
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.brew-controls__status {
+  margin: 0;
+  font-size: var(--font-size-body-small);
+  font-weight: var(--font-weight-medium);
+  animation: brew-status-pulse $brew-status-motion;
+}
+
+.brew-controls__status--success {
+  color: var(--color-param-zone-strong);
+}
+
+.brew-controls__status--failure {
+  color: var(--color-error);
 }
 
 .game__main {
@@ -194,7 +259,7 @@
   margin-top: var(--size-05);
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: var(--size-025);
   font-size: var(--font-size-label-small);
 
   @include media-up('tablet') {
@@ -208,7 +273,7 @@
   grid-template-columns: auto 1fr auto;
   align-items: center;
   column-gap: var(--size-05);
-  padding-block: 2px;
+  padding-block: var(--size-025);
   border-bottom: var(--border-width) solid var(--color-outline);
 
   &:last-child {
@@ -229,7 +294,7 @@
 // Shared T / D / M colors — same hues on shelf, recipe, bars, cauldron list.
 .param-chip {
   display: inline-block;
-  padding: 1px 4px;
+  padding: var(--border-width-xs) var(--size-05);
   border-radius: var(--corner-extra-small);
   font-weight: var(--font-weight-bold);
   font-variant-numeric: tabular-nums;
@@ -276,7 +341,7 @@
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  margin-bottom: 2px;
+  margin-bottom: var(--size-025);
 }
 
 .param-bar__body {
@@ -319,15 +384,30 @@
 }
 
 .param-bar__track--temperature {
-  background: linear-gradient(90deg, #90caf9 0%, #ef9a9a 45%, #c62828 100%);
+  background: linear-gradient(
+    90deg,
+    var(--color-bar-temperature-start) 0%,
+    var(--color-bar-temperature-mid) 45%,
+    var(--color-param-temperature) 100%
+  );
 }
 
 .param-bar__track--density {
-  background: linear-gradient(90deg, #0d47a1 0%, #42a5f5 55%, #bbdefb 100%);
+  background: linear-gradient(
+    90deg,
+    var(--color-bar-density-start) 0%,
+    var(--color-bar-density-mid) 55%,
+    var(--color-bar-density-end) 100%
+  );
 }
 
 .param-bar__track--magic {
-  background: linear-gradient(90deg, #4a148c 0%, #ab47bc 55%, #e1bee7 100%);
+  background: linear-gradient(
+    90deg,
+    var(--color-bar-magic-start) 0%,
+    var(--color-bar-magic-mid) 55%,
+    var(--color-param-magic-highlight) 100%
+  );
 }
 
 .param-bar__zero {
@@ -337,10 +417,10 @@
   width: var(--border-width);
   transform: translateX(-50%);
   background-color: var(--color-on-bg);
-  opacity: 0.45;
+  opacity: $opacity-muted;
   z-index: 2;
   pointer-events: none;
-  transition: left 0.35s ease;
+  transition: left $param-bar-motion;
 }
 
 .param-bar__zone {
@@ -349,25 +429,29 @@
   bottom: 0;
   border-radius: var(--corner-small);
   background-color: var(--color-param-zone);
-  opacity: 0.55;
+  opacity: $opacity-zone;
   z-index: 1;
   pointer-events: none;
   transition:
-    left 0.35s ease,
-    width 0.35s ease;
+    left $param-bar-motion,
+    width $param-bar-motion;
 }
 
 .param-bar__fill {
   position: absolute;
-  top: 20%;
-  bottom: 20%;
+  top: $param-bar-fill-inset;
+  bottom: $param-bar-fill-inset;
   border-radius: var(--corner-full);
-  background-color: rgb(255 255 255 / 45%);
+  background-color: color-mix(
+    in srgb,
+    var(--color-white) #{math.percentage($opacity-muted)},
+    transparent
+  );
   z-index: 2;
   pointer-events: none;
   transition:
-    left 0.35s ease,
-    width 0.35s ease;
+    left $param-bar-motion,
+    width $param-bar-motion;
 }
 
 .param-bar__marker {
@@ -381,7 +465,7 @@
   transform: translate(-50%, -50%);
   z-index: 3;
   pointer-events: none;
-  transition: left 0.35s ease;
+  transition: left $param-bar-motion;
 
   @include media-up('tablet') {
     width: var(--size-125);
@@ -390,16 +474,17 @@
 }
 
 .param-bar--in-zone .param-bar__track {
-  box-shadow: 0 0 0 3px rgb(82 183 136 / 55%);
+  box-shadow: 0 0 0 var(--border-width-md)
+    color-mix(in srgb, var(--color-param-zone) #{math.percentage($opacity-zone)}, transparent);
 }
 
 .param-bar--in-zone .param-bar__marker {
   background-color: var(--color-param-zone);
-  border-color: #2d6a4f; // darker green; no exact token
+  border-color: var(--color-param-zone-strong);
 }
 
 .param-bar--in-zone .param-bar__value {
-  color: #2d6a4f; // darker green; no exact token
+  color: var(--color-param-zone-strong);
 }
 
 .shelf__list {
@@ -428,7 +513,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
+  gap: var(--size-025);
   width: 100%;
   min-height: 0;
   padding: var(--size-05);
@@ -463,14 +548,14 @@
 }
 
 .shelf-card--empty {
-  opacity: 0.45;
+  opacity: $opacity-muted;
   background-color: var(--color-outline);
 }
 
 .shelf-card__badge {
   position: absolute;
-  top: 2px;
-  right: 2px;
+  top: var(--size-025);
+  right: var(--size-025);
   display: grid;
   place-items: center;
   width: var(--size-2);
@@ -514,8 +599,8 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 2px;
-  font-size: 0.625rem; // denser than label-small for mobile fit
+  gap: var(--size-025);
+  font-size: var(--font-size-label-small);
   line-height: 1.1;
 
   @include media-up('tablet') {
@@ -577,8 +662,8 @@
 .cauldron__stats {
   display: flex;
   flex-wrap: wrap;
-  gap: 2px;
-  font-size: 0.625rem;
+  gap: var(--size-025);
+  font-size: var(--font-size-label-small);
 
   @include media-up('tablet') {
     gap: var(--size-05);
@@ -587,7 +672,7 @@
 }
 
 // Short viewports (landscape phones, small laptops): compress chrome further.
-@media (max-height: 700px) {
+@media (max-height: $viewport-short-max-height) {
   .game {
     padding: var(--size-05) var(--size-1);
   }

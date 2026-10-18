@@ -1,14 +1,17 @@
 import { addIngredient } from '../logic/add-ingredient';
+import { brew, type BrewOutcome } from '../logic/brew';
 import { createMenuState, startNewGame } from '../state/game-state';
-import type { IGameState } from '../data/types';
+import { GAME_STATUS, type IGameState } from '../data/types';
 import { renderBars } from './bars';
+import { renderActionControls } from './brew';
 import { renderCauldron } from './cauldron';
-import { renderStartControls } from './menu';
+import { renderHud } from './hud';
 import { renderRecipePanel } from './recipe-panel';
 import { renderShelf } from './shelf';
 
 export function createApp(root: HTMLElement): void {
   let state: IGameState = createMenuState();
+  let lastOutcome: BrewOutcome | null = null;
 
   const layout = document.createElement('div');
   layout.className = 'game';
@@ -18,10 +21,12 @@ export function createApp(root: HTMLElement): void {
   const heading = document.createElement('h1');
   heading.className = 'game__title';
   heading.textContent = "Alchemist's Cauldron";
-  header.append(heading);
+  const hudSlot = document.createElement('div');
+  hudSlot.className = 'game__hud';
+  header.append(heading, hudSlot);
 
-  const startSlot = document.createElement('div');
-  startSlot.className = 'game__start';
+  const actionSlot = document.createElement('div');
+  actionSlot.className = 'game__actions';
 
   const main = document.createElement('main');
   main.className = 'game__main';
@@ -42,18 +47,32 @@ export function createApp(root: HTMLElement): void {
   barsSlot.className = 'game__bars';
   barsSlot.setAttribute('aria-label', 'Parameter bars');
 
-  // Composition matches example: shelf | cauldron | recipe, bars below.
+  // Composition matches example: shelf | cauldron | recipe, bars below, Brew bottom-center.
   main.append(shelfSlot, cauldronSlot, recipeSlot, barsSlot);
-  layout.append(header, startSlot, main);
+  layout.append(header, main, actionSlot);
   root.replaceChildren(layout);
 
   const render = (): void => {
-    renderStartControls(startSlot, state.status === 'playing', () => {
-      state = startNewGame(state);
-      render();
+    renderHud(hudSlot, state);
+    renderActionControls(actionSlot, {
+      status: state.status,
+      canBrew: state.status === GAME_STATUS.playing && state.cauldronIngredients.length >= 1,
+      lastOutcome,
+      onStart: () => {
+        lastOutcome = null;
+        state = startNewGame(state);
+        render();
+      },
+      onBrew: () => {
+        const result = brew(state);
+        state = result.state;
+        lastOutcome = result.outcome;
+        render();
+      },
     });
     renderRecipePanel(recipeSlot, state);
     renderShelf(shelfSlot, state, (ingredientId) => {
+      lastOutcome = null;
       state = addIngredient(state, ingredientId);
       render();
     });

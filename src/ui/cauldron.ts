@@ -1,5 +1,5 @@
 import { createIngredientIcon } from '../assets/ingredient-icons';
-import type { IGameState } from '../data/types';
+import { GAME_STATUS, type IGameState } from '../data/types';
 
 function formatSigned(value: number): string {
   return value > 0 ? `+${value}` : String(value);
@@ -17,11 +17,11 @@ export function renderCauldron(container: HTMLElement, state: IGameState): void 
   list.className = 'cauldron__list';
   list.setAttribute('aria-label', 'Ingredients in the cauldron');
 
-  if (state.status === 'menu' || state.cauldronIngredients.length === 0) {
+  if (state.status === GAME_STATUS.menu || state.cauldronIngredients.length === 0) {
     const empty = document.createElement('p');
     empty.className = 'cauldron__empty';
     empty.textContent =
-      state.status === 'menu'
+      state.status === GAME_STATUS.menu
         ? 'Empty until you start.'
         : 'Empty — add ingredients from the shelf.';
     container.append(empty);

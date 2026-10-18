@@ -1,0 +1,151 @@
+// Icon fills live in CSS so themes can override without editing SVG markup.
+// Local color tokens — reused only in this file (see token-frequency-and-comments).
+$ingredient-ember: #f48c06; // no exact $color-* match
+$ingredient-lilac: #e0aaff; // no exact $color-* match
+
+.ingredient-icon {
+  display: block;
+  width: 1em;
+  height: auto;
+  flex-shrink: 0;
+  // no exact $size-* match for vh middle stop
+  font-size: clamp(var(--size-25), 3.5vh, var(--size-5));
+}
+
+.ingredient-icon--dragon-tears {
+  .ingredient-icon__primary {
+    fill: #e85d04; // no exact $color-* match
+  }
+
+  .ingredient-icon__secondary {
+    fill: $ingredient-ember;
+  }
+}
+
+.ingredient-icon--fairy-dust {
+  .ingredient-icon__primary {
+    fill: #c77dff; // no exact $color-* match
+  }
+
+  .ingredient-icon__secondary {
+    fill: $ingredient-lilac;
+  }
+}
+
+.ingredient-icon--frost-lotus {
+  .ingredient-icon__primary {
+    fill: #90e0ef; // no exact $color-* match
+  }
+
+  .ingredient-icon__secondary {
+    fill: #48cae4; // no exact $color-* match
+  }
+
+  .ingredient-icon__accent {
+    fill: #caf0f8; // no exact $color-* match
+  }
+}
+
+.ingredient-icon--mandrake-root {
+  .ingredient-icon__primary {
+    fill: #6a994e; // no exact $color-* match
+  }
+
+  .ingredient-icon__stroke {
+    stroke: #386641; // no exact $color-* match
+  }
+}
+
+.ingredient-icon--caustic-acid {
+  .ingredient-icon__primary {
+    fill: var(--color-param-zone);
+  }
+
+  .ingredient-icon__secondary {
+    fill: #adb5bd; // no exact $color-* match
+  }
+
+  .ingredient-icon__accent {
+    fill: #95d5b2; // no exact $color-* match
+  }
+}
+
+.ingredient-icon--essence-of-the-void {
+  .ingredient-icon__primary {
+    fill: #240046; // no exact $color-* match
+  }
+
+  .ingredient-icon__secondary {
+    fill: #7b2cbf; // no exact $color-* match
+  }
+
+  .ingredient-icon__accent {
+    fill: $ingredient-lilac;
+  }
+}
+
+.ingredient-icon--phoenix-feather {
+  .ingredient-icon__primary {
+    fill: #dc2f02; // no exact $color-* match
+  }
+
+  .ingredient-icon__stroke {
+    stroke: $ingredient-ember;
+  }
+}
+
+.ingredient-icon--toad-slime {
+  .ingredient-icon__primary {
+    fill: #80b918; // no exact $color-* match
+  }
+
+  .ingredient-icon__accent {
+    fill: #143601; // no exact $color-* match
+  }
+}
+
+.param-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  // no exact $size-* match for vh middle stop
+  font-size: clamp(var(--size-2), 2.8vh, var(--size-3));
+}
+
+.param-icon__svg {
+  display: block;
+  width: 1em;
+  height: auto;
+}
+
+.param-icon--temperature {
+  .param-icon__tube {
+    stroke: var(--color-param-icon-muted);
+  }
+
+  .param-icon__liquid {
+    fill: var(--color-param-temperature);
+  }
+}
+
+.param-icon--density {
+  .param-icon__drop {
+    fill: var(--color-param-density);
+  }
+
+  .param-icon__highlight {
+    fill: var(--color-param-density-highlight);
+    opacity: 0.85; // no exact $opacity-* match
+  }
+}
+
+.param-icon--magic {
+  .param-icon__star {
+    fill: var(--color-param-magic);
+  }
+
+  .param-icon__core {
+    fill: var(--color-param-magic-highlight);
+  }
+}

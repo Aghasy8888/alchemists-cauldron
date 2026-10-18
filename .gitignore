@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# Build output (deployed to GitHub Pages from dist/, not committed on story/main)
+dist/
+dist-ssr/
+
+# Local / cache
+.cache/
+*.local
+
+# Env and secrets
+.env
+.env.*
+
+# Logs and coverage
+logs/
+*.log
+npm-debug.log*
+coverage/
+
+# OS and editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Cursor
+.cursor/

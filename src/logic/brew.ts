@@ -1,6 +1,7 @@
 import { DIFFICULTY_CONFIG } from '../data/difficulty';
 import { GAME_STATUS, type IGameState } from '../data/types';
 import { expandRecipeRanges, isBrewSuccess } from './brew-check';
+import { clearCauldron } from './cauldron';
 import { applyEndChecks } from './game-over';
 import { pickRandomRecipe } from './recipe-generator';
 import { resolveCauldronValues } from './resolve-cauldron';
@@ -42,10 +43,7 @@ export function brew(state: IGameState): IBrewResult {
   const checked = expandRecipeRanges(state.activeRecipe, config.recipeTolerance);
   const brewSucceeded = isBrewSuccess(values, checked);
 
-  const cleared: IGameState = {
-    ...state,
-    cauldronIngredients: [],
-  };
+  const cleared = clearCauldron(state);
 
   if (brewSucceeded) {
     const timeLeft = Math.min(cleared.timeLeft + config.timeBonusPerBrew, config.startingTime);

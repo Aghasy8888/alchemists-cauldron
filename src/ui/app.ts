@@ -1,16 +1,19 @@
 import { useGameTimer } from '../hooks/use-game-timer';
 import { useVisibilityPause } from '../hooks/use-visibility-pause';
 import { addIngredient } from '../logic/add-ingredient';
-import { brew, type BrewOutcome } from '../logic/brew';
+import { BREW_OUTCOME, brew, type BrewOutcome } from '../logic/brew';
 import { applyEndChecks } from '../logic/game-over';
 import { pauseRun, resumeRun } from '../logic/pause';
+import { pourOut } from '../logic/pour-out';
 import { applyReactionTransitions } from '../logic/reaction-transitions';
 import { createMenuState, startNewGame } from '../state/game-state';
 import { loadLeaderboard, qualifiesForLeaderboard } from '../storage/leaderboard';
 import { clearSave, continueSavedGame, hasContinuableSave, saveGame } from '../storage/save';
+import { DIFFICULTY_CONFIG } from '../data/difficulty';
 import { GAME_STATUS, type Difficulty, type IGameState } from '../data/types';
 import { renderBars } from './bars';
 import { renderActionControls } from './brew';
+import { playBrewFx } from './brew-fx';
 import { renderCauldron } from './cauldron';
 import { setupCauldronDropZone } from './cauldron-drop';
 import { renderGameOver } from './game-over';
@@ -24,6 +27,7 @@ import { renderSettings } from './settings';
 import { renderShelf } from './shelf';
 
 const { menu, playing, paused, gameOver } = GAME_STATUS;
+const { success } = BREW_OUTCOME;
 
 const UI_OVERLAY = {
   none: 'none',
@@ -264,10 +268,13 @@ export function createApp(root: HTMLElement): void {
     renderHud(hudSlot, state);
     renderOverlay();
 
+    const canUseCauldron = state.status === playing && state.cauldronIngredients.length >= 1;
+
     renderActionControls(actionSlot, {
       status: state.status,
       difficulty: state.difficulty,
-      canBrew: state.status === playing && state.cauldronIngredients.length >= 1,
+      canBrew: canUseCauldron,
+      canPourOut: canUseCauldron,
       canContinue: state.status === menu && hasContinuableSave(),
       lastOutcome,
       onStart: () => {
@@ -286,6 +293,18 @@ export function createApp(root: HTMLElement): void {
         const result = brew(state);
         state = result.state;
         lastOutcome = result.outcome;
+        persistIfUnfinished();
+        render();
+        const timeBonusSec =
+          result.outcome === success ? DIFFICULTY_CONFIG[state.difficulty].timeBonusPerBrew : 0;
+        playBrewFx(cauldronSlot, board, result.outcome, timeBonusSec);
+      },
+      onPourOut: () => {
+        if (state.status !== playing) {
+          return;
+        }
+        lastOutcome = null;
+        state = pourOut(state);
         persistIfUnfinished();
         render();
       },

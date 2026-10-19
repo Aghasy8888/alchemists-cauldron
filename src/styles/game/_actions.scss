@@ -45,6 +45,7 @@ $brew-status-motion: 0.45s ease-out; // no exact $duration-* match
 .game__help,
 .game__settings,
 .brew-controls__button,
+.brew-controls__pour-out,
 .brew-controls__pause {
   cursor: pointer;
   padding: var(--btn-padding-small);

@@ -4,6 +4,7 @@ import { addIngredient } from '../logic/add-ingredient';
 import { brew, type BrewOutcome } from '../logic/brew';
 import { applyEndChecks } from '../logic/game-over';
 import { pauseRun, resumeRun } from '../logic/pause';
+import { applyReactionTransitions } from '../logic/reaction-transitions';
 import { createMenuState, startNewGame } from '../state/game-state';
 import { loadLeaderboard, qualifiesForLeaderboard } from '../storage/leaderboard';
 import { clearSave, continueSavedGame, hasContinuableSave, saveGame } from '../storage/save';
@@ -310,7 +311,12 @@ export function createApp(root: HTMLElement): void {
       return;
     }
     lastOutcome = null;
-    state = applyEndChecks(addIngredient(state, ingredientId));
+    const before = state.cauldronIngredients;
+    const afterAdd = addIngredient(state, ingredientId);
+    if (afterAdd === state) {
+      return;
+    }
+    state = applyEndChecks(applyReactionTransitions(before, afterAdd));
     persistIfUnfinished();
     render();
   };

@@ -1,5 +1,6 @@
 import { getEnabledReactions } from '../data/reactions';
 import { GAME_STATUS, type Difficulty, type IGameState, type IIngredient } from '../data/types';
+import { clearCauldron } from './cauldron';
 import { createEndTime, getTimeLeftSec } from './timer';
 
 const { playing } = GAME_STATUS;
@@ -76,10 +77,7 @@ export function applyReactionTransitions(
       next = loseLife(next);
     }
     if (effect.clearCauldron === true) {
-      next = {
-        ...next,
-        cauldronIngredients: [],
-      };
+      next = clearCauldron(next);
     }
   }
 

@@ -4,6 +4,7 @@ import { addIngredient } from '../logic/add-ingredient';
 import { brew, type BrewOutcome } from '../logic/brew';
 import { applyEndChecks } from '../logic/game-over';
 import { pauseRun, resumeRun } from '../logic/pause';
+import { pourOut } from '../logic/pour-out';
 import { applyReactionTransitions } from '../logic/reaction-transitions';
 import { createMenuState, startNewGame } from '../state/game-state';
 import { loadLeaderboard, qualifiesForLeaderboard } from '../storage/leaderboard';
@@ -264,10 +265,13 @@ export function createApp(root: HTMLElement): void {
     renderHud(hudSlot, state);
     renderOverlay();
 
+    const canUseCauldron = state.status === playing && state.cauldronIngredients.length >= 1;
+
     renderActionControls(actionSlot, {
       status: state.status,
       difficulty: state.difficulty,
-      canBrew: state.status === playing && state.cauldronIngredients.length >= 1,
+      canBrew: canUseCauldron,
+      canPourOut: canUseCauldron,
       canContinue: state.status === menu && hasContinuableSave(),
       lastOutcome,
       onStart: () => {
@@ -286,6 +290,15 @@ export function createApp(root: HTMLElement): void {
         const result = brew(state);
         state = result.state;
         lastOutcome = result.outcome;
+        persistIfUnfinished();
+        render();
+      },
+      onPourOut: () => {
+        if (state.status !== playing) {
+          return;
+        }
+        lastOutcome = null;
+        state = pourOut(state);
         persistIfUnfinished();
         render();
       },

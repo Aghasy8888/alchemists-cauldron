@@ -21,11 +21,13 @@ export function renderActionControls(
     status: GameStatus;
     difficulty: Difficulty;
     canBrew: boolean;
+    canPourOut: boolean;
     canContinue: boolean;
     lastOutcome: BrewOutcome | null;
     onStart: () => void;
     onContinue: () => void;
     onBrew: () => void;
+    onPourOut: () => void;
     onPause: () => void;
     onOpenLeaderboard: () => void;
     onOpenHelp: () => void;
@@ -113,6 +115,22 @@ export function renderActionControls(
     button.addEventListener('click', options.onBrew);
   }
 
+  const pourOut = document.createElement('button');
+  pourOut.type = 'button';
+  pourOut.className = 'brew-controls__pour-out';
+  pourOut.textContent = 'Pour Out';
+  pourOut.disabled = !options.canPourOut;
+  pourOut.setAttribute(
+    'aria-label',
+    options.canPourOut
+      ? 'Pour out the cauldron (costs 10 seconds)'
+      : 'Cauldron is empty — nothing to pour out',
+  );
+
+  if (options.canPourOut) {
+    pourOut.addEventListener('click', options.onPourOut);
+  }
+
   const pause = document.createElement('button');
   pause.type = 'button';
   pause.className = 'brew-controls__pause';
@@ -120,7 +138,7 @@ export function renderActionControls(
   pause.setAttribute('aria-label', 'Pause the game');
   pause.addEventListener('click', options.onPause);
 
-  row.append(button, pause);
+  row.append(button, pourOut, pause);
   wrap.append(row);
 
   if (options.lastOutcome === success || options.lastOutcome === failure) {

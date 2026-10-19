@@ -24,6 +24,7 @@ export function renderHelp(container: HTMLElement, onBack: () => void): void {
     'Click shelf ingredients to add them to the cauldron (stock is limited).',
     'Watch the parameter bars — green means you are in the target zone.',
     'Press Brew to check your mixture. Success scores points and a time bonus; failure costs a life.',
+    'Pour Out clears a wrong mixture for 10 seconds — no life lost, and shelf stock is not returned.',
     'The cauldron clears after every brew; shelf stock is not restored.',
     'Game ends when time runs out, lives reach zero, or ingredients run out.',
     'Choose difficulty in Settings before you start. You cannot change it mid-run.',

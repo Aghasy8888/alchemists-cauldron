@@ -21,8 +21,10 @@ export function renderActionControls(
     status: GameStatus;
     difficulty: Difficulty;
     canBrew: boolean;
+    canContinue: boolean;
     lastOutcome: BrewOutcome | null;
     onStart: () => void;
+    onContinue: () => void;
     onBrew: () => void;
     onPause: () => void;
     onOpenLeaderboard: () => void;
@@ -48,14 +50,23 @@ export function renderActionControls(
     start.className = 'game__start';
     start.textContent = 'Start Game';
     start.addEventListener('click', options.onStart);
+    primary.append(start);
+
+    if (options.canContinue) {
+      const continueBtn = document.createElement('button');
+      continueBtn.type = 'button';
+      continueBtn.className = 'game__continue';
+      continueBtn.textContent = 'Continue Game';
+      continueBtn.addEventListener('click', options.onContinue);
+      primary.append(continueBtn);
+    }
 
     const settings = document.createElement('button');
     settings.type = 'button';
     settings.className = 'game__settings';
     settings.textContent = 'Settings';
     settings.addEventListener('click', options.onOpenSettings);
-
-    primary.append(start, settings);
+    primary.append(settings);
 
     const secondary = document.createElement('div');
     secondary.className = 'brew-controls__row';

@@ -6,6 +6,7 @@ import { applyEndChecks } from '../logic/game-over';
 import { pauseRun, resumeRun } from '../logic/pause';
 import { createMenuState, startNewGame } from '../state/game-state';
 import { loadLeaderboard, qualifiesForLeaderboard } from '../storage/leaderboard';
+import { clearSave, continueSavedGame, hasContinuableSave, saveGame } from '../storage/save';
 import { GAME_STATUS, type Difficulty, type IGameState } from '../data/types';
 import { renderBars } from './bars';
 import { renderActionControls } from './brew';
@@ -54,6 +55,14 @@ export function createApp(root: HTMLElement): void {
   } = createGameLayout();
   root.replaceChildren(layout);
 
+  const persistIfUnfinished = (): void => {
+    if (state.status === playing || state.status === paused) {
+      saveGame(state);
+    } else if (state.status === gameOver) {
+      clearSave();
+    }
+  };
+
   const timer = useGameTimer({
     getState: () => state,
     setState: (next) => {
@@ -63,6 +72,7 @@ export function createApp(root: HTMLElement): void {
       renderHud(hudSlot, state);
     },
     onEnded: () => {
+      clearSave();
       render();
     },
   });
@@ -122,6 +132,7 @@ export function createApp(root: HTMLElement): void {
     scoreSubmitted = false;
     uiOverlay = none;
     state = startNewGame(state);
+    saveGame(state);
     render();
   };
 
@@ -131,6 +142,7 @@ export function createApp(root: HTMLElement): void {
     }
     uiOverlay = none;
     state = pauseRun(state);
+    saveGame(state);
     render();
   };
 
@@ -139,6 +151,7 @@ export function createApp(root: HTMLElement): void {
       return;
     }
     state = resumeRun(state);
+    saveGame(state);
     render();
   };
 
@@ -146,7 +159,22 @@ export function createApp(root: HTMLElement): void {
     lastOutcome = null;
     scoreSubmitted = false;
     uiOverlay = none;
+    clearSave();
     state = createMenuState(state.difficulty);
+    render();
+  };
+
+  const continueGame = (): void => {
+    const restored = continueSavedGame();
+    if (restored === null) {
+      render();
+      return;
+    }
+    lastOutcome = null;
+    scoreSubmitted = false;
+    uiOverlay = none;
+    state = restored;
+    saveGame(state);
     render();
   };
 
@@ -220,6 +248,7 @@ export function createApp(root: HTMLElement): void {
     if (previousStatus !== gameOver && state.status === gameOver) {
       scoreSubmitted = false;
       uiOverlay = none;
+      clearSave();
     }
     previousStatus = state.status;
 
@@ -233,14 +262,17 @@ export function createApp(root: HTMLElement): void {
       status: state.status,
       difficulty: state.difficulty,
       canBrew: state.status === playing && state.cauldronIngredients.length >= 1,
+      canContinue: state.status === menu && hasContinuableSave(),
       lastOutcome,
       onStart: () => {
         lastOutcome = null;
         scoreSubmitted = false;
         uiOverlay = none;
         state = startNewGame(state);
+        saveGame(state);
         render();
       },
+      onContinue: continueGame,
       onBrew: () => {
         if (state.status !== playing) {
           return;
@@ -248,6 +280,7 @@ export function createApp(root: HTMLElement): void {
         const result = brew(state);
         state = result.state;
         lastOutcome = result.outcome;
+        persistIfUnfinished();
         render();
       },
       onPause: pauseGame,
@@ -262,6 +295,7 @@ export function createApp(root: HTMLElement): void {
       }
       lastOutcome = null;
       state = applyEndChecks(addIngredient(state, ingredientId));
+      persistIfUnfinished();
       render();
     });
     renderCauldron(cauldronSlot, state);

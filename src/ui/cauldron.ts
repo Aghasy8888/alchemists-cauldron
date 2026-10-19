@@ -1,6 +1,5 @@
 import { createIngredientIcon } from '../assets/ingredient-icons';
 import { GAME_STATUS, type IGameState } from '../data/types';
-import { formatSigned } from '../utils/format-signed';
 
 const { menu } = GAME_STATUS;
 
@@ -12,47 +11,31 @@ export function renderCauldron(container: HTMLElement, state: IGameState): void 
   title.textContent = 'Cauldron';
   container.append(title);
 
-  const list = document.createElement('ol');
-  list.className = 'cauldron__list';
-  list.setAttribute('aria-label', 'Ingredients in the cauldron');
+  const pot = document.createElement('div');
+  pot.className = 'cauldron__pot';
 
   if (state.status === menu || state.cauldronIngredients.length === 0) {
+    pot.setAttribute('aria-label', 'Cauldron is empty');
     const empty = document.createElement('p');
     empty.className = 'cauldron__empty';
     empty.textContent =
       state.status === menu ? 'Empty until you start.' : 'Empty — add ingredients from the shelf.';
-    container.append(empty);
+    pot.append(empty);
+    container.append(pot);
     return;
   }
 
-  for (const ingredient of state.cauldronIngredients) {
-    const item = document.createElement('li');
-    item.className = 'cauldron__item';
+  const names = state.cauldronIngredients.map((ingredient) => ingredient.name).join(', ');
+  pot.setAttribute('aria-label', `Ingredients in the cauldron: ${names}`);
 
-    const iconWrap = document.createElement('span');
-    iconWrap.className = 'cauldron__icon';
-    iconWrap.append(createIngredientIcon(ingredient.icon));
+  state.cauldronIngredients.forEach((ingredient, index) => {
+    const float = document.createElement('span');
+    float.className = 'cauldron__float';
+    float.style.setProperty('--i', String(index));
+    float.setAttribute('aria-hidden', 'true');
+    float.append(createIngredientIcon(ingredient.icon));
+    pot.append(float);
+  });
 
-    const name = document.createElement('span');
-    name.className = 'cauldron__name';
-    name.textContent = ingredient.name;
-
-    const stats = document.createElement('span');
-    stats.className = 'cauldron__stats';
-    const temp = document.createElement('span');
-    temp.className = 'param-chip param-chip--temperature';
-    temp.textContent = `T ${formatSigned(ingredient.temperature)}`;
-    const density = document.createElement('span');
-    density.className = 'param-chip param-chip--density';
-    density.textContent = `D ${formatSigned(ingredient.density)}`;
-    const magic = document.createElement('span');
-    magic.className = 'param-chip param-chip--magic';
-    magic.textContent = `M ${formatSigned(ingredient.magicPower)}`;
-    stats.append(temp, density, magic);
-
-    item.append(iconWrap, name, stats);
-    list.append(item);
-  }
-
-  container.append(list);
+  container.append(pot);
 }

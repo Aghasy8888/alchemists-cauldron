@@ -106,6 +106,7 @@ $viewport-short-max-height: 700px; // no exact $breakpoints match (height MQ)
 }
 
 .game__cauldron {
+  position: relative;
   grid-area: cauldron;
   transition:
     box-shadow 0.2s ease,

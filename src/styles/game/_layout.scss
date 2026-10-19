@@ -56,6 +56,11 @@ $viewport-short-max-height: 700px; // no exact $breakpoints match (height MQ)
     pointer-events: none;
     user-select: none;
   }
+
+  .shelf-card__tooltip {
+    visibility: hidden !important;
+    opacity: 0 !important;
+  }
 }
 
 .game__overlay {
@@ -102,6 +107,14 @@ $viewport-short-max-height: 700px; // no exact $breakpoints match (height MQ)
 
 .game__cauldron {
   grid-area: cauldron;
+  transition:
+    box-shadow 0.2s ease,
+    border-color 0.2s ease; // no exact $duration-* match
+}
+
+.game__cauldron--drop-target {
+  border-color: var(--color-param-zone);
+  box-shadow: 0 0 0 var(--border-width-md) var(--color-param-zone);
 }
 
 .game__recipe {
@@ -129,6 +142,11 @@ $viewport-short-max-height: 700px; // no exact $breakpoints match (height MQ)
   @include media-up('tablet') {
     padding: var(--size-2);
   }
+}
+
+// Shelf tooltips must escape the panel; keep other panels clipped.
+.game__shelf {
+  overflow: visible;
 }
 
 .shelf__title,

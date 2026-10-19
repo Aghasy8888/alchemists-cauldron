@@ -4,6 +4,8 @@ import { createIngredientIcon } from '../assets/ingredient-icons';
 import { isCauldronFull } from '../logic/add-ingredient';
 import { GAME_STATUS, type IGameState } from '../data/types';
 import { formatSigned } from '../utils/format-signed';
+import { DRAG_MIME } from './cauldron-drop';
+import { createIngredientTooltip, updateTooltipFlip } from './ingredient-tooltip';
 
 const { menu, playing } = GAME_STATUS;
 
@@ -57,13 +59,23 @@ export function renderShelf(
       button.disabled = true;
       button.setAttribute(
         'aria-label',
-        !canAdd ? `${ingredient.name}, game not in play` : `${ingredient.name}, cauldron is full`,
+        !canAdd
+          ? `${ingredient.name}, game not in play, temperature ${formatSigned(ingredient.temperature)}, density ${formatSigned(ingredient.density)}, magic ${formatSigned(ingredient.magicPower)}`
+          : `${ingredient.name}, cauldron is full, temperature ${formatSigned(ingredient.temperature)}, density ${formatSigned(ingredient.density)}, magic ${formatSigned(ingredient.magicPower)}`,
       );
     } else {
+      button.draggable = true;
       button.setAttribute(
         'aria-label',
         `Add ${ingredient.name}, stock ${stock}, temperature ${formatSigned(ingredient.temperature)}, density ${formatSigned(ingredient.density)}, magic ${formatSigned(ingredient.magicPower)}`,
       );
+      button.addEventListener('dragstart', (event) => {
+        if (event.dataTransfer === null) {
+          return;
+        }
+        event.dataTransfer.setData(DRAG_MIME, ingredient.id);
+        event.dataTransfer.effectAllowed = 'copy';
+      });
       button.addEventListener('click', () => {
         onAdd(ingredient.id);
       });
@@ -86,19 +98,13 @@ export function renderShelf(
       name.textContent = ingredient.name;
       button.append(name);
 
-      const stats = document.createElement('span');
-      stats.className = 'shelf-card__stats';
-      const temp = document.createElement('span');
-      temp.className = 'param-chip param-chip--temperature';
-      temp.textContent = `T ${formatSigned(ingredient.temperature)}`;
-      const density = document.createElement('span');
-      density.className = 'param-chip param-chip--density';
-      density.textContent = `D ${formatSigned(ingredient.density)}`;
-      const magic = document.createElement('span');
-      magic.className = 'param-chip param-chip--magic';
-      magic.textContent = `M ${formatSigned(ingredient.magicPower)}`;
-      stats.append(temp, density, magic);
-      button.append(stats);
+      const tooltip = createIngredientTooltip(ingredient);
+      const syncFlip = (): void => {
+        updateTooltipFlip(button, tooltip);
+      };
+      button.addEventListener('mouseenter', syncFlip);
+      button.addEventListener('focusin', syncFlip);
+      button.append(tooltip);
     }
 
     item.append(button);

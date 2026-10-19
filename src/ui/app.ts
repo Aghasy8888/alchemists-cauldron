@@ -11,6 +11,7 @@ import { GAME_STATUS, type Difficulty, type IGameState } from '../data/types';
 import { renderBars } from './bars';
 import { renderActionControls } from './brew';
 import { renderCauldron } from './cauldron';
+import { setupCauldronDropZone } from './cauldron-drop';
 import { renderGameOver } from './game-over';
 import { renderHelp } from './help';
 import { renderHud } from './hud';
@@ -183,6 +184,10 @@ export function createApp(root: HTMLElement): void {
     onPause: pauseGame,
   });
 
+  let handleAddFromShelf: (ingredientId: string) => void = () => {
+    // assigned after render is defined
+  };
+
   const renderOverlay = (): void => {
     if (uiOverlay === clearConfirm) {
       overlaySlot.hidden = false;
@@ -289,15 +294,7 @@ export function createApp(root: HTMLElement): void {
       onOpenSettings: openSettings,
     });
     renderRecipePanel(recipeSlot, state);
-    renderShelf(shelfSlot, state, (ingredientId) => {
-      if (state.status !== playing) {
-        return;
-      }
-      lastOutcome = null;
-      state = applyEndChecks(addIngredient(state, ingredientId));
-      persistIfUnfinished();
-      render();
-    });
+    renderShelf(shelfSlot, state, handleAddFromShelf);
     renderCauldron(cauldronSlot, state);
     renderBars(barsSlot, state);
 
@@ -307,6 +304,22 @@ export function createApp(root: HTMLElement): void {
       timer.stop();
     }
   };
+
+  handleAddFromShelf = (ingredientId: string): void => {
+    if (state.status !== playing) {
+      return;
+    }
+    lastOutcome = null;
+    state = applyEndChecks(addIngredient(state, ingredientId));
+    persistIfUnfinished();
+    render();
+  };
+
+  setupCauldronDropZone(cauldronSlot, {
+    onDrop: (ingredientId) => {
+      handleAddFromShelf(ingredientId);
+    },
+  });
 
   render();
 }

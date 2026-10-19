@@ -8,7 +8,7 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
   grid-auto-rows: minmax(0, 1fr);
   gap: var(--size-05);
-  overflow: hidden;
+  overflow: visible;
 
   @include media-up('tablet') {
     gap: var(--size-1);
@@ -16,8 +16,15 @@
 }
 
 .shelf__item {
+  position: relative;
+  z-index: 0;
   min-height: 0;
   display: flex;
+
+  &:hover,
+  &:focus-within {
+    z-index: 4;
+  }
 }
 
 .shelf-card {
@@ -45,11 +52,21 @@
 
   @include hover {
     background-color: var(--color-surface);
+
+    .shelf-card__tooltip {
+      visibility: visible;
+      opacity: 1;
+    }
   }
 
   &:focus-visible {
     outline: var(--border-width-md) solid var(--color-tertiary);
     outline-offset: var(--size-05);
+
+    .shelf-card__tooltip {
+      visibility: visible;
+      opacity: 1;
+    }
   }
 
   &:active:not(:disabled) {
@@ -109,16 +126,61 @@
   }
 }
 
-.shelf-card__stats {
+.shelf-card__tooltip {
+  position: absolute;
+  top: 50%;
+  left: calc(100% + var(--size-05));
+  z-index: 5;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: var(--size-025);
-  font-size: var(--font-size-label-small);
-  line-height: 1.1;
+  flex-direction: column;
+  gap: var(--size-05);
+  min-width: space(18);
+  padding: var(--size-1);
+  border: var(--border-width) solid var(--color-outline);
+  border-radius: var(--corner-medium);
+  background-color: var(--color-white);
+  box-shadow: var(--shadow-level-1);
+  text-align: left;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-50%);
+}
 
-  @include media-up('tablet') {
-    gap: var(--size-05);
-    font-size: var(--font-size-label-small);
+.shelf-card__tooltip--left {
+  left: auto;
+  right: calc(100% + var(--size-05));
+}
+
+.shelf-card__tooltip--up {
+  top: auto;
+  bottom: calc(100% + var(--size-05));
+  transform: none;
+}
+
+.shelf-card__tooltip-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--size-1);
+  font-size: var(--font-size-label-small);
+  line-height: 1.2;
+}
+
+.shelf-card__tooltip-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--size-05);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-on-bg);
+
+  .param-icon {
+    font-size: var(--font-size-label-medium);
   }
+}
+
+.shelf-card__tooltip-value {
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }

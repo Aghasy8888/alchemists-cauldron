@@ -4,6 +4,7 @@ import { createIngredientIcon } from '../assets/ingredient-icons';
 import { isCauldronFull } from '../logic/add-ingredient';
 import { GAME_STATUS, type IGameState } from '../data/types';
 import { formatSigned } from '../utils/format-signed';
+import { DRAG_MIME } from './cauldron-drop';
 
 const { menu, playing } = GAME_STATUS;
 
@@ -60,10 +61,18 @@ export function renderShelf(
         !canAdd ? `${ingredient.name}, game not in play` : `${ingredient.name}, cauldron is full`,
       );
     } else {
+      button.draggable = true;
       button.setAttribute(
         'aria-label',
         `Add ${ingredient.name}, stock ${stock}, temperature ${formatSigned(ingredient.temperature)}, density ${formatSigned(ingredient.density)}, magic ${formatSigned(ingredient.magicPower)}`,
       );
+      button.addEventListener('dragstart', (event) => {
+        if (event.dataTransfer === null) {
+          return;
+        }
+        event.dataTransfer.setData(DRAG_MIME, ingredient.id);
+        event.dataTransfer.effectAllowed = 'copy';
+      });
       button.addEventListener('click', () => {
         onAdd(ingredient.id);
       });

@@ -102,6 +102,14 @@ $viewport-short-max-height: 700px; // no exact $breakpoints match (height MQ)
 
 .game__cauldron {
   grid-area: cauldron;
+  transition:
+    box-shadow 0.2s ease,
+    border-color 0.2s ease; // no exact $duration-* match
+}
+
+.game__cauldron--drop-target {
+  border-color: var(--color-param-zone);
+  box-shadow: 0 0 0 var(--border-width-md) var(--color-param-zone);
 }
 
 .game__recipe {

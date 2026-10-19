@@ -1,0 +1,91 @@
+@use '../functions' as *;
+
+.game__hud {
+  margin-top: var(--size-05);
+  min-height: var(--size-25);
+}
+
+.game__hud-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--size-2);
+}
+
+.game__hud-score {
+  font-size: var(--font-size-body-medium);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-tertiary);
+}
+
+.game__hud-time {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--size-05);
+  min-width: space(16);
+}
+
+.game__hud-time-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--size-05);
+  font-size: var(--font-size-body-medium);
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+}
+
+.game__hud-time-track {
+  height: var(--size-1);
+  overflow: hidden;
+  border: var(--border-width-xs) solid var(--color-outline);
+  border-radius: var(--corner-full);
+  background-color: var(--color-surface-low);
+}
+
+.game__hud-time-fill {
+  height: 100%;
+  border-radius: var(--corner-full);
+  background-color: var(--color-primary);
+  transition: width 0.2s linear; // no exact $duration-* match
+}
+
+.game__hud-time--urgent .game__hud-time-label {
+  color: var(--color-error);
+  animation: hud-time-pulse 1s ease-in-out infinite; // no exact $duration-* match
+}
+
+.game__hud-time--urgent .game__hud-time-fill {
+  background-color: var(--color-error);
+}
+
+@keyframes hud-time-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.55; // no exact $opacity-* match
+  }
+}
+
+.game__hud-lives {
+  display: flex;
+  align-items: center;
+  gap: var(--size-05);
+  color: var(--color-like);
+}
+
+.game__hud-lives-empty {
+  font-size: var(--font-size-label-large);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-on-bg-low);
+}
+
+.hud-icon {
+  display: block;
+  flex-shrink: 0;
+}

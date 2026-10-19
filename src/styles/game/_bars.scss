@@ -1,0 +1,168 @@
+@use 'sass:math';
+@use '../mixins' as *;
+@use './locals' as *;
+
+$opacity-zone: 0.55;
+$param-bar-fill-inset: 20%;
+$param-bar-motion: 0.35s ease; // no exact $duration-* match
+
+.bars__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-1);
+  min-height: 0;
+
+  @include media-up('tablet') {
+    gap: var(--size-2);
+  }
+}
+
+.param-bar__heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: var(--size-025);
+}
+
+.param-bar__body {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: var(--size-1);
+}
+
+.param-bar__label {
+  font-size: var(--font-size-label-medium);
+  font-weight: var(--font-weight-bold);
+
+  @include media-up('tablet') {
+    font-size: var(--font-size-label-large);
+  }
+}
+
+.param-bar__value {
+  font-size: var(--font-size-label-medium);
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+
+  @include media-up('tablet') {
+    font-size: var(--font-size-body-medium);
+  }
+}
+
+.param-bar__track {
+  position: relative;
+  height: var(--size-2);
+  overflow: hidden;
+  border: var(--border-width) solid var(--color-outline);
+  border-radius: var(--corner-full);
+  background-color: var(--color-surface-low);
+
+  @include media-up('tablet') {
+    height: var(--size-3);
+  }
+}
+
+.param-bar__track--temperature {
+  background: linear-gradient(
+    90deg,
+    var(--color-bar-temperature-start) 0%,
+    var(--color-bar-temperature-mid) 45%,
+    var(--color-param-temperature) 100%
+  );
+}
+
+.param-bar__track--density {
+  background: linear-gradient(
+    90deg,
+    var(--color-bar-density-start) 0%,
+    var(--color-bar-density-mid) 55%,
+    var(--color-bar-density-end) 100%
+  );
+}
+
+.param-bar__track--magic {
+  background: linear-gradient(
+    90deg,
+    var(--color-bar-magic-start) 0%,
+    var(--color-bar-magic-mid) 55%,
+    var(--color-param-magic-highlight) 100%
+  );
+}
+
+.param-bar__zero {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: var(--border-width);
+  transform: translateX(-50%);
+  background-color: var(--color-on-bg);
+  opacity: $opacity-muted;
+  z-index: 2;
+  pointer-events: none;
+  transition: left $param-bar-motion;
+}
+
+.param-bar__zone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: var(--corner-small);
+  background-color: var(--color-param-zone);
+  opacity: $opacity-zone;
+  z-index: 1;
+  pointer-events: none;
+  transition:
+    left $param-bar-motion,
+    width $param-bar-motion;
+}
+
+.param-bar__fill {
+  position: absolute;
+  top: $param-bar-fill-inset;
+  bottom: $param-bar-fill-inset;
+  border-radius: var(--corner-full);
+  background-color: color-mix(
+    in srgb,
+    var(--color-white) #{math.percentage($opacity-muted)},
+    transparent
+  );
+  z-index: 2;
+  pointer-events: none;
+  transition:
+    left $param-bar-motion,
+    width $param-bar-motion;
+}
+
+.param-bar__marker {
+  position: absolute;
+  top: 50%;
+  width: var(--size-1);
+  height: var(--size-1);
+  border: var(--border-width) solid var(--color-on-primary);
+  border-radius: var(--corner-full);
+  background-color: var(--color-primary);
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  pointer-events: none;
+  transition: left $param-bar-motion;
+
+  @include media-up('tablet') {
+    width: var(--size-125);
+    height: var(--size-125);
+  }
+}
+
+.param-bar--in-zone .param-bar__track {
+  box-shadow: 0 0 0 var(--border-width-md)
+    color-mix(in srgb, var(--color-param-zone) #{math.percentage($opacity-zone)}, transparent);
+}
+
+.param-bar--in-zone .param-bar__marker {
+  background-color: var(--color-param-zone);
+  border-color: var(--color-param-zone-strong);
+}
+
+.param-bar--in-zone .param-bar__value {
+  color: var(--color-param-zone-strong);
+}

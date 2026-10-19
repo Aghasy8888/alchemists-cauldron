@@ -36,5 +36,22 @@ export const DIFFICULTY_CONFIG: Record<Difficulty, IDifficultyConfig> = {
   },
 };
 
-/** Level 1 always uses Medium. */
+/** Default / Level 1 difficulty (Medium). */
 export const LEVEL_1_DIFFICULTY: Difficulty = medium;
+
+const DIFFICULTY_LABEL: Record<Difficulty, string> = {
+  [easy]: 'Easy',
+  [medium]: 'Medium',
+  [hard]: 'Hard',
+};
+
+/** Short display name for a difficulty. */
+export function difficultyLabel(difficulty: Difficulty): string {
+  return DIFFICULTY_LABEL[difficulty];
+}
+
+/** Settings button text built from `DIFFICULTY_CONFIG`. */
+export function difficultyButtonLabel(difficulty: Difficulty): string {
+  const config = DIFFICULTY_CONFIG[difficulty];
+  return `${DIFFICULTY_LABEL[difficulty]} — ${config.startingTime}s · ${config.lives} lives`;
+}

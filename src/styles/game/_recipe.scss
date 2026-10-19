@@ -1,0 +1,66 @@
+@use '../mixins' as *;
+
+.recipe-panel__counter {
+  flex-shrink: 0;
+  font-size: var(--font-size-body-medium);
+  font-weight: var(--font-weight-medium);
+
+  @include media-up('tablet') {
+    font-size: var(--font-size-body-large);
+  }
+}
+
+.recipe-panel__counter--full {
+  color: var(--color-tertiary);
+  font-weight: var(--font-weight-bold);
+}
+
+.recipe-panel__name {
+  flex-shrink: 0;
+  margin-top: var(--size-05);
+  font-size: var(--font-size-body-medium);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-tertiary);
+  line-height: 1.2;
+
+  @include media-up('tablet') {
+    font-size: var(--font-size-body-large);
+  }
+}
+
+.recipe-panel__ranges {
+  flex-shrink: 0;
+  margin-top: var(--size-05);
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-025);
+  font-size: var(--font-size-label-small);
+
+  @include media-up('tablet') {
+    gap: var(--size-05);
+    font-size: var(--font-size-body-small);
+  }
+}
+
+.recipe-panel__range {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  column-gap: var(--size-05);
+  padding-block: var(--size-025);
+  border-bottom: var(--border-width) solid var(--color-outline);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.recipe-panel__range-label {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-on-bg);
+}
+
+.recipe-panel__range-value {
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+}

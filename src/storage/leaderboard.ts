@@ -1,13 +1,27 @@
+import { DIFFICULTY, type Difficulty } from '../data/types';
 import { normalizePlayerName } from '../utils/player-name';
 
-export const LEADERBOARD_STORAGE_KEY = 'alchemists-cauldron:leaderboard';
+const { easy, medium, hard } = DIFFICULTY;
+
+const LEGACY_LEADERBOARD_KEY = 'alchemists-cauldron:leaderboard';
 
 export const LEADERBOARD_MAX_ENTRIES = 10;
+
+const ALL_DIFFICULTIES: readonly Difficulty[] = [easy, medium, hard];
 
 export interface ILeaderboardEntry {
   name: string;
   score: number;
   createdAt: number;
+}
+
+/** Entry with difficulty for the merged leaderboard table. */
+export interface ILeaderboardRow extends ILeaderboardEntry {
+  difficulty: Difficulty;
+}
+
+export function leaderboardStorageKey(difficulty: Difficulty): string {
+  return `alchemists-cauldron:leaderboard:${difficulty}`;
 }
 
 function isLeaderboardEntry(value: unknown): value is ILeaderboardEntry {
@@ -53,30 +67,29 @@ export function qualifiesForLeaderboard(
   return score > lowest.score;
 }
 
-function persistEntries(entries: ILeaderboardEntry[]): void {
+function persistEntries(difficulty: Difficulty, entries: ILeaderboardEntry[]): void {
   try {
-    localStorage.setItem(LEADERBOARD_STORAGE_KEY, JSON.stringify(entries));
+    localStorage.setItem(leaderboardStorageKey(difficulty), JSON.stringify(entries));
   } catch {
     // Storage full or blocked — keep UI running without crashing.
   }
 }
 
-/** Load Top-10; broken / missing data yields `[]` and clears the bad key. */
-export function loadLeaderboard(): ILeaderboardEntry[] {
+function readEntriesFromKey(key: string): ILeaderboardEntry[] | null {
   try {
-    const raw = localStorage.getItem(LEADERBOARD_STORAGE_KEY);
+    const raw = localStorage.getItem(key);
     if (raw === null) {
-      return [];
+      return null;
     }
     const data: unknown = JSON.parse(raw);
     if (!isLeaderboardArray(data)) {
-      localStorage.removeItem(LEADERBOARD_STORAGE_KEY);
+      localStorage.removeItem(key);
       return [];
     }
     return sortLeaderboardEntries(data).slice(0, LEADERBOARD_MAX_ENTRIES);
   } catch {
     try {
-      localStorage.removeItem(LEADERBOARD_STORAGE_KEY);
+      localStorage.removeItem(key);
     } catch {
       // ignore remove failures
     }
@@ -84,21 +97,80 @@ export function loadLeaderboard(): ILeaderboardEntry[] {
   }
 }
 
-export function clearLeaderboard(): void {
+/** Migrate Level-1 single-key board into the Medium key once. */
+function migrateLegacyLeaderboard(): void {
   try {
-    localStorage.removeItem(LEADERBOARD_STORAGE_KEY);
+    const legacy = localStorage.getItem(LEGACY_LEADERBOARD_KEY);
+    if (legacy === null) {
+      return;
+    }
+    const mediumKey = leaderboardStorageKey(medium);
+    const existingMedium = localStorage.getItem(mediumKey);
+    if (existingMedium === null) {
+      const parsed = readEntriesFromKey(LEGACY_LEADERBOARD_KEY);
+      if (parsed !== null && parsed.length > 0) {
+        persistEntries(medium, parsed);
+      }
+    }
+    localStorage.removeItem(LEGACY_LEADERBOARD_KEY);
+  } catch {
+    try {
+      localStorage.removeItem(LEGACY_LEADERBOARD_KEY);
+    } catch {
+      // ignore
+    }
+  }
+}
+
+/** Load Top-10 for one difficulty; broken / missing data yields `[]`. */
+export function loadLeaderboard(difficulty: Difficulty): ILeaderboardEntry[] {
+  migrateLegacyLeaderboard();
+  const loaded = readEntriesFromKey(leaderboardStorageKey(difficulty));
+  return loaded ?? [];
+}
+
+/** Merge all difficulty boards for the table (each row tagged with difficulty). */
+export function loadAllLeaderboards(): ILeaderboardRow[] {
+  migrateLegacyLeaderboard();
+  const rows: ILeaderboardRow[] = [];
+  for (const difficulty of ALL_DIFFICULTIES) {
+    for (const entry of loadLeaderboard(difficulty)) {
+      rows.push({ ...entry, difficulty });
+    }
+  }
+  return [...rows].sort((a, b) => {
+    if (b.score !== a.score) {
+      return b.score - a.score;
+    }
+    return a.createdAt - b.createdAt;
+  });
+}
+
+/** Clear all per-difficulty leaderboard keys. */
+export function clearLeaderboard(): void {
+  migrateLegacyLeaderboard();
+  for (const difficulty of ALL_DIFFICULTIES) {
+    try {
+      localStorage.removeItem(leaderboardStorageKey(difficulty));
+    } catch {
+      // ignore
+    }
+  }
+  try {
+    localStorage.removeItem(LEGACY_LEADERBOARD_KEY);
   } catch {
     // ignore
   }
 }
 
 /**
- * Validate name, insert score, sort, trim to Top-10, save.
- * Returns the updated list, or null if the name is invalid.
+ * Validate name, insert into the difficulty board, sort, trim to Top-10, save.
+ * Returns the updated list for that difficulty, or null if the name is invalid.
  */
 export function addLeaderboardEntry(
   name: string,
   score: number,
+  difficulty: Difficulty,
   createdAt: number = Date.now(),
 ): ILeaderboardEntry[] | null {
   const normalized = normalizePlayerName(name);
@@ -106,9 +178,9 @@ export function addLeaderboardEntry(
     return null;
   }
 
-  const entries = loadLeaderboard();
+  const entries = loadLeaderboard(difficulty);
   entries.push({ name: normalized, score, createdAt });
   const next = sortLeaderboardEntries(entries).slice(0, LEADERBOARD_MAX_ENTRIES);
-  persistEntries(next);
+  persistEntries(difficulty, next);
   return next;
 }

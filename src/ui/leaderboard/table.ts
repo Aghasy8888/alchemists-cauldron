@@ -1,7 +1,8 @@
+import { difficultyLabel } from '../../data/difficulty';
+import type { ILeaderboardRow } from '../../storage/leaderboard';
 import { formatLeaderboardDate } from '../../utils/format-date';
-import type { ILeaderboardEntry } from '../../storage/leaderboard';
 
-export function createTable(entries: readonly ILeaderboardEntry[]): HTMLElement {
+export function createTable(entries: readonly ILeaderboardRow[]): HTMLElement {
   if (entries.length === 0) {
     const empty = document.createElement('p');
     empty.className = 'leaderboard__empty';
@@ -11,11 +12,11 @@ export function createTable(entries: readonly ILeaderboardEntry[]): HTMLElement 
 
   const table = document.createElement('table');
   table.className = 'leaderboard__table';
-  table.setAttribute('aria-label', 'Top 10 leaderboard');
+  table.setAttribute('aria-label', 'Top players leaderboard');
 
   const thead = document.createElement('thead');
   const headRow = document.createElement('tr');
-  for (const label of ['Rank', 'Name', 'Score', 'Date']) {
+  for (const label of ['Rank', 'Name', 'Score', 'Difficulty', 'Date']) {
     const th = document.createElement('th');
     th.scope = 'col';
     th.textContent = label;
@@ -36,10 +37,13 @@ export function createTable(entries: readonly ILeaderboardEntry[]): HTMLElement 
     const score = document.createElement('td');
     score.textContent = String(entry.score);
 
+    const difficulty = document.createElement('td');
+    difficulty.textContent = difficultyLabel(entry.difficulty);
+
     const date = document.createElement('td');
     date.textContent = formatLeaderboardDate(entry.createdAt);
 
-    row.append(rank, name, score, date);
+    row.append(rank, name, score, difficulty, date);
     tbody.append(row);
   });
 

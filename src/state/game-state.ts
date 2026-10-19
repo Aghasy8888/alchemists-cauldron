@@ -3,11 +3,11 @@ import { getShelfIngredients } from '../data/ingredients';
 import { pickRandomRecipe } from '../logic/recipe-generator';
 import { createStock } from '../logic/stock';
 import { createEndTime } from '../logic/timer';
-import { GAME_STATUS, type IGameState } from '../data/types';
+import { GAME_STATUS, type Difficulty, type IGameState } from '../data/types';
 
 const { menu, playing } = GAME_STATUS;
 
-export function createMenuState(): IGameState {
+export function createMenuState(difficulty: Difficulty = LEVEL_1_DIFFICULTY): IGameState {
   return {
     status: menu,
     score: 0,
@@ -17,13 +17,13 @@ export function createMenuState(): IGameState {
     activeRecipe: null,
     cauldronIngredients: [],
     shelfStock: {},
-    difficulty: LEVEL_1_DIFFICULTY,
+    difficulty,
     lastReactionId: null,
     gameOverReason: null,
   };
 }
 
-/** Starts a new Level 1 run: Medium rules, random stock, empty cauldron, random recipe. */
+/** Starts a new run from the current difficulty: random stock, empty cauldron, random recipe. */
 export function startNewGame(previous: IGameState = createMenuState()): IGameState {
   const difficulty = previous.difficulty;
   const config = DIFFICULTY_CONFIG[difficulty];

@@ -1,7 +1,12 @@
+import type { Difficulty } from '../../data/types';
 import { addLeaderboardEntry } from '../../storage/leaderboard';
 import { isValidPlayerName } from '../../utils/player-name';
 
-export function createNameEntry(score: number, onSubmitScore: () => void): HTMLElement {
+export function createNameEntry(
+  score: number,
+  difficulty: Difficulty,
+  onSubmitScore: () => void,
+): HTMLElement {
   const form = document.createElement('form');
   form.className = 'game-over__name-form';
   form.setAttribute('novalidate', '');
@@ -48,7 +53,7 @@ export function createNameEntry(score: number, onSubmitScore: () => void): HTMLE
       submit.disabled = true;
       return;
     }
-    const saved = addLeaderboardEntry(input.value, score);
+    const saved = addLeaderboardEntry(input.value, score, difficulty);
     if (saved === null) {
       error.hidden = false;
       return;

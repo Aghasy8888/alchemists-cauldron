@@ -1,0 +1,63 @@
+@use '../mixins' as *;
+
+.cauldron__list {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-05);
+  overflow: hidden;
+
+  @include media-up('tablet') {
+    gap: var(--size-1);
+  }
+}
+
+.cauldron__item {
+  display: grid;
+  flex: 1 1 0;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  column-gap: var(--size-05);
+  align-items: center;
+  min-height: 0;
+  padding: var(--size-05);
+  border: var(--border-width) solid var(--color-outline);
+  border-radius: var(--corner-medium);
+  background-color: var(--color-surface-low);
+
+  @include media-up('tablet') {
+    column-gap: var(--size-1);
+    padding: var(--size-1);
+  }
+}
+
+.cauldron__icon {
+  grid-row: 1 / span 2;
+  display: flex;
+  min-height: 0;
+}
+
+.cauldron__name {
+  font-size: var(--font-size-label-medium);
+  font-weight: var(--font-weight-medium);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  @include media-up('tablet') {
+    font-size: var(--font-size-body-medium);
+  }
+}
+
+.cauldron__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--size-025);
+  font-size: var(--font-size-label-small);
+
+  @include media-up('tablet') {
+    gap: var(--size-05);
+    font-size: var(--font-size-label-small);
+  }
+}

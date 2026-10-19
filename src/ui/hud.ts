@@ -6,17 +6,34 @@ import { formatTime } from '../utils/format-time';
 
 const { menu, playing } = GAME_STATUS;
 
-/** HUD during play / game-over: score, time (MM:SS + bar), lives. */
+/** HUD: on menu show Score 0 / Time 00:00 (no lives); otherwise score, time, lives. */
 export function renderHud(container: HTMLElement, state: IGameState): void {
   container.replaceChildren();
 
+  const row = document.createElement('div');
+  row.className = 'game__hud-row';
+
   if (state.status === menu) {
+    const score = document.createElement('p');
+    score.className = 'game__hud-score';
+    score.textContent = 'Score: 0';
+
+    const timeBlock = document.createElement('div');
+    timeBlock.className = 'game__hud-time';
+    const timeLabel = document.createElement('div');
+    timeLabel.className = 'game__hud-time-label';
+    timeLabel.append(createClockIcon());
+    const timeText = document.createElement('span');
+    timeText.textContent = formatTime(0);
+    timeLabel.append(timeText);
+    timeBlock.append(timeLabel);
+
+    row.append(score, timeBlock);
+    container.append(row);
     return;
   }
 
   const config = DIFFICULTY_CONFIG[state.difficulty];
-  const row = document.createElement('div');
-  row.className = 'game__hud-row';
 
   const score = document.createElement('p');
   score.className = 'game__hud-score';

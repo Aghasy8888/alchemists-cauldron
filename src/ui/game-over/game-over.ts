@@ -34,7 +34,7 @@ export function renderGameOver(
   dialog.append(title, reason, score);
 
   if (options.showNameEntry) {
-    dialog.append(createNameEntry(state.score, options.onSubmitScore));
+    dialog.append(createNameEntry(state.score, state.difficulty, options.onSubmitScore));
   }
 
   const actions = document.createElement('div');

@@ -1,5 +1,6 @@
+import { difficultyLabel } from '../data/difficulty';
 import { BREW_OUTCOME, type BrewOutcome } from '../logic/brew';
-import { GAME_STATUS, type GameStatus } from '../data/types';
+import { GAME_STATUS, type Difficulty, type GameStatus } from '../data/types';
 
 const { menu, playing } = GAME_STATUS;
 const { success, failure } = BREW_OUTCOME;
@@ -18,25 +19,52 @@ export function renderActionControls(
   container: HTMLElement,
   options: {
     status: GameStatus;
+    difficulty: Difficulty;
     canBrew: boolean;
     lastOutcome: BrewOutcome | null;
     onStart: () => void;
     onBrew: () => void;
     onPause: () => void;
     onOpenLeaderboard: () => void;
+    onOpenHelp: () => void;
+    onOpenSettings: () => void;
   },
 ): void {
   container.replaceChildren();
 
   if (options.status === menu) {
-    const row = document.createElement('div');
-    row.className = 'brew-controls__row';
+    const wrap = document.createElement('div');
+    wrap.className = 'menu-controls';
 
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.className = 'game__start';
-    button.textContent = 'Start Game';
-    button.addEventListener('click', options.onStart);
+    const difficultyNote = document.createElement('p');
+    difficultyNote.className = 'menu-controls__difficulty';
+    difficultyNote.textContent = `Difficulty: ${difficultyLabel(options.difficulty)}`;
+
+    const primary = document.createElement('div');
+    primary.className = 'brew-controls__row';
+
+    const start = document.createElement('button');
+    start.type = 'button';
+    start.className = 'game__start';
+    start.textContent = 'Start Game';
+    start.addEventListener('click', options.onStart);
+
+    const settings = document.createElement('button');
+    settings.type = 'button';
+    settings.className = 'game__settings';
+    settings.textContent = 'Settings';
+    settings.addEventListener('click', options.onOpenSettings);
+
+    primary.append(start, settings);
+
+    const secondary = document.createElement('div');
+    secondary.className = 'brew-controls__row';
+
+    const help = document.createElement('button');
+    help.type = 'button';
+    help.className = 'game__help';
+    help.textContent = 'Help';
+    help.addEventListener('click', options.onOpenHelp);
 
     const leaderboard = document.createElement('button');
     leaderboard.type = 'button';
@@ -44,8 +72,9 @@ export function renderActionControls(
     leaderboard.textContent = 'Leaderboard';
     leaderboard.addEventListener('click', options.onOpenLeaderboard);
 
-    row.append(button, leaderboard);
-    container.append(row);
+    secondary.append(help, leaderboard);
+    wrap.append(difficultyNote, primary, secondary);
+    container.append(wrap);
     return;
   }
 

@@ -1,0 +1,109 @@
+@use '../mixins' as *;
+@use '../functions' as *;
+@use './locals' as *;
+
+$brew-status-motion: 0.45s ease-out; // no exact $duration-* match
+
+.game__actions {
+  display: flex;
+  flex-shrink: 0;
+  justify-content: center;
+  margin-top: var(--size-1);
+  min-height: space(5);
+}
+
+.brew-controls,
+.menu-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--size-05);
+}
+
+.menu-controls {
+  gap: var(--size-1);
+}
+
+.menu-controls__difficulty {
+  margin: 0;
+  font-size: var(--font-size-body-small);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-on-bg);
+}
+
+.brew-controls__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--size-1);
+}
+
+.game__start,
+.game__leaderboard,
+.game__help,
+.game__settings,
+.brew-controls__button,
+.brew-controls__pause {
+  cursor: pointer;
+  padding: var(--btn-padding-small);
+  border: var(--border-width) solid var(--color-outline);
+  border-radius: var(--corner-medium);
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  font-weight: var(--font-weight-bold);
+
+  @include media-up('tablet') {
+    padding: var(--btn-padding-medium);
+  }
+
+  @include hover {
+    background-color: var(--color-primary-high);
+  }
+
+  &:focus-visible {
+    outline: var(--border-width-md) solid var(--color-tertiary);
+    outline-offset: var(--size-05);
+  }
+
+  &:active:not(:disabled) {
+    background-color: var(--color-primary-high);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: $opacity-disabled;
+  }
+}
+
+@keyframes brew-status-pulse {
+  0% {
+    opacity: 0;
+    transform: scale(0.96); // no exact $size-* match
+  }
+
+  40% {
+    opacity: 1;
+    transform: scale(1.03); // no exact $size-* match
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.brew-controls__status {
+  margin: 0;
+  font-size: var(--font-size-body-small);
+  font-weight: var(--font-weight-medium);
+  animation: brew-status-pulse $brew-status-motion;
+}
+
+.brew-controls__status--success {
+  color: var(--color-param-zone-strong);
+}
+
+.brew-controls__status--failure {
+  color: var(--color-error);
+}

@@ -1,0 +1,120 @@
+@use '../mixins' as *;
+@use '../functions' as *;
+@use './locals' as *;
+
+.game-over,
+.pause-dialog,
+.leaderboard,
+.leaderboard-confirm,
+.help-dialog,
+.settings-dialog {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--size-2);
+  max-width: space(40);
+  width: 100%;
+  padding: var(--size-3);
+  border: var(--border-width) solid var(--color-outline);
+  border-radius: var(--corner-large);
+  background-color: var(--color-white);
+  text-align: center;
+}
+
+.leaderboard,
+.help-dialog {
+  max-width: space(56);
+  max-height: 100%;
+  overflow: auto;
+}
+
+.game-over__title,
+.pause-dialog__title,
+.leaderboard__title,
+.leaderboard-confirm__title,
+.help-dialog__title,
+.settings-dialog__title {
+  font-size: var(--font-size-headline-small);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-on-bg);
+}
+
+.game-over__actions,
+.pause-dialog__actions,
+.leaderboard__actions,
+.leaderboard-confirm__actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-1);
+  width: 100%;
+}
+
+.game-over__play-again,
+.game-over__leaderboard,
+.game-over__submit,
+.pause-dialog__button,
+.leaderboard__button,
+.leaderboard-confirm__button,
+.help-dialog__button,
+.settings-dialog__button,
+.settings-dialog__option {
+  cursor: pointer;
+  padding: var(--btn-padding-medium);
+  border: var(--border-width) solid var(--color-outline);
+  border-radius: var(--corner-medium);
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  font-weight: var(--font-weight-bold);
+
+  @include hover {
+    background-color: var(--color-primary-high);
+  }
+
+  &:focus-visible {
+    outline: var(--border-width-md) solid var(--color-tertiary);
+    outline-offset: var(--size-05);
+  }
+
+  &:active:not(:disabled) {
+    background-color: var(--color-primary-high);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: $opacity-disabled;
+  }
+}
+
+.pause-dialog__button--exit,
+.game-over__leaderboard,
+.leaderboard__button--back,
+.leaderboard-confirm__button--cancel,
+.help-dialog__button,
+.settings-dialog__button {
+  background-color: var(--color-surface-low);
+  color: var(--color-on-bg);
+
+  @include hover {
+    background-color: var(--color-surface);
+  }
+
+  &:active:not(:disabled) {
+    background-color: var(--color-surface);
+  }
+}
+
+.settings-dialog__option--selected {
+  outline: var(--border-width-md) solid var(--color-tertiary);
+  outline-offset: var(--size-05);
+}
+
+.leaderboard__button--clear,
+.leaderboard-confirm__button--confirm {
+  background-color: var(--color-error);
+  color: var(--color-on-primary);
+
+  @include hover {
+    background-color: var(--color-error);
+    filter: brightness(0.92); // no exact $opacity-* match
+  }
+}

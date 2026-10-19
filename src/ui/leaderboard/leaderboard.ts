@@ -1,4 +1,4 @@
-import { loadLeaderboard } from '../../storage/leaderboard';
+import { loadAllLeaderboards } from '../../storage/leaderboard';
 import { createTable } from './table';
 
 export function renderLeaderboard(
@@ -21,7 +21,7 @@ export function renderLeaderboard(
   title.className = 'leaderboard__title';
   title.textContent = 'Top Alchemists';
 
-  const entries = loadLeaderboard();
+  const entries = loadAllLeaderboards();
   dialog.append(title, createTable(entries));
 
   const actions = document.createElement('div');

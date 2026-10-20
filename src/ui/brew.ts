@@ -1,3 +1,4 @@
+import { createUiIcon, type UiIconId } from '../assets/ui-icons';
 import { difficultyLabel } from '../data/difficulty';
 import { BREW_OUTCOME, type BrewOutcome } from '../logic/brew';
 import { GAME_STATUS, type Difficulty, type GameStatus } from '../data/types';
@@ -14,6 +15,31 @@ const BREW_STATUS_MESSAGE = {
   [success]: 'Brew succeeded!',
   [failure]: 'Brew failed — mixture was off.',
 } as const;
+
+function createMenuButton(options: {
+  className: string;
+  label: string;
+  icon: UiIconId;
+  onClick: () => void;
+  variant: 'primary' | 'continue' | 'chrome';
+}): HTMLButtonElement {
+  const { className, label, icon, onClick, variant } = options;
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = `menu-controls__btn menu-controls__btn--${variant} ${className}`;
+
+  const iconWrap = document.createElement('span');
+  iconWrap.className = 'menu-controls__btn-icon';
+  iconWrap.append(createUiIcon(icon));
+
+  const text = document.createElement('span');
+  text.className = 'menu-controls__btn-label';
+  text.textContent = label;
+
+  button.append(iconWrap, text);
+  button.addEventListener('click', onClick);
+  return button;
+}
 
 export function renderActionControls(
   container: HTMLElement,
@@ -45,48 +71,60 @@ export function renderActionControls(
     difficultyNote.textContent = `Difficulty: ${difficultyLabel(options.difficulty)}`;
 
     const primary = document.createElement('div');
-    primary.className = 'brew-controls__row';
-
-    const start = document.createElement('button');
-    start.type = 'button';
-    start.className = 'game__start';
-    start.textContent = 'Start Game';
-    start.addEventListener('click', options.onStart);
-    primary.append(start);
-
+    primary.className = 'menu-controls__primary';
     if (options.canContinue) {
-      const continueBtn = document.createElement('button');
-      continueBtn.type = 'button';
-      continueBtn.className = 'game__continue';
-      continueBtn.textContent = 'Continue Game';
-      continueBtn.addEventListener('click', options.onContinue);
-      primary.append(continueBtn);
+      primary.classList.add('menu-controls__primary--split');
     }
 
-    const settings = document.createElement('button');
-    settings.type = 'button';
-    settings.className = 'game__settings';
-    settings.textContent = 'Settings';
-    settings.addEventListener('click', options.onOpenSettings);
-    primary.append(settings);
+    primary.append(
+      createMenuButton({
+        className: 'game__start',
+        label: 'Start Game',
+        icon: 'play',
+        onClick: options.onStart,
+        variant: 'primary',
+      }),
+    );
 
-    const secondary = document.createElement('div');
-    secondary.className = 'brew-controls__row';
+    if (options.canContinue) {
+      primary.append(
+        createMenuButton({
+          className: 'game__continue',
+          label: 'Continue',
+          icon: 'continue',
+          onClick: options.onContinue,
+          variant: 'continue',
+        }),
+      );
+    }
 
-    const help = document.createElement('button');
-    help.type = 'button';
-    help.className = 'game__help';
-    help.textContent = 'Help';
-    help.addEventListener('click', options.onOpenHelp);
+    const chrome = document.createElement('div');
+    chrome.className = 'menu-controls__chrome';
+    chrome.append(
+      createMenuButton({
+        className: 'game__settings',
+        label: 'Settings',
+        icon: 'settings',
+        onClick: options.onOpenSettings,
+        variant: 'chrome',
+      }),
+      createMenuButton({
+        className: 'game__help',
+        label: 'Help',
+        icon: 'help',
+        onClick: options.onOpenHelp,
+        variant: 'chrome',
+      }),
+      createMenuButton({
+        className: 'game__leaderboard',
+        label: 'Leaderboard',
+        icon: 'leaderboard',
+        onClick: options.onOpenLeaderboard,
+        variant: 'chrome',
+      }),
+    );
 
-    const leaderboard = document.createElement('button');
-    leaderboard.type = 'button';
-    leaderboard.className = 'game__leaderboard';
-    leaderboard.textContent = 'Leaderboard';
-    leaderboard.addEventListener('click', options.onOpenLeaderboard);
-
-    secondary.append(help, leaderboard);
-    wrap.append(difficultyNote, primary, secondary);
+    wrap.append(difficultyNote, primary, chrome);
     container.append(wrap);
     return;
   }

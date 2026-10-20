@@ -165,3 +165,27 @@ $opacity-icon-highlight: 0.85; // no exact $opacity-* match
     fill: var(--color-param-magic-highlight);
   }
 }
+
+.ui-icon {
+  display: block;
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+  line-height: 0;
+}
+
+.ui-icon__svg {
+  display: block;
+  width: 1em;
+  height: 1em;
+}
+
+.ui-icon__glyph {
+  fill: currentColor;
+  stroke: currentColor;
+}
+
+.ui-icon--continue .ui-icon__glyph,
+.ui-icon--help .ui-icon__glyph {
+  fill: none;
+}

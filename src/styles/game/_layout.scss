@@ -187,9 +187,7 @@ $ambient-glow-size: 55%; // no exact $size-* match
 }
 
 .shelf__title,
-.cauldron__title,
-.recipe-panel__title,
-.bars__title {
+.recipe-panel__title {
   flex-shrink: 0;
   margin-bottom: var(--size-1);
   font-size: var(--font-size-body-large);
@@ -233,9 +231,7 @@ $ambient-glow-size: 55%; // no exact $size-* match
   }
 
   .shelf__title,
-  .cauldron__title,
-  .recipe-panel__title,
-  .bars__title {
+  .recipe-panel__title {
     margin-bottom: var(--size-05);
     font-size: var(--font-size-body-medium);
   }

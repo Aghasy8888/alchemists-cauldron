@@ -6,11 +6,6 @@ const { menu } = GAME_STATUS;
 export function renderCauldron(container: HTMLElement, state: IGameState): void {
   container.replaceChildren();
 
-  const title = document.createElement('h2');
-  title.className = 'cauldron__title';
-  title.textContent = 'Cauldron';
-  container.append(title);
-
   const pot = document.createElement('div');
   pot.className = 'cauldron__pot';
 

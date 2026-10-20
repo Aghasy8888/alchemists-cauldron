@@ -26,11 +26,6 @@ export function ensureStructure(container: HTMLElement): HTMLElement {
 
   container.replaceChildren();
 
-  const title = document.createElement('h2');
-  title.className = 'bars__title';
-  title.textContent = 'Cauldron Parameters';
-  container.append(title);
-
   list = document.createElement('div');
   list.className = 'bars__list';
 

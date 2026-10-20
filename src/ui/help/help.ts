@@ -25,6 +25,7 @@ export function renderHelp(container: HTMLElement, onBack: () => void): void {
     'Watch the parameter bars — green means you are in the target zone.',
     'Press Brew to check your mixture. Success scores points and a time bonus; failure costs a life.',
     'Pour Out clears a wrong mixture for 10 seconds — no life lost, and shelf stock is not returned.',
+    'While playing: Esc or P pauses, B brews, O pours out, and keys 1–8 add shelf ingredients. Resume with the Resume button.',
     'The cauldron clears after every brew; shelf stock is not restored.',
     'Game ends when time runs out, lives reach zero, or ingredients run out.',
     'Choose difficulty in Settings before you start. You cannot change it mid-run.',

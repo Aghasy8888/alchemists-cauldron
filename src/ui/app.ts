@@ -1,4 +1,5 @@
 import { useGameTimer } from '../hooks/use-game-timer';
+import { useKeyboardShortcuts } from '../hooks/use-keyboard-shortcuts';
 import { useVisibilityPause } from '../hooks/use-visibility-pause';
 import { addIngredient } from '../logic/add-ingredient';
 import { BREW_OUTCOME, brew, type BrewOutcome } from '../logic/brew';
@@ -10,6 +11,7 @@ import { createMenuState, startNewGame } from '../state/game-state';
 import { loadLeaderboard, qualifiesForLeaderboard } from '../storage/leaderboard';
 import { clearSave, continueSavedGame, hasContinuableSave, saveGame } from '../storage/save';
 import { DIFFICULTY_CONFIG } from '../data/difficulty';
+import { getShelfIngredients } from '../data/ingredients';
 import { GAME_STATUS, type Difficulty, type IGameState } from '../data/types';
 import { renderBars } from './bars';
 import { renderActionControls } from './brew';
@@ -152,6 +154,30 @@ export function createApp(root: HTMLElement): void {
     render();
   };
 
+  const brewGame = (): void => {
+    if (state.status !== playing) {
+      return;
+    }
+    const result = brew(state);
+    state = result.state;
+    lastOutcome = result.outcome;
+    persistIfUnfinished();
+    render();
+    const timeBonusSec =
+      result.outcome === success ? DIFFICULTY_CONFIG[state.difficulty].timeBonusPerBrew : 0;
+    playBrewFx(cauldronSlot, board, result.outcome, timeBonusSec);
+  };
+
+  const pourOutGame = (): void => {
+    if (state.status !== playing) {
+      return;
+    }
+    lastOutcome = null;
+    state = pourOut(state);
+    persistIfUnfinished();
+    render();
+  };
+
   const resumeGame = (): void => {
     if (state.status !== paused) {
       return;
@@ -286,28 +312,8 @@ export function createApp(root: HTMLElement): void {
         render();
       },
       onContinue: continueGame,
-      onBrew: () => {
-        if (state.status !== playing) {
-          return;
-        }
-        const result = brew(state);
-        state = result.state;
-        lastOutcome = result.outcome;
-        persistIfUnfinished();
-        render();
-        const timeBonusSec =
-          result.outcome === success ? DIFFICULTY_CONFIG[state.difficulty].timeBonusPerBrew : 0;
-        playBrewFx(cauldronSlot, board, result.outcome, timeBonusSec);
-      },
-      onPourOut: () => {
-        if (state.status !== playing) {
-          return;
-        }
-        lastOutcome = null;
-        state = pourOut(state);
-        persistIfUnfinished();
-        render();
-      },
+      onBrew: brewGame,
+      onPourOut: pourOutGame,
       onPause: pauseGame,
       onOpenLeaderboard: openLeaderboard,
       onOpenHelp: openHelp,
@@ -339,6 +345,25 @@ export function createApp(root: HTMLElement): void {
     persistIfUnfinished();
     render();
   };
+
+  const addShelfByIndex = (index: number): void => {
+    const count = DIFFICULTY_CONFIG[state.difficulty].shelfIngredientCount;
+    const shelf = getShelfIngredients(count);
+    const ingredient = shelf[index];
+    if (ingredient === undefined) {
+      return;
+    }
+    handleAddFromShelf(ingredient.id);
+  };
+
+  useKeyboardShortcuts({
+    getStatus: () => state.status,
+    isOverlayOpen: () => uiOverlay !== none,
+    onPause: pauseGame,
+    onBrew: brewGame,
+    onPourOut: pourOutGame,
+    onAddShelfIndex: addShelfByIndex,
+  });
 
   setupCauldronDropZone(cauldronSlot, {
     onDrop: (ingredientId) => {

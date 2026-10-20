@@ -28,7 +28,7 @@ $brew-status-motion: 0.45s ease-out; // no exact $duration-* match
   margin: 0;
   font-size: var(--font-size-body-small);
   font-weight: var(--font-weight-medium);
-  color: var(--color-on-bg);
+  color: var(--color-on-bg-low);
 }
 
 .brew-controls__row {
@@ -49,32 +49,47 @@ $brew-status-motion: 0.45s ease-out; // no exact $duration-* match
 .brew-controls__pause {
   cursor: pointer;
   padding: var(--btn-padding-small);
-  border: var(--border-width) solid var(--color-outline);
+  border: var(--border-width) solid var(--color-primary-high);
   border-radius: var(--corner-medium);
   background-color: var(--color-primary);
   color: var(--color-on-primary);
   font-weight: var(--font-weight-bold);
+  letter-spacing: 0.03em; // no exact $size-* match
+  box-shadow: var(--shadow-panel);
+  @include interactive-lift;
 
   @include media-up('tablet') {
     padding: var(--btn-padding-medium);
   }
 
   @include hover {
-    background-color: var(--color-primary-high);
+    background-color: var(--color-primary-low);
+    border-color: var(--color-primary-low);
   }
 
   &:focus-visible {
-    outline: var(--border-width-md) solid var(--color-tertiary);
-    outline-offset: var(--size-05);
-  }
-
-  &:active:not(:disabled) {
-    background-color: var(--color-primary-high);
+    outline: none;
+    box-shadow: var(--shadow-focus-glow);
   }
 
   &:disabled {
     cursor: not-allowed;
     opacity: $opacity-disabled;
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+.brew-controls__pour-out,
+.brew-controls__pause {
+  background-color: var(--color-surface);
+  border-color: var(--color-outline-variant);
+  color: var(--color-on-bg);
+
+  @include hover {
+    background-color: var(--color-bg-footer-low);
+    border-color: var(--color-tertiary);
+    color: var(--color-white);
   }
 }
 
@@ -103,9 +118,11 @@ $brew-status-motion: 0.45s ease-out; // no exact $duration-* match
 }
 
 .brew-controls__status--success {
-  color: var(--color-param-zone-strong);
+  color: var(--color-param-zone);
+  text-shadow: 0 0 var(--size-1) rgb(62 207 142 / 45%);
 }
 
 .brew-controls__status--failure {
   color: var(--color-error);
+  text-shadow: 0 0 var(--size-1) rgb(199 62 58 / 45%);
 }

@@ -20,14 +20,17 @@ $opacity-cauldron-rim: 0.35; // no exact $opacity-* match
   justify-content: center;
   overflow: hidden;
   border-radius: 50% 50% 45% 45% / 40% 40% 55% 55%; // no exact $corner-* match
-  border: var(--border-width-md) solid var(--color-outline);
+  border: var(--border-width-md) solid var(--color-primary-high);
   background: radial-gradient(
     ellipse 70% 55% at 50% 42%,
     var(--color-param-zone) 0%,
-    var(--color-surface-low) 55%,
-    var(--color-surface) 100%
+    var(--color-bg-footer-low) 50%,
+    var(--color-bg-footer) 100%
   );
-  box-shadow: inset 0 calc(var(--size-1) * -1) 0 0 rgba(0, 0, 0, $opacity-cauldron-rim);
+  box-shadow:
+    inset 0 calc(var(--size-1) * -1) 0 0 rgba(0, 0, 0, $opacity-cauldron-rim),
+    0 0 var(--size-4) rgb(62 207 142 / 22%),
+    var(--shadow-inset-rim);
 
   @include media-up('tablet') {
     min-height: var(--size-14);
@@ -117,12 +120,14 @@ $opacity-cauldron-rim: 0.35; // no exact $opacity-* match
   0%,
   100% {
     border-color: var(--color-outline);
-    box-shadow: none;
+    box-shadow: var(--shadow-panel), var(--shadow-inset-rim);
   }
 
   40% {
-    border-color: var(--color-param-zone-strong);
-    box-shadow: inset 0 0 var(--size-4) var(--color-param-zone);
+    border-color: var(--color-param-zone);
+    box-shadow:
+      inset 0 0 var(--size-4) var(--color-param-zone),
+      0 0 var(--size-4) rgb(62 207 142 / 45%);
   }
 }
 

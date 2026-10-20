@@ -73,8 +73,21 @@ export function renderShelf(
         if (event.dataTransfer === null) {
           return;
         }
+        button.classList.add('shelf-card--dragging');
+        document.documentElement.classList.add('is-shelf-dragging');
         event.dataTransfer.setData(DRAG_MIME, ingredient.id);
         event.dataTransfer.effectAllowed = 'copy';
+        void button.offsetWidth;
+        const rect = button.getBoundingClientRect();
+        event.dataTransfer.setDragImage(
+          button,
+          event.clientX - rect.left,
+          event.clientY - rect.top,
+        );
+      });
+      button.addEventListener('dragend', () => {
+        button.classList.remove('shelf-card--dragging');
+        document.documentElement.classList.remove('is-shelf-dragging');
       });
       button.addEventListener('click', () => {
         onAdd(ingredient.id);

@@ -1,10 +1,11 @@
 @use 'sass:math';
 @use '../mixins' as *;
+@use '../tokens' as *;
 @use './locals' as *;
 
 $opacity-zone: 0.55;
 $param-bar-fill-inset: 20%;
-$param-bar-motion: 0.35s ease; // no exact $duration-* match
+$param-bar-motion: var(--duration-glow) var(--easing-standard);
 
 .bars__list {
   display: flex;
@@ -34,6 +35,7 @@ $param-bar-motion: 0.35s ease; // no exact $duration-* match
 .param-bar__label {
   font-size: var(--font-size-label-medium);
   font-weight: var(--font-weight-bold);
+  letter-spacing: 0.02em; // no exact $size-* match
 
   @include media-up('tablet') {
     font-size: var(--font-size-label-large);
@@ -44,6 +46,7 @@ $param-bar-motion: 0.35s ease; // no exact $duration-* match
   font-size: var(--font-size-label-medium);
   font-weight: var(--font-weight-bold);
   font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 var(--size-1) rgb(232 226 212 / 15%);
 
   @include media-up('tablet') {
     font-size: var(--font-size-body-medium);
@@ -56,7 +59,8 @@ $param-bar-motion: 0.35s ease; // no exact $duration-* match
   overflow: hidden;
   border: var(--border-width) solid var(--color-outline);
   border-radius: var(--corner-full);
-  background-color: var(--color-surface-low);
+  background-color: var(--color-bg-footer);
+  box-shadow: var(--shadow-inset-rim);
 
   @include media-up('tablet') {
     height: var(--size-3);
@@ -112,6 +116,7 @@ $param-bar-motion: 0.35s ease; // no exact $duration-* match
   opacity: $opacity-zone;
   z-index: 1;
   pointer-events: none;
+  box-shadow: 0 0 var(--size-1) var(--color-param-zone);
   transition:
     left $param-bar-motion,
     width $param-bar-motion;
@@ -142,6 +147,7 @@ $param-bar-motion: 0.35s ease; // no exact $duration-* match
   border: var(--border-width) solid var(--color-on-primary);
   border-radius: var(--corner-full);
   background-color: var(--color-primary);
+  box-shadow: 0 0 var(--size-1) rgb(201 162 39 / 55%);
   transform: translate(-50%, -50%);
   z-index: 3;
   pointer-events: none;
@@ -154,15 +160,15 @@ $param-bar-motion: 0.35s ease; // no exact $duration-* match
 }
 
 .param-bar--in-zone .param-bar__track {
-  box-shadow: 0 0 0 var(--border-width-md)
-    color-mix(in srgb, var(--color-param-zone) #{math.percentage($opacity-zone)}, transparent);
+  @include glow-effect($color-param-zone, 0.45);
 }
 
 .param-bar--in-zone .param-bar__marker {
   background-color: var(--color-param-zone);
   border-color: var(--color-param-zone-strong);
+  box-shadow: 0 0 var(--size-2) var(--color-param-zone);
 }
 
 .param-bar--in-zone .param-bar__value {
-  color: var(--color-param-zone-strong);
+  color: var(--color-param-zone);
 }

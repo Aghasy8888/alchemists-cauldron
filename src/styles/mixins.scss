@@ -14,3 +14,37 @@
     }
   }
 }
+
+/// Soft outer glow for focus / in-zone / drop targets. Pass a Sass color token.
+@mixin glow-effect($color, $strength: 0.45) {
+  box-shadow:
+    0 0 0 $border-width-md rgba($color, $strength),
+    0 0 $size-3 rgba($color, $strength * 0.7);
+}
+
+/// Fantasy HUD panel: border, layered depth, inset rim highlight.
+@mixin panel-surface {
+  border: $border-width solid $color-outline;
+  border-radius: $corner-large;
+  background-color: $color-surface-low;
+  box-shadow: $shadow-panel, $shadow-inset-rim;
+}
+
+/// Interactive control lift — pair with `@include hover { … }`.
+@mixin interactive-lift {
+  transition:
+    transform $duration-hover $easing-standard,
+    box-shadow $duration-hover $easing-standard,
+    background-color $duration-hover $easing-standard,
+    border-color $duration-hover $easing-standard;
+
+  @include hover {
+    transform: translateY(-1px); // no exact $size-* match
+    box-shadow: $shadow-panel-raised;
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: $shadow-inset-rim;
+  }
+}

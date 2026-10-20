@@ -63,13 +63,15 @@
   padding: var(--size-1);
   border: var(--border-width) solid var(--color-outline);
   border-radius: var(--corner-medium);
-  background-color: var(--color-surface-low);
+  background-color: var(--color-bg-footer);
   color: var(--color-on-bg);
   font-size: var(--font-size-body-medium);
+  box-shadow: var(--shadow-inset-rim);
 
   &:focus-visible {
-    outline: var(--border-width-md) solid var(--color-tertiary);
-    outline-offset: var(--size-05);
+    outline: none;
+    border-color: var(--color-tertiary);
+    box-shadow: var(--shadow-focus-glow);
   }
 }
 

@@ -140,6 +140,15 @@
   --shadow-level-2: #{$shadow-level-2};
   --shadow-level-3: #{$shadow-level-3};
   --shadow-level-3-dark: #{$shadow-level-3-dark};
+  --shadow-panel: #{$shadow-panel};
+  --shadow-panel-raised: #{$shadow-panel-raised};
+  --shadow-inset-rim: #{$shadow-inset-rim};
+  --shadow-focus-glow: #{$shadow-focus-glow};
+
+  // Motion
+  --duration-hover: #{$duration-hover};
+  --duration-glow: #{$duration-glow};
+  --easing-standard: #{$easing-standard};
 
   // Layout
   --layout-max-width: #{$layout-max-width};

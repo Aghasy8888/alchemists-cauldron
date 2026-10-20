@@ -1,4 +1,5 @@
 @use '../mixins' as *;
+@use '../functions' as *;
 @use './locals' as *;
 
 .shelf__list {
@@ -40,10 +41,12 @@
   padding: var(--size-05);
   border: var(--border-width) solid var(--color-outline-variant);
   border-radius: var(--corner-medium);
-  background-color: var(--color-surface-low);
+  background-color: var(--color-surface);
   color: var(--color-on-bg);
+  box-shadow: var(--shadow-inset-rim);
   cursor: pointer;
   text-align: center;
+  @include interactive-lift;
 
   @include media-up('tablet') {
     gap: var(--size-05);
@@ -51,7 +54,8 @@
   }
 
   @include hover {
-    background-color: var(--color-surface);
+    background-color: var(--color-bg-footer-low);
+    border-color: var(--color-primary);
 
     .shelf-card__tooltip {
       visibility: visible;
@@ -60,8 +64,8 @@
   }
 
   &:focus-visible {
-    outline: var(--border-width-md) solid var(--color-tertiary);
-    outline-offset: var(--size-05);
+    outline: none;
+    box-shadow: var(--shadow-focus-glow);
 
     .shelf-card__tooltip {
       visibility: visible;
@@ -69,18 +73,26 @@
     }
   }
 
-  &:active:not(:disabled) {
-    background-color: var(--color-surface);
+  &--dragging,
+  &--dragging:hover,
+  &--dragging:focus-visible {
+    .shelf-card__tooltip {
+      visibility: hidden !important;
+      opacity: 0 !important;
+    }
   }
 
   &:disabled {
     cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
   }
 }
 
 .shelf-card--empty {
   opacity: $opacity-muted;
-  background-color: var(--color-outline);
+  background-color: var(--color-bg-footer);
+  border-color: var(--color-outline);
 }
 
 .shelf-card__badge {
@@ -92,10 +104,11 @@
   width: var(--size-2);
   height: var(--size-2);
   border-radius: var(--corner-full);
-  background-color: var(--color-secondary);
-  color: var(--color-tertiary);
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
   font-size: var(--font-size-label-small);
   font-weight: var(--font-weight-bold);
+  box-shadow: 0 0 var(--size-1) rgb(201 162 39 / 40%);
 
   @include media-up('tablet') {
     top: var(--size-05);
@@ -110,6 +123,7 @@
   display: flex;
   flex-shrink: 1;
   min-height: 0;
+  filter: drop-shadow(0 0 var(--size-05) rgb(232 226 212 / 20%));
 }
 
 .shelf-card__name {
@@ -126,45 +140,123 @@
   }
 }
 
+$tooltip-caret: 0.45rem; // no exact $size-* match
+$tooltip-border-gold: var(--color-primary-high);
+
+// Hide every shelf tooltip while a card drag is in progress (source + drag ghost).
+html.is-shelf-dragging .shelf-card__tooltip {
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
 .shelf-card__tooltip {
   position: absolute;
   top: 50%;
-  left: calc(100% + var(--size-05));
-  z-index: 5;
+  left: calc(100% + var(--size-1));
+  z-index: 20;
   display: flex;
   flex-direction: column;
-  gap: var(--size-05);
-  min-width: space(18);
-  padding: var(--size-1);
-  border: var(--border-width) solid var(--color-outline);
-  border-radius: var(--corner-medium);
-  background-color: var(--color-white);
-  box-shadow: var(--shadow-level-1);
+  gap: 0;
+  min-width: space(22);
+  max-width: space(28);
+  padding: var(--size-1) var(--size-2);
+  border: var(--border-width-md) solid $tooltip-border-gold;
+  border-radius: var(--corner-small);
+  background:
+    linear-gradient(180deg, rgb(36 32 48 / 96%) 0%, rgb(18 15 28 / 98%) 100%), var(--color-bg);
+  box-shadow:
+    var(--shadow-panel-raised),
+    inset 0 0 0 var(--border-width-xs) rgb(201 162 39 / 25%),
+    0 0 0 var(--border-width) rgb(26 20 16 / 80%);
   text-align: left;
   visibility: hidden;
   opacity: 0;
   pointer-events: none;
   transform: translateY(-50%);
-}
+  transition: opacity var(--duration-hover) var(--easing-standard);
 
-.shelf-card__tooltip--left {
-  left: auto;
-  right: calc(100% + var(--size-05));
+  // Side caret (points at the card)
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: $tooltip-caret;
+    height: $tooltip-caret;
+    border: var(--border-width-md) solid $tooltip-border-gold;
+    border-right: none;
+    border-top: none;
+    background: rgb(22 18 32 / 98%);
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
+
+  // Subtle corner studs (ornate frame hint without composite art)
+  &::after {
+    content: '';
+    position: absolute;
+    inset: var(--size-05);
+    border: var(--border-width-xs) solid rgb(201 162 39 / 35%);
+    border-radius: var(--corner-extra-small);
+    pointer-events: none;
+  }
 }
 
 .shelf-card__tooltip--up {
   top: auto;
-  bottom: calc(100% + var(--size-05));
+  bottom: calc(100% + var(--size-1));
   transform: none;
+
+  &::before {
+    top: auto;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, 50%) rotate(45deg);
+  }
+}
+
+.shelf-card__tooltip-header {
+  display: flex;
+  align-items: center;
+  gap: var(--size-1);
+  padding-bottom: var(--size-1);
+  margin-bottom: var(--size-1);
+  border-bottom: var(--border-width-xs) solid rgb(201 162 39 / 40%);
+}
+
+.shelf-card__tooltip-icon {
+  display: flex;
+  flex-shrink: 0;
+  font-size: var(--font-size-headline-small);
+  filter: drop-shadow(0 0 var(--size-05) rgb(232 226 212 / 35%));
+}
+
+.shelf-card__tooltip-title {
+  font-size: var(--font-size-label-large);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.06em; // no exact $size-* match
+  line-height: 1.2;
+  text-transform: uppercase;
+  color: var(--color-on-bg);
+}
+
+.shelf-card__tooltip-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 
 .shelf-card__tooltip-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--size-1);
+  gap: var(--size-2);
+  padding-block: var(--size-05);
   font-size: var(--font-size-label-small);
   line-height: 1.2;
+
+  & + & {
+    border-top: var(--border-width-xs) solid rgb(61 54 72 / 80%);
+  }
 }
 
 .shelf-card__tooltip-label {
@@ -172,14 +264,17 @@
   align-items: center;
   gap: var(--size-05);
   font-weight: var(--font-weight-medium);
-  color: var(--color-on-bg);
+  letter-spacing: 0.04em; // no exact $size-* match
+  text-transform: uppercase;
+  color: var(--color-on-bg-low);
 
   .param-icon {
-    font-size: var(--font-size-label-medium);
+    font-size: var(--font-size-body-medium);
   }
 }
 
 .shelf-card__tooltip-value {
+  font-size: var(--font-size-body-small);
   font-weight: var(--font-weight-bold);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;

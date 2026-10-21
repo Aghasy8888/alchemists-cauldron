@@ -1,21 +1,42 @@
 .help-dialog__body {
+  flex: 1 1 auto;
+  min-height: 0;
   width: 100%;
+  overflow: auto;
   text-align: left;
   font-size: var(--font-size-body-medium);
   color: var(--color-on-bg);
 
   p {
-    margin: 0 0 var(--size-1);
+    margin: 0 0 var(--size-2);
   }
 
   ul {
     margin: 0;
     padding-inline-start: var(--size-3);
+    list-style-type: disc;
+    list-style-position: outside;
   }
 
-  li + li {
-    margin-top: var(--size-05);
+  li {
+    margin-top: var(--size-1);
+    padding-inline-start: var(--size-05);
   }
+
+  li:first-child {
+    margin-top: 0;
+  }
+}
+
+.help-dialog__section + .help-dialog__section {
+  margin-top: var(--size-2);
+}
+
+.help-dialog__section-title {
+  margin: 0 0 var(--size-05);
+  font-size: var(--font-size-label-large);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary-low);
 }
 
 .settings-dialog__hint {

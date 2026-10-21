@@ -167,6 +167,25 @@ html {
   box-sizing: border-box;
 }
 
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-primary-low) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: var(--size-1);
+  height: var(--size-1);
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--color-primary-low);
+  border-radius: var(--corner-full);
+}
+
 body,
 h1,
 h2,

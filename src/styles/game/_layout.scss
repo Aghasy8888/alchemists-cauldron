@@ -80,7 +80,7 @@ $ambient-glow-size: 55%; // no exact $size-* match
   display: grid;
   place-items: center;
   padding: var(--size-2);
-  background-color: rgb(8 7 11 / $opacity-overlay);
+  background-color: rgb(8 7 11 / #{$opacity-overlay});
 }
 
 .game__overlay[hidden] {

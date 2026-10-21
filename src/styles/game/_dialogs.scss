@@ -21,11 +21,21 @@
   backdrop-filter: blur(var(--size-1));
 }
 
-.leaderboard,
-.help-dialog {
+.leaderboard {
   max-width: space(56);
   max-height: 100%;
   overflow: auto;
+}
+
+.help-dialog {
+  max-width: space(56);
+  max-height: 100%;
+  overflow: hidden;
+}
+
+.help-dialog__title,
+.help-dialog__button {
+  flex-shrink: 0;
 }
 
 .game-over__title,

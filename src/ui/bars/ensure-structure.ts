@@ -1,5 +1,5 @@
 import { createParamIcon } from '../../assets/param-icons';
-import { BAR_SCALE, toPercent } from '../../utils/bar-scale';
+import { BAR_SCALE, BAR_SCALE_TICKS, toPercent } from '../../utils/bar-scale';
 
 export type BarKey = 'temperature' | 'density' | 'magicPower';
 
@@ -53,6 +53,9 @@ export function ensureStructure(container: HTMLElement): HTMLElement {
     body.className = 'param-bar__body';
     body.append(createParamIcon(paramClass));
 
+    const meter = document.createElement('div');
+    meter.className = 'param-bar__meter';
+
     const track = document.createElement('div');
     track.className = `param-bar__track param-bar__track--${paramClass}`;
     track.setAttribute('role', 'meter');
@@ -65,6 +68,11 @@ export function ensureStructure(container: HTMLElement): HTMLElement {
     zero.className = 'param-bar__zero';
     zero.style.left = `${toPercent(0)}%`;
     zero.setAttribute('aria-hidden', 'true');
+
+    const tolerance = document.createElement('span');
+    tolerance.className = 'param-bar__tolerance';
+    tolerance.hidden = true;
+    tolerance.setAttribute('aria-hidden', 'true');
 
     const zone = document.createElement('span');
     zone.className = 'param-bar__zone';
@@ -79,8 +87,28 @@ export function ensureStructure(container: HTMLElement): HTMLElement {
     marker.className = 'param-bar__marker';
     marker.setAttribute('aria-hidden', 'true');
 
-    track.append(zero, zone, fill, marker);
-    body.append(track);
+    track.append(zero, tolerance, zone, fill, marker);
+
+    const scale = document.createElement('div');
+    scale.className = 'param-bar__scale';
+    scale.setAttribute('aria-hidden', 'true');
+    for (const tick of BAR_SCALE_TICKS) {
+      const tickEl = document.createElement('span');
+      tickEl.className = 'param-bar__tick';
+      if (tick === 0) {
+        tickEl.classList.add('param-bar__tick--zero');
+      }
+      tickEl.style.left = `${toPercent(tick)}%`;
+
+      const label = document.createElement('span');
+      label.className = 'param-bar__tick-label';
+      label.textContent = String(tick);
+      tickEl.append(label);
+      scale.append(tickEl);
+    }
+
+    meter.append(track, scale);
+    body.append(meter);
     row.append(heading, body);
     list.append(row);
   }

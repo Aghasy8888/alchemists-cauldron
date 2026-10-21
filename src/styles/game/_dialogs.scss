@@ -21,11 +21,23 @@
   backdrop-filter: blur(var(--size-1));
 }
 
-.leaderboard,
+.leaderboard {
+  max-width: space(56);
+  max-height: 100%;
+  overflow: hidden;
+}
+
 .help-dialog {
   max-width: space(56);
   max-height: 100%;
-  overflow: auto;
+  overflow: hidden;
+}
+
+.leaderboard__title,
+.leaderboard__actions,
+.help-dialog__title,
+.help-dialog__button {
+  flex-shrink: 0;
 }
 
 .game-over__title,
@@ -53,6 +65,7 @@
 
 .game-over__play-again,
 .game-over__leaderboard,
+.game-over__exit,
 .game-over__submit,
 .pause-dialog__button,
 .leaderboard__button,
@@ -89,6 +102,7 @@
 
 .pause-dialog__button--exit,
 .game-over__leaderboard,
+.game-over__exit,
 .leaderboard__button--back,
 .leaderboard-confirm__button--cancel,
 .help-dialog__button,

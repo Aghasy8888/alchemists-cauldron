@@ -80,7 +80,7 @@ $ambient-glow-size: 55%; // no exact $size-* match
   display: grid;
   place-items: center;
   padding: var(--size-2);
-  background-color: rgb(8 7 11 / $opacity-overlay);
+  background-color: rgb(8 7 11 / #{$opacity-overlay});
 }
 
 .game__overlay[hidden] {
@@ -205,11 +205,15 @@ $ambient-glow-size: 55%; // no exact $size-* match
 .cauldron__empty,
 .recipe-panel__hint {
   font-size: var(--font-size-label-medium);
-  color: var(--color-on-bg-low);
 
   @include media-up('tablet') {
     font-size: var(--font-size-body-small);
   }
+}
+
+.shelf__hint,
+.recipe-panel__hint {
+  color: var(--color-on-bg-low);
 }
 
 @media (max-height: $viewport-short-max-height) {

@@ -13,6 +13,8 @@ import { clearSave, continueSavedGame, hasContinuableSave, saveGame } from '../s
 import { DIFFICULTY_CONFIG } from '../data/difficulty';
 import { getShelfIngredients } from '../data/ingredients';
 import { GAME_STATUS, type Difficulty, type IGameState } from '../data/types';
+import { LOW_TIME_THRESHOLD_SEC } from '../logic/timer';
+import { playUrgentTimerChime, unlockAudio } from '../utils/urgent-timer-chime';
 import { renderBars } from './bars';
 import { renderActionControls } from './brew';
 import { playBrewFx } from './brew-fx';
@@ -49,6 +51,15 @@ export function createApp(root: HTMLElement): void {
   let uiOverlay: UiOverlay = none;
   let scoreSubmitted = false;
   let previousStatus: typeof menu | typeof playing | typeof paused | typeof gameOver = menu;
+  let wasUrgentTime = false;
+
+  const syncUrgentTimerChime = (): void => {
+    const isUrgent = state.status === playing && state.timeLeft < LOW_TIME_THRESHOLD_SEC;
+    if (isUrgent && !wasUrgentTime) {
+      playUrgentTimerChime();
+    }
+    wasUrgentTime = isUrgent;
+  };
 
   const {
     root: layout,
@@ -77,6 +88,7 @@ export function createApp(root: HTMLElement): void {
       state = next;
     },
     onHudTick: () => {
+      syncUrgentTimerChime();
       renderHud(hudSlot, state);
     },
     onEnded: () => {
@@ -182,6 +194,7 @@ export function createApp(root: HTMLElement): void {
     if (state.status !== paused) {
       return;
     }
+    unlockAudio();
     state = resumeRun(state);
     saveGame(state);
     render();
@@ -197,6 +210,7 @@ export function createApp(root: HTMLElement): void {
   };
 
   const continueGame = (): void => {
+    unlockAudio();
     const restored = continueSavedGame();
     if (restored === null) {
       render();
@@ -266,6 +280,7 @@ export function createApp(root: HTMLElement): void {
           render();
         },
         onOpenLeaderboard: openLeaderboard,
+        onExitToMenu: exitToMenu,
       });
       return;
     }
@@ -291,6 +306,7 @@ export function createApp(root: HTMLElement): void {
     const isPaused = state.status === paused;
     board.classList.toggle('game__board--paused', isPaused);
 
+    syncUrgentTimerChime();
     renderHud(hudSlot, state);
     renderOverlay();
 
@@ -304,6 +320,7 @@ export function createApp(root: HTMLElement): void {
       canContinue: state.status === menu && hasContinuableSave(),
       lastOutcome,
       onStart: () => {
+        unlockAudio();
         lastOutcome = null;
         scoreSubmitted = false;
         uiOverlay = none;

@@ -1,3 +1,4 @@
+import { DIFFICULTY_CONFIG } from '../../data/difficulty';
 import { resolveCauldronValues } from '../../logic/resolve-cauldron';
 import { GAME_STATUS, type IGameState } from '../../data/types';
 import { BAR_KEYS, ensureStructure } from './ensure-structure';
@@ -12,12 +13,13 @@ export function renderBars(container: HTMLElement, state: IGameState): void {
       ? resolveCauldronValues([], state.difficulty)
       : resolveCauldronValues(state.cauldronIngredients, state.difficulty);
   const recipe = state.status === menu ? null : state.activeRecipe;
+  const tolerance = DIFFICULTY_CONFIG[state.difficulty].recipeTolerance;
 
   for (const key of BAR_KEYS) {
     const row = list.querySelector<HTMLElement>(`[data-bar="${key}"]`);
     if (row === null) {
       continue;
     }
-    updateBar(row, values[key], recipe === null ? null : recipe[key]);
+    updateBar(row, values[key], recipe === null ? null : recipe[key], tolerance);
   }
 }

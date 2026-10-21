@@ -41,6 +41,7 @@
   --color-param-magic: #{$color-param-magic};
   --color-param-zone: #{$color-param-zone};
   --color-param-zone-strong: #{$color-param-zone-strong};
+  --color-param-tolerance: #{$color-param-tolerance};
   --color-param-icon-muted: #{$color-param-icon-muted};
   --color-param-density-highlight: #{$color-param-density-highlight};
   --color-param-magic-highlight: #{$color-param-magic-highlight};
@@ -165,6 +166,25 @@ html {
 *::before,
 *::after {
   box-sizing: border-box;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-primary-low) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: var(--size-1);
+  height: var(--size-1);
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--color-primary-low);
+  border-radius: var(--corner-full);
 }
 
 body,

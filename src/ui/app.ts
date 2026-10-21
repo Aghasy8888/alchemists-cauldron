@@ -280,6 +280,7 @@ export function createApp(root: HTMLElement): void {
           render();
         },
         onOpenLeaderboard: openLeaderboard,
+        onExitToMenu: exitToMenu,
       });
       return;
     }

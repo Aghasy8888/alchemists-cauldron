@@ -1,10 +1,27 @@
-import { isInRange } from '../../logic/brew-check';
+import { expandRecipeRange, isInRange } from '../../logic/brew-check';
 import type { IRecipeRange } from '../../data/types';
 import { toPercent } from '../../utils/bar-scale';
 
-export function updateBar(row: HTMLElement, value: number, range: IRecipeRange | null): void {
+function positionBand(band: HTMLElement, range: IRecipeRange): void {
+  const left = toPercent(range.min);
+  const right = toPercent(range.max);
+  band.hidden = false;
+  band.style.left = `${left}%`;
+  band.style.width = `${Math.max(0, right - left)}%`;
+}
+
+export function updateBar(
+  row: HTMLElement,
+  value: number,
+  range: IRecipeRange | null,
+  tolerance: number,
+): void {
   const inZone = range !== null && isInRange(value, range);
+  const expanded = range === null ? null : expandRecipeRange(range, tolerance);
+  const inTolerance = !inZone && expanded !== null && isInRange(value, expanded);
+
   row.classList.toggle('param-bar--in-zone', inZone);
+  row.classList.toggle('param-bar--in-tolerance', inTolerance);
 
   const valueLabel = row.querySelector('.param-bar__value');
   if (valueLabel !== null) {
@@ -16,16 +33,21 @@ export function updateBar(row: HTMLElement, value: number, range: IRecipeRange |
     track.setAttribute('aria-valuenow', String(value));
   }
 
+  const toleranceBand = row.querySelector<HTMLElement>('.param-bar__tolerance');
+  if (toleranceBand !== null) {
+    if (expanded === null) {
+      toleranceBand.hidden = true;
+    } else {
+      positionBand(toleranceBand, expanded);
+    }
+  }
+
   const zone = row.querySelector<HTMLElement>('.param-bar__zone');
   if (zone !== null) {
     if (range === null) {
       zone.hidden = true;
     } else {
-      zone.hidden = false;
-      const left = toPercent(range.min);
-      const right = toPercent(range.max);
-      zone.style.left = `${left}%`;
-      zone.style.width = `${Math.max(0, right - left)}%`;
+      positionBand(zone, range);
     }
   }
 

@@ -68,3 +68,16 @@
   font-weight: var(--font-weight-bold);
   font-variant-numeric: tabular-nums;
 }
+
+.recipe-panel__tolerance {
+  flex-shrink: 0;
+  margin-top: auto;
+  padding-top: var(--size-05);
+  font-size: var(--font-size-label-small);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-on-bg-low);
+
+  @include media-up('tablet') {
+    font-size: var(--font-size-body-small);
+  }
+}

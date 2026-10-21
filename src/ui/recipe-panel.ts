@@ -33,7 +33,7 @@ export function renderRecipePanel(container: HTMLElement, state: IGameState): vo
     const hint = document.createElement('p');
     hint.className = 'recipe-panel__hint';
     hint.textContent = 'Start a game to get a recipe.';
-    container.append(hint);
+    container.append(hint, createToleranceNote(config.recipeTolerance));
     return;
   }
 
@@ -67,5 +67,12 @@ export function renderRecipePanel(container: HTMLElement, state: IGameState): vo
     ranges.append(item);
   }
 
-  container.append(ranges);
+  container.append(ranges, createToleranceNote(config.recipeTolerance));
+}
+
+function createToleranceNote(tolerance: number): HTMLElement {
+  const note = document.createElement('p');
+  note.className = 'recipe-panel__tolerance';
+  note.textContent = `Tolerance: ±${tolerance}`;
+  return note;
 }

@@ -4,6 +4,9 @@ export const BAR_SCALE = {
   max: 100,
 } as const;
 
+/** Major labeled ticks along each bar (ends at 100, includes 0). */
+export const BAR_SCALE_TICKS = [-80, -40, 0, 40, 80, 100] as const;
+
 export function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
 }

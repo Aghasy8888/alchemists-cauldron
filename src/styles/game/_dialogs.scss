@@ -24,7 +24,7 @@
 .leaderboard {
   max-width: space(56);
   max-height: 100%;
-  overflow: auto;
+  overflow: hidden;
 }
 
 .help-dialog {
@@ -33,6 +33,8 @@
   overflow: hidden;
 }
 
+.leaderboard__title,
+.leaderboard__actions,
 .help-dialog__title,
 .help-dialog__button {
   flex-shrink: 0;

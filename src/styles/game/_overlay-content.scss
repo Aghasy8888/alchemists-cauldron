@@ -109,8 +109,16 @@
   color: var(--color-on-bg);
 }
 
-.leaderboard__table {
+.leaderboard__scroll {
+  flex: 1 1 auto;
+  min-height: 0;
   width: 100%;
+  overflow: auto;
+}
+
+.leaderboard__table {
+  width: max-content;
+  min-width: 100%;
   border-collapse: collapse;
   font-size: var(--font-size-body-small);
   text-align: left;
@@ -123,5 +131,12 @@
 
   th {
     font-weight: var(--font-weight-bold);
+  }
+
+  td {
+    max-width: 200px; // no exact $size-* match
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }

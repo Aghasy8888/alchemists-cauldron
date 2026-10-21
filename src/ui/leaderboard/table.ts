@@ -33,6 +33,7 @@ export function createTable(entries: readonly ILeaderboardRow[]): HTMLElement {
 
     const name = document.createElement('td');
     name.textContent = entry.name;
+    name.title = entry.name;
 
     const score = document.createElement('td');
     score.textContent = String(entry.score);
@@ -48,5 +49,9 @@ export function createTable(entries: readonly ILeaderboardRow[]): HTMLElement {
   });
 
   table.append(thead, tbody);
-  return table;
+
+  const scroll = document.createElement('div');
+  scroll.className = 'leaderboard__scroll';
+  scroll.append(table);
+  return scroll;
 }

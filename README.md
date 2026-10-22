@@ -96,13 +96,13 @@ The play board is a **fixed full-screen viewport with no page scroll** (vertical
 
 ### Viewport resolution matrix
 
-| Target width | Min height | Max height | Target device / environment | Critical focus |
-| --- | --- | --- | --- | --- |
-| **375px** | `667px` | `812px` | Small–standard mobile (iPhone SE → Pro/X) | Touch targets; dynamic address bars must not hide HUD / actions |
-| **768px** | `1024px` | `1024px` | Tablet portrait (iPad / Android) | Tall aspect; board centered / scaled without vertical truncation |
-| **1200px** | `800px` | `900px` | Compact laptop (~13") | HUD vs gameplay; top/bottom margins |
-| **1500px** | `864px` | `960px` | Mid desktop / scaled monitors | Mid-tier scaling without overflow |
-| **1920px** | `1040px` | `1080px` | Full HD desktop | Fullscreen fidelity and alignment on large aspect ratios |
+| Target width | Min height | Max height | Target device / environment               | Critical focus                                                   |
+| ------------ | ---------- | ---------- | ----------------------------------------- | ---------------------------------------------------------------- |
+| **375px**    | `667px`    | `812px`    | Small–standard mobile (iPhone SE → Pro/X) | Touch targets; dynamic address bars must not hide HUD / actions  |
+| **768px**    | `1024px`   | `1024px`   | Tablet portrait (iPad / Android)          | Tall aspect; board centered / scaled without vertical truncation |
+| **1200px**   | `800px`    | `900px`    | Compact laptop (~13")                     | HUD vs gameplay; top/bottom margins                              |
+| **1500px**   | `864px`    | `960px`    | Mid desktop / scaled monitors             | Mid-tier scaling without overflow                                |
+| **1920px**   | `1040px`   | `1080px`   | Full HD desktop                           | Fullscreen fidelity and alignment on large aspect ratios         |
 
 For each width, test **both** the min and max height in DevTools (e.g. `375 × 667` and `375 × 812`). Min heights reflect shorter usable viewports (browser chrome / address bar); max heights reflect taller device viewports.
 

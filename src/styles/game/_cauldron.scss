@@ -2,72 +2,79 @@
 
 $cauldron-float-motion: 2.4s ease-in-out infinite; // no exact $duration-* match
 $cauldron-float-stagger: 0.18s; // no exact $duration-* match
-$cauldron-bob: 0.35rem; // no exact $size-* match
-$cauldron-float-radius: 1.75rem; // no exact $size-* match
+$cauldron-bob: 0.25rem; // no exact $size-* match
+// Ellipse over the green brew mouth in game-cauldron.png (cos/sin — no scale distort)
+$cauldron-float-radius-x: 14%; // no exact $size-* match
+$cauldron-float-radius-y: 4%; // no exact $size-* match
+$cauldron-float-origin-y: 32%; // no exact $size-* match
 $cauldron-pot-min-height: 7rem; // no exact $size-* match
 $cauldron-fx-glow: 0.7s ease-out; // no exact $duration-* match
 $cauldron-fx-fail: 0.55s ease-out; // no exact $duration-* match
 $cauldron-time-bonus-motion: 1s ease-out; // no exact $duration-* match
 $board-shake-motion: 0.45s ease-out; // no exact $duration-* match
-$opacity-cauldron-rim: 0.35; // no exact $opacity-* match
 
 .cauldron__pot {
   position: relative;
   flex: 1 1 auto;
+  align-self: stretch;
+  width: 100%;
   min-height: $cauldron-pot-min-height;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  border-radius: 50% 50% 45% 45% / 40% 40% 55% 55%; // no exact $corner-* match
-  border: var(--border-width-md) solid var(--color-primary-high);
-  background: radial-gradient(
-    ellipse 70% 55% at 50% 42%,
-    var(--color-param-zone) 0%,
-    var(--color-bg-footer-low) 50%,
-    var(--color-bg-footer) 100%
-  );
-  box-shadow:
-    inset 0 calc(var(--size-1) * -1) 0 0 rgba(0, 0, 0, $opacity-cauldron-rim),
-    0 0 var(--size-4) rgb(62 207 142 / 22%),
-    var(--shadow-inset-rim);
+  border-radius: var(--corner-large);
 
   @include media-up('tablet') {
     min-height: var(--size-14);
   }
 }
 
-.cauldron__empty {
-  margin: 0;
-  padding: var(--size-2);
-  text-align: center;
-  z-index: 1;
-  color: var(--color-white);
-  // Dark halo so parchment text stays readable on the green pot glow
-  text-shadow:
-    0 0 var(--size-05) var(--color-bg),
-    0 var(--border-width) var(--border-width-md) rgb(0 0 0 / 75%);
+.cauldron__art {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  pointer-events: none;
+  user-select: none;
 }
 
 .cauldron__float {
   position: absolute;
-  left: 50%;
-  top: 48%;
   z-index: 1;
   display: flex;
-  font-size: var(--size-4);
-  --angle: calc(var(--i) * 72deg);
-  transform: translate(-50%, -50%) rotate(var(--angle))
-    translateY(calc(#{$cauldron-float-radius} * -1)) rotate(calc(var(--angle) * -1));
+  align-items: center;
+  justify-content: center;
+  padding: var(--size-05);
+  font-size: var(--size-3);
+  --angle: calc(var(--i) * 360deg / var(--count) - 90deg);
+  left: calc(50% + cos(var(--angle)) * #{$cauldron-float-radius-x});
+  top: calc(#{$cauldron-float-origin-y} + sin(var(--angle)) * #{$cauldron-float-radius-y});
+  transform: translate(-50%, -50%);
   animation: cauldron-float-bob $cauldron-float-motion;
   animation-delay: calc(var(--i) * #{$cauldron-float-stagger});
   pointer-events: none;
 
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    border-radius: var(--corner-full);
+    background-color: rgb(5 4 10 / 55%); // no exact $opacity-* match
+    box-shadow: 0 0 var(--size-1) rgb(5 4 10 / 40%); // no exact $opacity-* match
+  }
+
   @include media-up('tablet') {
-    font-size: var(--size-5);
+    font-size: var(--size-4);
   }
 
   .ingredient-icon {
+    position: relative;
+    z-index: 1;
     font-size: 1em;
   }
 }
@@ -75,21 +82,18 @@ $opacity-cauldron-rim: 0.35; // no exact $opacity-* match
 @keyframes cauldron-float-bob {
   0%,
   100% {
-    transform: translate(-50%, -50%) rotate(var(--angle))
-      translateY(calc(#{$cauldron-float-radius} * -1)) rotate(calc(var(--angle) * -1));
+    transform: translate(-50%, -50%);
   }
 
   50% {
-    transform: translate(-50%, -50%) rotate(var(--angle))
-      translateY(calc((#{$cauldron-float-radius} + #{$cauldron-bob}) * -1))
-      rotate(calc(var(--angle) * -1));
+    transform: translate(-50%, calc(-50% - #{$cauldron-bob}));
   }
 }
 
 .cauldron__time-bonus {
   position: absolute;
   left: 50%;
-  top: 55%;
+  top: $cauldron-float-origin-y;
   z-index: 4;
   margin: 0;
   transform: translate(-50%, -50%);

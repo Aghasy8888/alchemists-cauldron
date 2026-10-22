@@ -136,13 +136,17 @@ $ambient-glow-size: 55%; // no exact $size-* match
   }
 }
 
-.game__shelf {
-  grid-area: shelf;
-}
-
 .game__cauldron {
   position: relative;
+  z-index: 1;
   grid-area: cauldron;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  padding: 0;
+  overflow: hidden;
+  @include panel-surface;
   transition:
     box-shadow var(--duration-hover) var(--easing-standard),
     border-color var(--duration-hover) var(--easing-standard);
@@ -154,36 +158,76 @@ $ambient-glow-size: 55%; // no exact $size-* match
 }
 
 .game__recipe {
+  position: relative;
+  z-index: 1;
   grid-area: recipe;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  // Extra inset so recipe content sits on the inner plate, not the ornate frame
+  padding: var(--size-2) var(--size-3);
+  overflow: hidden;
+  border: var(--border-width) solid transparent;
+  border-radius: var(--corner-large);
+  background-color: transparent;
+  background-image: var(--img-recipe-bg);
+  background-repeat: no-repeat;
+  background-position: center;
+  // Stretch so the full frame is always visible (no crop) as the panel aspect changes
+  background-size: 100% 100%;
+  box-shadow: none;
+
+  @include media-up('tablet') {
+    padding: var(--size-3) var(--size-4);
+  }
 }
 
-.game__bars {
-  grid-area: bars;
-}
-
-.game__recipe,
-.game__shelf,
-.game__cauldron,
 .game__bars {
   position: relative;
   z-index: 1;
+  grid-area: bars;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  // Extra inset so T/D/M bars sit on the inner plate, not the ornate frame
+  padding: var(--size-2) var(--size-3);
+  overflow: hidden;
+  border: var(--border-width) solid transparent;
+  border-radius: var(--corner-large);
+  background-color: transparent;
+  background-image: var(--img-bars-bg);
+  background-repeat: no-repeat;
+  background-position: center;
+  // Stretch so the full frame is always visible (no crop) as the panel aspect changes
+  background-size: 100% 100%;
+  box-shadow: none;
+
+  @include media-up('tablet') {
+    padding: var(--size-3) var(--size-4);
+  }
+
+  @include media-up('laptop') {
+    background-image: var(--img-bars-bg-wide);
+  }
+}
+
+.game__shelf {
+  position: relative;
+  z-index: 3;
+  grid-area: shelf;
   display: flex;
   flex-direction: column;
   min-height: 0;
   min-width: 0;
   padding: var(--size-1);
-  overflow: hidden;
+  overflow: visible;
   @include panel-surface;
 
   @include media-up('tablet') {
     padding: var(--size-2);
   }
-}
-
-// Shelf tooltips must escape the panel and paint above sibling panels.
-.game__shelf {
-  z-index: 3;
-  overflow: visible;
 }
 
 .shelf__title,
@@ -202,7 +246,6 @@ $ambient-glow-size: 55%; // no exact $size-* match
 }
 
 .shelf__hint,
-.cauldron__empty,
 .recipe-panel__hint {
   font-size: var(--font-size-label-medium);
 

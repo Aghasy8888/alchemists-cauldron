@@ -87,3 +87,28 @@ npm run deploy    # build and publish dist/ to the gh-pages branch
 ```
 
 Do not commit `dist/` on story branches. Redeploy with `npm run deploy` from the branch whose code you want live.
+
+## How to test (viewport / fullscreen layout)
+
+The play board is a **fixed full-screen viewport with no page scroll** (vertical or horizontal). Layout must fit inside the visible area across device sizes. Do **not** rely on document scrolling when reviewing.
+
+**How to test:** open Chrome (or Edge) DevTools → **Toggle device toolbar** (responsive mode) → set **both** width and height manually for each row below. The min/max heights are real device / usable viewport heights — do not leave height on “responsive” auto-grow; enter the values explicitly.
+
+### Viewport resolution matrix
+
+| Target width | Min height | Max height | Target device / environment               | Critical focus                                                   |
+| ------------ | ---------- | ---------- | ----------------------------------------- | ---------------------------------------------------------------- |
+| **375px**    | `667px`    | `812px`    | Small–standard mobile (iPhone SE → Pro/X) | Touch targets; dynamic address bars must not hide HUD / actions  |
+| **768px**    | `1024px`   | `1024px`   | Tablet portrait (iPad / Android)          | Tall aspect; board centered / scaled without vertical truncation |
+| **1200px**   | `800px`    | `900px`    | Compact laptop (~13")                     | HUD vs gameplay; top/bottom margins                              |
+| **1500px**   | `864px`    | `960px`    | Mid desktop / scaled monitors             | Mid-tier scaling without overflow                                |
+| **1920px**   | `1040px`   | `1080px`   | Full HD desktop                           | Fullscreen fidelity and alignment on large aspect ratios         |
+
+For each width, test **both** the min and max height in DevTools (e.g. `375 × 667` and `375 × 812`). Min heights reflect shorter usable viewports (browser chrome / address bar); max heights reflect taller device viewports.
+
+### Reviewer checks
+
+1. **Zero page scroll** — trackpad, wheel, or swipe must not reveal whitespace or shift the board. Only overlays/dialogs may scroll internally.
+2. **Mobile height at 375px** — in responsive mode, set `375 × 667` (compact chrome: bottom controls fully clickable) and `375 × 812` (taller phones: header clears notches / system bars).
+3. **Desktop inner height** — set lower bounds such as `1200 × 800` and `1920 × 1040` so shorter windowed / chrome-shrunk viewports do not clip bottom actions.
+4. **Aspect fill** — background / letterboxing (if any) fills the viewport cleanly at every matrix boundary.

@@ -142,7 +142,15 @@ $ambient-glow-size: 55%; // no exact $size-* match
 
 .game__cauldron {
   position: relative;
+  z-index: 1;
   grid-area: cauldron;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  padding: 0;
+  overflow: hidden;
+  @include panel-surface;
   transition:
     box-shadow var(--duration-hover) var(--easing-standard),
     border-color var(--duration-hover) var(--easing-standard);
@@ -163,7 +171,6 @@ $ambient-glow-size: 55%; // no exact $size-* match
 
 .game__recipe,
 .game__shelf,
-.game__cauldron,
 .game__bars {
   position: relative;
   z-index: 1;
@@ -202,7 +209,6 @@ $ambient-glow-size: 55%; // no exact $size-* match
 }
 
 .shelf__hint,
-.cauldron__empty,
 .recipe-panel__hint {
   font-size: var(--font-size-label-medium);
 

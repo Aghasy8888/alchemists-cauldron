@@ -1,8 +1,56 @@
 import { difficultyLabel } from '../../data/difficulty';
-import type { ILeaderboardRow } from '../../storage/leaderboard';
+import {
+  LEADERBOARD_SORT,
+  type ILeaderboardRow,
+  type LeaderboardSort,
+} from '../../storage/leaderboard';
 import { formatLeaderboardDate } from '../../utils/format-date';
 
-export function createTable(entries: readonly ILeaderboardRow[]): HTMLElement {
+const { score: sortByScore, difficulty: sortByDifficulty } = LEADERBOARD_SORT;
+
+const COLUMN_COUNT = 5;
+
+function rankForRow(
+  entries: readonly ILeaderboardRow[],
+  index: number,
+  sortMode: LeaderboardSort,
+): number {
+  if (sortMode === sortByScore) {
+    return index + 1;
+  }
+
+  const current = entries[index];
+  if (current === undefined) {
+    return index + 1;
+  }
+
+  let rank = 0;
+  for (let i = 0; i <= index; i += 1) {
+    const row = entries[i];
+    if (row !== undefined && row.difficulty === current.difficulty) {
+      rank += 1;
+    }
+  }
+  return rank;
+}
+
+function appendGroupHeader(tbody: HTMLElement, difficulty: ILeaderboardRow['difficulty']): void {
+  const groupRow = document.createElement('tr');
+  groupRow.className = 'leaderboard__group';
+
+  const heading = document.createElement('th');
+  heading.scope = 'colgroup';
+  heading.colSpan = COLUMN_COUNT;
+  heading.textContent = difficultyLabel(difficulty);
+
+  groupRow.append(heading);
+  tbody.append(groupRow);
+}
+
+export function createTable(
+  entries: readonly ILeaderboardRow[],
+  sortMode: LeaderboardSort = sortByScore,
+): HTMLElement {
   if (entries.length === 0) {
     const empty = document.createElement('p');
     empty.className = 'leaderboard__empty';
@@ -12,7 +60,10 @@ export function createTable(entries: readonly ILeaderboardRow[]): HTMLElement {
 
   const table = document.createElement('table');
   table.className = 'leaderboard__table';
-  table.setAttribute('aria-label', 'Top players leaderboard');
+  table.setAttribute(
+    'aria-label',
+    sortMode === sortByDifficulty ? 'Top players by difficulty' : 'Top players by score',
+  );
 
   const thead = document.createElement('thead');
   const headRow = document.createElement('tr');
@@ -25,11 +76,18 @@ export function createTable(entries: readonly ILeaderboardRow[]): HTMLElement {
   thead.append(headRow);
 
   const tbody = document.createElement('tbody');
+  let previousDifficulty: ILeaderboardRow['difficulty'] | null = null;
+
   entries.forEach((entry, index) => {
+    if (sortMode === sortByDifficulty && entry.difficulty !== previousDifficulty) {
+      appendGroupHeader(tbody, entry.difficulty);
+      previousDifficulty = entry.difficulty;
+    }
+
     const row = document.createElement('tr');
 
     const rank = document.createElement('td');
-    rank.textContent = String(index + 1);
+    rank.textContent = String(rankForRow(entries, index, sortMode));
 
     const name = document.createElement('td');
     name.textContent = entry.name;

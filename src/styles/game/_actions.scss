@@ -4,7 +4,11 @@
 
 $brew-status-motion: 0.45s ease-out; // no exact $duration-* match
 $menu-panel-max: 22rem; // no exact $size-* match
+$menu-panel-max-tablet: 28rem; // no exact $size-* match
+$menu-panel-max-laptop: 34rem; // no exact $size-* match
+$menu-panel-max-desktop: 40rem; // no exact $size-* match
 $menu-chrome-icon: 1.35rem; // no exact $size-* match
+$menu-chrome-icon-laptop: 1.5rem; // no exact $size-* match
 $menu-primary-icon: 1.15rem; // no exact $size-* match
 
 .game__actions {
@@ -26,6 +30,18 @@ $menu-primary-icon: 1.15rem; // no exact $size-* match
 .menu-controls {
   width: min(100%, $menu-panel-max);
   gap: var(--size-125);
+
+  @include media-up('tablet') {
+    width: min(100%, $menu-panel-max-tablet);
+  }
+
+  @include media-up('laptop') {
+    width: min(100%, $menu-panel-max-laptop);
+  }
+
+  @include media-up('desktop') {
+    width: min(100%, $menu-panel-max-desktop);
+  }
 }
 
 .menu-controls__difficulty {
@@ -146,12 +162,33 @@ $menu-primary-icon: 1.15rem; // no exact $size-* match
 
   .menu-controls__btn-label {
     max-width: 100%;
+    // Grow with the button — do not ellipsis “Leaderboard” when the panel widens
+    overflow: visible;
+    text-overflow: clip;
   }
 
   @include media-up('tablet') {
     min-height: var(--size-8);
     padding: var(--size-125) var(--size-1);
     font-size: var(--font-size-label-medium);
+  }
+
+  @include media-up('laptop') {
+    min-height: var(--size-9);
+    gap: var(--size-1);
+    padding: var(--size-2) var(--size-125);
+    font-size: var(--font-size-label-large);
+    letter-spacing: 0.03em; // no exact $size-* match
+
+    .menu-controls__btn-icon {
+      font-size: $menu-chrome-icon-laptop;
+    }
+  }
+
+  @include media-up('desktop') {
+    min-height: var(--size-10);
+    padding: var(--size-2) var(--size-2);
+    font-size: var(--font-size-label-extra-large);
   }
 
   @include hover {

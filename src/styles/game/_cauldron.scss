@@ -1,63 +1,201 @@
 @use '../mixins' as *;
 
-.cauldron__list {
+$cauldron-float-motion: 2.4s ease-in-out infinite; // no exact $duration-* match
+$cauldron-float-stagger: 0.18s; // no exact $duration-* match
+$cauldron-bob: 0.25rem; // no exact $size-* match
+// Ellipse over the green brew mouth in game-cauldron.png (cos/sin — no scale distort)
+$cauldron-float-radius-x: 14%; // no exact $size-* match
+$cauldron-float-radius-y: 4%; // no exact $size-* match
+$cauldron-float-origin-y: 32%; // no exact $size-* match
+$cauldron-pot-min-height: 7rem; // no exact $size-* match
+$cauldron-fx-glow: 0.7s ease-out; // no exact $duration-* match
+$cauldron-fx-fail: 0.55s ease-out; // no exact $duration-* match
+$cauldron-time-bonus-motion: 1s ease-out; // no exact $duration-* match
+$board-shake-motion: 0.45s ease-out; // no exact $duration-* match
+
+.cauldron__pot {
+  position: relative;
   flex: 1 1 auto;
-  min-height: 0;
+  align-self: stretch;
+  width: 100%;
+  min-height: $cauldron-pot-min-height;
   display: flex;
-  flex-direction: column;
-  gap: var(--size-05);
-  overflow: hidden;
-
-  @include media-up('tablet') {
-    gap: var(--size-1);
-  }
-}
-
-.cauldron__item {
-  display: grid;
-  flex: 1 1 0;
-  grid-template-columns: auto minmax(0, 1fr);
-  grid-template-rows: auto auto;
-  column-gap: var(--size-05);
   align-items: center;
-  min-height: 0;
-  padding: var(--size-05);
-  border: var(--border-width) solid var(--color-outline);
-  border-radius: var(--corner-medium);
-  background-color: var(--color-surface-low);
-
-  @include media-up('tablet') {
-    column-gap: var(--size-1);
-    padding: var(--size-1);
-  }
-}
-
-.cauldron__icon {
-  grid-row: 1 / span 2;
-  display: flex;
-  min-height: 0;
-}
-
-.cauldron__name {
-  font-size: var(--font-size-label-medium);
-  font-weight: var(--font-weight-medium);
+  justify-content: center;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  border-radius: var(--corner-large);
 
   @include media-up('tablet') {
-    font-size: var(--font-size-body-medium);
+    min-height: var(--size-14);
   }
 }
 
-.cauldron__stats {
+.cauldron__art {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  opacity: 0;
+  transition: opacity var(--duration-glow) var(--easing-standard);
+  pointer-events: none;
+  user-select: none;
+}
+
+html.ui-surfaces-ready .cauldron__art {
+  opacity: 1;
+}
+
+.cauldron__float {
+  position: absolute;
+  z-index: 1;
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--size-025);
-  font-size: var(--font-size-label-small);
+  align-items: center;
+  justify-content: center;
+  padding: var(--size-05);
+  font-size: var(--size-3);
+  --angle: calc(var(--i) * 360deg / var(--count) - 90deg);
+  left: calc(50% + cos(var(--angle)) * #{$cauldron-float-radius-x});
+  top: calc(#{$cauldron-float-origin-y} + sin(var(--angle)) * #{$cauldron-float-radius-y});
+  transform: translate(-50%, -50%);
+  animation: cauldron-float-bob $cauldron-float-motion;
+  animation-delay: calc(var(--i) * #{$cauldron-float-stagger});
+  pointer-events: none;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    border-radius: var(--corner-full);
+    background-color: rgb(5 4 10 / 55%); // no exact $opacity-* match
+    box-shadow: 0 0 var(--size-1) rgb(5 4 10 / 40%); // no exact $opacity-* match
+  }
 
   @include media-up('tablet') {
-    gap: var(--size-05);
-    font-size: var(--font-size-label-small);
+    font-size: var(--size-4);
+  }
+
+  .ingredient-icon {
+    position: relative;
+    z-index: 1;
+    font-size: 1em;
+  }
+}
+
+@keyframes cauldron-float-bob {
+  0%,
+  100% {
+    transform: translate(-50%, -50%);
+  }
+
+  50% {
+    transform: translate(-50%, calc(-50% - #{$cauldron-bob}));
+  }
+}
+
+.cauldron__time-bonus {
+  position: absolute;
+  left: 50%;
+  top: $cauldron-float-origin-y;
+  z-index: 4;
+  margin: 0;
+  transform: translate(-50%, -50%);
+  font-size: var(--font-size-headline-small);
+  font-weight: var(--font-weight-bold);
+  // Gold (not green) so +Ns stays visible on the green brew-success glow
+  color: var(--color-primary-low);
+  text-shadow:
+    0 0 var(--size-05) var(--color-bg),
+    0 0 var(--size-1) rgb(0 0 0 / 85%),
+    0 var(--border-width) 0 var(--color-bg);
+  pointer-events: none;
+  animation: cauldron-time-bonus-float $cauldron-time-bonus-motion;
+}
+
+@keyframes cauldron-time-bonus-float {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -20%);
+  }
+
+  20% {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -120%);
+  }
+}
+
+.game__cauldron--brew-success {
+  animation: cauldron-brew-success $cauldron-fx-glow;
+}
+
+@keyframes cauldron-brew-success {
+  0%,
+  100% {
+    border-color: var(--color-outline);
+    box-shadow: var(--shadow-panel), var(--shadow-inset-rim);
+  }
+
+  40% {
+    border-color: var(--color-param-zone);
+    box-shadow:
+      inset 0 0 var(--size-4) var(--color-param-zone),
+      0 0 var(--size-4) rgb(62 207 142 / 45%);
+  }
+}
+
+.game__cauldron--brew-fail {
+  animation: cauldron-brew-fail $cauldron-fx-fail;
+}
+
+@keyframes cauldron-brew-fail {
+  0%,
+  100% {
+    border-color: var(--color-outline);
+    box-shadow: none;
+  }
+
+  25% {
+    border-color: var(--color-error);
+    box-shadow: inset 0 0 var(--size-5) var(--color-error);
+  }
+
+  55% {
+    border-color: var(--color-error);
+    box-shadow: inset 0 0 var(--size-8) transparent;
+  }
+}
+
+.game__board--shake {
+  animation: game-board-shake $board-shake-motion;
+}
+
+@keyframes game-board-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  20% {
+    transform: translateX(calc(var(--size-05) * -1));
+  }
+
+  40% {
+    transform: translateX(var(--size-05));
+  }
+
+  60% {
+    transform: translateX(calc(var(--size-025) * -1));
+  }
+
+  80% {
+    transform: translateX(var(--size-025));
   }
 }

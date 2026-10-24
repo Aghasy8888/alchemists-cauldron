@@ -1,7 +1,22 @@
 // Icon fills live in CSS so themes can override without editing SVG markup.
 // Local color tokens — reused only in this file (see token-frequency-and-comments).
-$ingredient-ember: #f48c06; // no exact $color-* match
-$ingredient-lilac: #e0aaff; // no exact $color-* match
+$ingredient-ember: #e07a1a; // no exact $color-* match
+$ingredient-lilac: #c9a0ef; // no exact $color-* match
+$ingredient-frost-a: #7ed8e8; // no exact $color-* match
+$ingredient-frost-b: #3eb8d0; // no exact $color-* match
+$ingredient-frost-c: #b8ecf5; // no exact $color-* match
+$ingredient-root: #5d8f42; // no exact $color-* match
+$ingredient-root-stroke: #2f5235; // no exact $color-* match
+$ingredient-acid-metal: #8b949e; // no exact $color-* match
+$ingredient-acid-glow: #7bc9a0; // no exact $color-* match
+$ingredient-void: #1a0033; // no exact $color-* match
+$ingredient-void-mid: #6b24a8; // no exact $color-* match
+$ingredient-phoenix: #c92a0a; // no exact $color-* match
+$ingredient-slime: #6fa810; // no exact $color-* match
+$ingredient-slime-deep: #0f2800; // no exact $color-* match
+$ingredient-tears: #d4550f; // no exact $color-* match
+$ingredient-fairy: #b86cf0; // no exact $color-* match
+$opacity-icon-highlight: 0.85; // no exact $opacity-* match
 
 .ingredient-icon {
   display: block;
@@ -14,7 +29,7 @@ $ingredient-lilac: #e0aaff; // no exact $color-* match
 
 .ingredient-icon--dragon-tears {
   .ingredient-icon__primary {
-    fill: #e85d04; // no exact $color-* match
+    fill: $ingredient-tears;
   }
 
   .ingredient-icon__secondary {
@@ -24,7 +39,7 @@ $ingredient-lilac: #e0aaff; // no exact $color-* match
 
 .ingredient-icon--fairy-dust {
   .ingredient-icon__primary {
-    fill: #c77dff; // no exact $color-* match
+    fill: $ingredient-fairy;
   }
 
   .ingredient-icon__secondary {
@@ -34,25 +49,25 @@ $ingredient-lilac: #e0aaff; // no exact $color-* match
 
 .ingredient-icon--frost-lotus {
   .ingredient-icon__primary {
-    fill: #90e0ef; // no exact $color-* match
+    fill: $ingredient-frost-a;
   }
 
   .ingredient-icon__secondary {
-    fill: #48cae4; // no exact $color-* match
+    fill: $ingredient-frost-b;
   }
 
   .ingredient-icon__accent {
-    fill: #caf0f8; // no exact $color-* match
+    fill: $ingredient-frost-c;
   }
 }
 
 .ingredient-icon--mandrake-root {
   .ingredient-icon__primary {
-    fill: #6a994e; // no exact $color-* match
+    fill: $ingredient-root;
   }
 
   .ingredient-icon__stroke {
-    stroke: #386641; // no exact $color-* match
+    stroke: $ingredient-root-stroke;
   }
 }
 
@@ -62,21 +77,21 @@ $ingredient-lilac: #e0aaff; // no exact $color-* match
   }
 
   .ingredient-icon__secondary {
-    fill: #adb5bd; // no exact $color-* match
+    fill: $ingredient-acid-metal;
   }
 
   .ingredient-icon__accent {
-    fill: #95d5b2; // no exact $color-* match
+    fill: $ingredient-acid-glow;
   }
 }
 
 .ingredient-icon--essence-of-the-void {
   .ingredient-icon__primary {
-    fill: #240046; // no exact $color-* match
+    fill: $ingredient-void;
   }
 
   .ingredient-icon__secondary {
-    fill: #7b2cbf; // no exact $color-* match
+    fill: $ingredient-void-mid;
   }
 
   .ingredient-icon__accent {
@@ -86,7 +101,7 @@ $ingredient-lilac: #e0aaff; // no exact $color-* match
 
 .ingredient-icon--phoenix-feather {
   .ingredient-icon__primary {
-    fill: #dc2f02; // no exact $color-* match
+    fill: $ingredient-phoenix;
   }
 
   .ingredient-icon__stroke {
@@ -96,11 +111,11 @@ $ingredient-lilac: #e0aaff; // no exact $color-* match
 
 .ingredient-icon--toad-slime {
   .ingredient-icon__primary {
-    fill: #80b918; // no exact $color-* match
+    fill: $ingredient-slime;
   }
 
   .ingredient-icon__accent {
-    fill: #143601; // no exact $color-* match
+    fill: $ingredient-slime-deep;
   }
 }
 
@@ -111,6 +126,7 @@ $ingredient-lilac: #e0aaff; // no exact $color-* match
   justify-content: center;
   // no exact $size-* match for vh middle stop
   font-size: clamp(var(--size-2), 2.8vh, var(--size-3));
+  filter: drop-shadow(0 0 var(--size-05) rgb(232 226 212 / 15%));
 }
 
 .param-icon__svg {
@@ -136,7 +152,7 @@ $ingredient-lilac: #e0aaff; // no exact $color-* match
 
   .param-icon__highlight {
     fill: var(--color-param-density-highlight);
-    opacity: 0.85; // no exact $opacity-* match
+    opacity: $opacity-icon-highlight;
   }
 }
 
@@ -148,4 +164,27 @@ $ingredient-lilac: #e0aaff; // no exact $color-* match
   .param-icon__core {
     fill: var(--color-param-magic-highlight);
   }
+}
+
+.ui-icon {
+  display: block;
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+  line-height: 0;
+}
+
+.ui-icon__svg {
+  display: block;
+  width: 1em;
+  height: 1em;
+}
+
+.ui-icon__glyph {
+  fill: currentColor;
+  stroke: currentColor;
+}
+
+.ui-icon--help .ui-icon__glyph {
+  fill: none;
 }

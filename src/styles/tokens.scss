@@ -1,59 +1,61 @@
-// Base — Place: white → bg, text-color; black → gradient
-$color-white: #ffffff;
-$color-black: #000000;
-$color-shadow: #111111; // hard drop shadow (Figma #111)
+// Midnight Alchemy HUD — distinct from minigames cream/yellow tokens.
+// Base — Place: white → bg/text highlights; black → gradient depths
+$color-white: #f7f3ea;
+$color-black: #08070b;
+$color-shadow: #05040a;
 
 // General
-$color-bg: #f9f8f3; // base background
-$color-on-bg: #5f5d75; // base text-color
-$color-on-bg-low: #737380; // text-color for additional info
-$color-bg-footer: #1e1b3a; // footer background
-$color-bg-footer-low: #2a264f; // social-link
-$color-bg-footer-lowest: #3c376e; // social-link hover
-$color-on-bg-footer: #b9b5c9; // footer text-color
-$color-surface: #fff9e5; // button-hover
-$color-surface-low: #fffcf5; // input focus
-$color-primary: #ffd02b; // button, text-color
-$color-primary-low: #fde047; // sort-action
-$color-primary-high: #e5bb00; // button-hover
-$color-on-primary: #242145; // primary text-color
-$color-secondary: #f0eeff; // badge
-$color-tertiary: #3a2ebf; // table header, button hover
-$color-like: #ff4b4b; // like icon
-$color-error: #b3261e; // validation error
-$color-price-free: #0b8a8f; // price
+$color-bg: #0e0c14; // base background — obsidian
+$color-on-bg: #e8e2d4; // base text — parchment
+$color-on-bg-low: #9a9284; // muted text
+$color-bg-footer: #16131f;
+$color-bg-footer-low: #221e30;
+$color-bg-footer-lowest: #2e293d;
+$color-on-bg-footer: #c4b8a8;
+$color-surface: #1c1826; // raised panel / hover
+$color-surface-low: #15121d; // recessed / input
+$color-primary: #c9a227; // burnished gold chrome
+$color-primary-low: #d4b84a;
+$color-primary-high: #a8861c;
+$color-on-primary: #1a1410;
+$color-secondary: #2a2438; // badge / soft fill
+$color-tertiary: #7d6bb8; // amethyst accent
+$color-like: #e0455a;
+$color-error: #c73e3a;
+$color-price-free: #3d9a8f;
 
-// Cauldron parameters — same hue in shelf chips, recipe ranges, and bars (example screen)
-$color-param-temperature: #c62828; // Temperature / T — red
-$color-param-density: #1565c0; // Density / D — blue
-$color-param-magic: #7b1fa2; // Magic Power / M — purple
-$color-param-zone: #52b788; // recipe target zone on bars (green)
-$color-param-zone-strong: #2d6a4f; // in-zone / brew success darker green
-$color-param-icon-muted: #9e9e9e; // thermometer outline
-$color-param-density-highlight: #90caf9; // droplet glare
-$color-param-magic-highlight: #e1bee7; // star core
+// Cauldron parameters — keep T red / D blue / M purple / zone green (example-screens)
+$color-param-temperature: #e23d3d;
+$color-param-density: #2b7fd4;
+$color-param-magic: #9b4dca;
+$color-param-zone: #3ecf8e;
+$color-param-zone-strong: #1f8a5c;
+$color-param-tolerance: #ffe566; // brew ±tolerance — bright lemon for contrast on T/D/M tracks
+$color-param-icon-muted: #8a8494;
+$color-param-density-highlight: #7eb8f0;
+$color-param-magic-highlight: #d4a8ef;
 
-// Parameter bar track gradients (cool → hot / deep → pale)
-$color-bar-temperature-start: #90caf9;
-$color-bar-temperature-mid: #ef9a9a;
-$color-bar-density-start: #0d47a1;
-$color-bar-density-mid: #42a5f5;
-$color-bar-density-end: #bbdefb;
-$color-bar-magic-start: #4a148c;
-$color-bar-magic-mid: #ab47bc;
+// Parameter bar track gradients
+$color-bar-temperature-start: #6a9fd4;
+$color-bar-temperature-mid: #e89090;
+$color-bar-density-start: #0a3a7a;
+$color-bar-density-mid: #3d92e0;
+$color-bar-density-end: #a8d4f7;
+$color-bar-magic-start: #3a0a6e;
+$color-bar-magic-mid: #b05cd4;
 
-// Borders — Place: border
-$color-outline: #e5e7eb;
-$color-outline-variant: #d2d2d2;
+// Borders
+$color-outline: #3d3648;
+$color-outline-variant: #4a4358;
 
-// Additional — Place: avatar bg
-$color-avatar-random-1: #e9eef6;
-$color-avatar-random-2: #a3e2c9;
-$color-avatar-random-3: #bce3ff;
-$color-avatar-random-4: #ffc6ff;
-$color-avatar-random-5: #e8dff5;
+// Additional — avatar accents (unused in game UI; kept for token set completeness)
+$color-avatar-random-1: #2a3344;
+$color-avatar-random-2: #1f4a3c;
+$color-avatar-random-3: #1e3a52;
+$color-avatar-random-4: #4a2a4e;
+$color-avatar-random-5: #3a2f4a;
 
-// Font families — Inter / Roboto stacks (load webfonts when tooling is ready)
+// Font families
 $font-family-inter: 'Inter', system-ui, sans-serif;
 $font-family-roboto: 'Roboto', system-ui, sans-serif;
 $font-family-text: $font-family-inter;
@@ -80,7 +82,7 @@ $font-weight-bold: 700;
 $font-weight-extra-bold: 800;
 
 // Sizes
-$size-025: 0.125rem; // 2px — tight mobile gaps (shelf / recipe / chips)
+$size-025: 0.125rem;
 $size-05: 0.25rem;
 $size-1: 0.5rem;
 $size-125: 0.625rem;
@@ -102,9 +104,9 @@ $size-15: 7.5rem;
 $size-375: 1.875rem;
 $size-6875: 6.875rem;
 
-// Space scale — space($step) = $space-unit * $step (see functions.scss)
-$space-unit: 0.5rem; // 8px
-$space-max-step: 80; // up to 40rem / 640px
+// Space scale
+$space-unit: 0.5rem;
+$space-max-step: 80;
 
 // Corners
 $corner-extra-small: 4px;
@@ -128,25 +130,42 @@ $btn-padding-medium-mobile: $size-125 0.8rem; // no exact $size-* match
 $btn-padding-small: $size-1 $size-2;
 $btn-padding-icon: $size-1;
 
-// Shadows
-$shadow-level-1: 4px 4px $color-on-primary;
-$shadow-level-2: 6px 6px $color-on-primary;
-$shadow-level-3: 8px 8px $color-on-primary;
-$shadow-level-3-dark: 8px 8px 0 0 $color-shadow;
+// Shadows — multi-layer ambient (not minigames hard offset shadows)
+$shadow-panel:
+  0 4px 24px rgb(5 4 10 / 55%),
+  0 0 0 1px rgb(201 162 39 / 12%);
+$shadow-panel-raised:
+  0 8px 32px rgb(5 4 10 / 65%),
+  0 0 20px rgb(125 107 184 / 15%);
+$shadow-inset-rim:
+  inset 0 1px 0 rgb(232 226 212 / 8%),
+  inset 0 -2px 8px rgb(5 4 10 / 35%);
+$shadow-focus-glow:
+  0 0 0 2px rgb(125 107 184 / 55%),
+  0 0 16px rgb(125 107 184 / 35%);
 
-// Breakpoints — media-query widths only (layout changes). Mobile-first: base = mobile.
+// Legacy level aliases → layered alchemy shadows (consumers keep --shadow-level-*)
+$shadow-level-1: $shadow-panel;
+$shadow-level-2: $shadow-panel-raised;
+$shadow-level-3: $shadow-panel-raised;
+$shadow-level-3-dark: 0 10px 36px 0 $color-shadow;
+
+// Motion
+$duration-hover: 0.2s;
+$duration-glow: 0.35s;
+$easing-standard: ease;
+
+// Breakpoints
 $breakpoints: (
   'mobile': 375px,
   'phablet': 540px,
   'tablet-sm': 735px,
   'tablet': 769px,
+  'laptop': 1024px,
   'desktop': 1200px,
   'desktop-lg': 1500px,
   'desktop-wide': 1830px,
 );
 
-// Content shell max width — Pixel Perfect at 1920; ≥1921 stays centered (side space grows).
 $layout-max-width: 1920px;
-
-// Full viewport height for the no-scroll play shell (html / body / #app / .game).
 $layout-viewport-height: 100dvh;

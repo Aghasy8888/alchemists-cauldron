@@ -7,7 +7,8 @@ export interface ICheckedRanges {
   magicPower: IRecipeRange;
 }
 
-function expandRange(range: IRecipeRange, tolerance: number): IRecipeRange {
+/** Expand one recipe range by ±tolerance. */
+export function expandRecipeRange(range: IRecipeRange, tolerance: number): IRecipeRange {
   return {
     min: range.min - tolerance,
     max: range.max + tolerance,
@@ -17,9 +18,9 @@ function expandRange(range: IRecipeRange, tolerance: number): IRecipeRange {
 /** Expand each recipe range by ±tolerance (Level 1 Medium = 8). */
 export function expandRecipeRanges(recipe: IRecipe, tolerance: number): ICheckedRanges {
   return {
-    temperature: expandRange(recipe.temperature, tolerance),
-    density: expandRange(recipe.density, tolerance),
-    magicPower: expandRange(recipe.magicPower, tolerance),
+    temperature: expandRecipeRange(recipe.temperature, tolerance),
+    density: expandRecipeRange(recipe.density, tolerance),
+    magicPower: expandRecipeRange(recipe.magicPower, tolerance),
   };
 }
 

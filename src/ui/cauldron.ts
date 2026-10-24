@@ -1,58 +1,45 @@
+import cauldronArtUrl from '../assets/images/game-cauldron.png';
 import { createIngredientIcon } from '../assets/ingredient-icons';
-import { GAME_STATUS, type IGameState } from '../data/types';
-import { formatSigned } from '../utils/format-signed';
+import type { IGameState } from '../data/types';
 
-const { menu } = GAME_STATUS;
+function createPotArt(): HTMLImageElement {
+  const art = document.createElement('img');
+  art.className = 'cauldron__art';
+  art.src = cauldronArtUrl;
+  art.alt = '';
+  art.setAttribute('aria-hidden', 'true');
+  art.draggable = false;
+  return art;
+}
 
 export function renderCauldron(container: HTMLElement, state: IGameState): void {
   container.replaceChildren();
 
-  const title = document.createElement('h2');
-  title.className = 'cauldron__title';
-  title.textContent = 'Cauldron';
-  container.append(title);
+  const pot = document.createElement('div');
+  pot.className = 'cauldron__pot';
+  pot.append(createPotArt());
 
-  const list = document.createElement('ol');
-  list.className = 'cauldron__list';
-  list.setAttribute('aria-label', 'Ingredients in the cauldron');
+  const { cauldronIngredients } = state;
 
-  if (state.status === menu || state.cauldronIngredients.length === 0) {
-    const empty = document.createElement('p');
-    empty.className = 'cauldron__empty';
-    empty.textContent =
-      state.status === menu ? 'Empty until you start.' : 'Empty — add ingredients from the shelf.';
-    container.append(empty);
+  if (cauldronIngredients.length === 0) {
+    pot.setAttribute('aria-label', 'Cauldron is empty');
+    container.append(pot);
     return;
   }
 
-  for (const ingredient of state.cauldronIngredients) {
-    const item = document.createElement('li');
-    item.className = 'cauldron__item';
+  const names = cauldronIngredients.map((ingredient) => ingredient.name).join(', ');
+  pot.setAttribute('aria-label', `Ingredients in the cauldron: ${names}`);
 
-    const iconWrap = document.createElement('span');
-    iconWrap.className = 'cauldron__icon';
-    iconWrap.append(createIngredientIcon(ingredient.icon));
+  const count = cauldronIngredients.length;
+  cauldronIngredients.forEach((ingredient, index) => {
+    const float = document.createElement('span');
+    float.className = 'cauldron__float';
+    float.style.setProperty('--i', String(index));
+    float.style.setProperty('--count', String(count));
+    float.setAttribute('aria-hidden', 'true');
+    float.append(createIngredientIcon(ingredient.icon));
+    pot.append(float);
+  });
 
-    const name = document.createElement('span');
-    name.className = 'cauldron__name';
-    name.textContent = ingredient.name;
-
-    const stats = document.createElement('span');
-    stats.className = 'cauldron__stats';
-    const temp = document.createElement('span');
-    temp.className = 'param-chip param-chip--temperature';
-    temp.textContent = `T ${formatSigned(ingredient.temperature)}`;
-    const density = document.createElement('span');
-    density.className = 'param-chip param-chip--density';
-    density.textContent = `D ${formatSigned(ingredient.density)}`;
-    const magic = document.createElement('span');
-    magic.className = 'param-chip param-chip--magic';
-    magic.textContent = `M ${formatSigned(ingredient.magicPower)}`;
-    stats.append(temp, density, magic);
-
-    item.append(iconWrap, name, stats);
-    list.append(item);
-  }
-
-  container.append(list);
+  container.append(pot);
 }

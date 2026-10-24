@@ -1,5 +1,12 @@
-import { loadAllLeaderboards } from '../../storage/leaderboard';
+import {
+  LEADERBOARD_SORT,
+  loadAllLeaderboards,
+  sortLeaderboardRows,
+  type LeaderboardSort,
+} from '../../storage/leaderboard';
 import { createTable } from './table';
+
+const { score: sortByScore, difficulty: sortByDifficulty } = LEADERBOARD_SORT;
 
 export function renderLeaderboard(
   container: HTMLElement,
@@ -21,8 +28,45 @@ export function renderLeaderboard(
   title.className = 'leaderboard__title';
   title.textContent = 'Top Alchemists';
 
+  const hint = document.createElement('p');
+  hint.className = 'leaderboard__hint';
+  hint.textContent = 'Each difficulty has its own Top-10. Easy scores never replace Hard scores.';
+
   const entries = loadAllLeaderboards();
-  dialog.append(title, createTable(entries));
+  const difficultyCount = new Set(entries.map((entry) => entry.difficulty)).size;
+  const canSortByDifficulty = difficultyCount >= 2;
+  let sortMode: LeaderboardSort = sortByScore;
+
+  const body = document.createElement('div');
+  body.className = 'leaderboard__body';
+
+  const renderBody = (): void => {
+    body.replaceChildren();
+
+    if (entries.length === 0 || !canSortByDifficulty) {
+      body.append(createTable(sortLeaderboardRows(entries, sortByScore), sortByScore));
+      return;
+    }
+
+    const toolbar = document.createElement('div');
+    toolbar.className = 'leaderboard__toolbar';
+
+    const sortButton = document.createElement('button');
+    sortButton.type = 'button';
+    sortButton.className = 'leaderboard__button leaderboard__button--sort';
+    const difficultyMode = sortMode === sortByDifficulty;
+    sortButton.textContent = difficultyMode ? 'Sort by score' : 'Sort by difficulty';
+    sortButton.setAttribute('aria-pressed', String(difficultyMode));
+    sortButton.addEventListener('click', () => {
+      sortMode = difficultyMode ? sortByScore : sortByDifficulty;
+      renderBody();
+    });
+
+    toolbar.append(sortButton);
+    body.append(toolbar, createTable(sortLeaderboardRows(entries, sortMode), sortMode));
+  };
+
+  renderBody();
 
   const actions = document.createElement('div');
   actions.className = 'leaderboard__actions';
@@ -41,6 +85,6 @@ export function renderLeaderboard(
   backButton.addEventListener('click', options.onBack);
 
   actions.append(clearButton, backButton);
-  dialog.append(actions);
+  dialog.append(title, hint, body, actions);
   container.append(dialog);
 }

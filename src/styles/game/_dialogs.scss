@@ -22,7 +22,8 @@
 }
 
 .leaderboard {
-  max-width: space(56);
+  width: fit-content;
+  max-width: 96%; // 80% of the screen width - no exact $size-* match
   max-height: 100%;
   overflow: hidden;
 }
@@ -34,6 +35,8 @@
 }
 
 .leaderboard__title,
+.leaderboard__hint,
+.leaderboard__toolbar,
 .leaderboard__actions,
 .help-dialog__title,
 .help-dialog__button {

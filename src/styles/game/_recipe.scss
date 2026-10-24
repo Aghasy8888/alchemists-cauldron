@@ -2,7 +2,7 @@
 
 .recipe-panel__counter {
   flex-shrink: 0;
-  font-size: var(--font-size-body-medium);
+  font-size: var(--font-size-body-small); // 0.875rem = 14px
   font-weight: var(--font-weight-medium);
   color: var(--color-on-bg-low);
 

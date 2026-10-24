@@ -38,8 +38,14 @@ $board-shake-motion: 0.45s ease-out; // no exact $duration-* match
   height: 100%;
   object-fit: cover;
   object-position: center;
+  opacity: 0;
+  transition: opacity var(--duration-glow) var(--easing-standard);
   pointer-events: none;
   user-select: none;
+}
+
+html.ui-surfaces-ready .cauldron__art {
+  opacity: 1;
 }
 
 .cauldron__float {

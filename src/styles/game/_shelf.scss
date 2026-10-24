@@ -42,17 +42,33 @@
   border: none;
   border-radius: var(--corner-medium);
   background-color: transparent;
-  background-image: var(--img-shelf-item);
-  background-repeat: no-repeat;
-  background-position: center;
-  // Stretch so the full frame is always visible (no crop) as the card aspect changes
-  background-size: 100% 100%;
   color: var(--color-on-bg);
   box-shadow: none;
   cursor: pointer;
   text-align: center;
-  transition: filter var(--duration-hover) var(--easing-standard);
   @include interactive-lift;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    border-radius: inherit;
+    background-image: var(--img-shelf-item);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
+    opacity: 0;
+    transition:
+      opacity var(--duration-glow) var(--easing-standard),
+      filter var(--duration-hover) var(--easing-standard);
+    pointer-events: none;
+  }
+
+  > * {
+    position: relative;
+    z-index: 1;
+  }
 
   @include media-up('tablet') {
     gap: var(--size-05);
@@ -60,25 +76,27 @@
   }
 
   @include hover {
-    filter: brightness(1.12);
+    &::before {
+      filter: brightness(1.12);
+    }
 
     .shelf-card__tooltip {
       visibility: visible;
       opacity: 1;
-      // Keep tooltip readable when the card brightens
-      filter: brightness(0.89);
     }
   }
 
   &:focus-visible {
     outline: none;
     box-shadow: var(--shadow-focus-glow);
-    filter: brightness(1.12);
+
+    &::before {
+      filter: brightness(1.12);
+    }
 
     .shelf-card__tooltip {
       visibility: visible;
       opacity: 1;
-      filter: brightness(0.89);
     }
   }
 
@@ -95,13 +113,23 @@
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
-    filter: none;
+
+    &::before {
+      filter: none;
+    }
   }
+}
+
+html.ui-surfaces-ready .shelf-card::before {
+  opacity: 1;
 }
 
 .shelf-card--empty {
   opacity: $opacity-muted;
-  filter: grayscale(0.35) brightness(0.85);
+
+  &::before {
+    filter: grayscale(0.35) brightness(0.85);
+  }
 }
 
 .shelf-card__badge {

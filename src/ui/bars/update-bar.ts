@@ -2,6 +2,11 @@ import { expandRecipeRange, isInRange } from '../../logic/brew-check';
 import type { IRecipeRange } from '../../data/types';
 import { toPercent } from '../../utils/bar-scale';
 
+function formatBarValue(value: number): string {
+  const rounded = Math.round(value * 10) / 10;
+  return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(1);
+}
+
 function positionBand(band: HTMLElement, range: IRecipeRange): void {
   const left = toPercent(range.min);
   const right = toPercent(range.max);
@@ -23,14 +28,16 @@ export function updateBar(
   row.classList.toggle('param-bar--in-zone', inZone);
   row.classList.toggle('param-bar--in-tolerance', inTolerance);
 
+  const displayValue = formatBarValue(value);
+
   const valueLabel = row.querySelector('.param-bar__value');
   if (valueLabel !== null) {
-    valueLabel.textContent = String(value);
+    valueLabel.textContent = displayValue;
   }
 
   const track = row.querySelector('.param-bar__track');
   if (track !== null) {
-    track.setAttribute('aria-valuenow', String(value));
+    track.setAttribute('aria-valuenow', displayValue);
   }
 
   const toleranceBand = row.querySelector<HTMLElement>('.param-bar__tolerance');

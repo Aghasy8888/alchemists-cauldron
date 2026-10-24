@@ -9,7 +9,7 @@ function hasIds(ingredients: readonly IIngredient[], ...ids: string[]): boolean 
 }
 
 function scale(value: number, factor: number): number {
-  return value * factor;
+  return Math.round(value * factor * 10) / 10;
 }
 
 /**

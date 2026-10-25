@@ -1,11 +1,11 @@
 @use '../mixins' as *;
 @use '../functions' as *;
 @use '../tokens' as *;
+@use './locals' as *;
 
 // Play board: one no-scroll viewport (375–1920). Dialogs may scroll later; the board does not.
 
 $viewport-short-max-height: 700px; // no exact $breakpoints match (height MQ)
-$opacity-overlay: 0.78; // no exact $opacity-* match
 $ambient-glow-size: 55%; // no exact $size-* match
 
 .game {

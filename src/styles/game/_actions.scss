@@ -9,6 +9,7 @@ $menu-panel-max-desktop: 40rem; // no exact $size-* match
 $menu-chrome-icon: 1.35rem; // no exact $size-* match
 $menu-chrome-icon-laptop: 1.5rem; // no exact $size-* match
 $menu-primary-icon: 1.15rem; // no exact $size-* match
+$opacity-menu-scrim: 0.94; // no exact $opacity-* match — denser than dialog overlay
 
 .game__actions {
   display: flex;
@@ -33,20 +34,28 @@ $menu-primary-icon: 1.15rem; // no exact $size-* match
     position: absolute;
     z-index: -1;
     inset-inline: 0;
-    top: calc(-1 * var(--size-6));
+    top: calc(-1 * var(--size-10));
     bottom: 0;
     pointer-events: none;
-    background: linear-gradient(
+    background-color: rgb(8 7 11 / #{$opacity-menu-scrim});
+    -webkit-mask-image: linear-gradient(
       to bottom,
       transparent 0%,
-      rgb(8 7 11 / 0.25) 45%,
-      rgb(8 7 11 / #{$opacity-overlay}) 75%,
-      rgb(8 7 11 / #{$opacity-overlay}) 100%
+      rgb(0 0 0 / 0.4) 18%,
+      black 32%,
+      black 100%
     );
-    box-shadow:
-      0 -1.25rem 2.5rem rgb(8 7 11 / 0.65),
-      // no exact $shadow-* match
-      0 -0.5rem 1.5rem rgb(201 162 39 / 10%); // no exact $shadow-* match
+    mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgb(0 0 0 / 0.4) 18%,
+      black 32%,
+      black 100%
+    );
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
   }
 }
 

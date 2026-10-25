@@ -2,7 +2,7 @@ import { useGameTimer } from '../hooks/use-game-timer';
 import { useKeyboardShortcuts } from '../hooks/use-keyboard-shortcuts';
 import { useVisibilityPause } from '../hooks/use-visibility-pause';
 import { addIngredient } from '../logic/add-ingredient';
-import { BREW_OUTCOME, brew, type BrewOutcome } from '../logic/brew';
+import { BREW_OUTCOME, brew } from '../logic/brew';
 import { applyEndChecks } from '../logic/game-over';
 import { pauseRun, resumeRun } from '../logic/pause';
 import { pourOut } from '../logic/pour-out';
@@ -47,7 +47,6 @@ const { none, leaderboard, clearConfirm, help, settings } = UI_OVERLAY;
 
 export function createApp(root: HTMLElement): void {
   let state: IGameState = createMenuState();
-  let lastOutcome: BrewOutcome | null = null;
   let uiOverlay: UiOverlay = none;
   let scoreSubmitted = false;
   let previousStatus: typeof menu | typeof playing | typeof paused | typeof gameOver = menu;
@@ -148,7 +147,6 @@ export function createApp(root: HTMLElement): void {
   };
 
   const playAgain = (): void => {
-    lastOutcome = null;
     scoreSubmitted = false;
     uiOverlay = none;
     state = startNewGame(state);
@@ -172,7 +170,6 @@ export function createApp(root: HTMLElement): void {
     }
     const result = brew(state);
     state = result.state;
-    lastOutcome = result.outcome;
     persistIfUnfinished();
     render();
     const timeBonusSec =
@@ -184,7 +181,6 @@ export function createApp(root: HTMLElement): void {
     if (state.status !== playing) {
       return;
     }
-    lastOutcome = null;
     state = pourOut(state);
     persistIfUnfinished();
     render();
@@ -201,7 +197,6 @@ export function createApp(root: HTMLElement): void {
   };
 
   const exitToMenu = (): void => {
-    lastOutcome = null;
     scoreSubmitted = false;
     uiOverlay = none;
     clearSave();
@@ -216,7 +211,6 @@ export function createApp(root: HTMLElement): void {
       render();
       return;
     }
-    lastOutcome = null;
     scoreSubmitted = false;
     uiOverlay = none;
     state = restored;
@@ -318,10 +312,8 @@ export function createApp(root: HTMLElement): void {
       canBrew: canUseCauldron,
       canPourOut: canUseCauldron,
       canContinue: state.status === menu && hasContinuableSave(),
-      lastOutcome,
       onStart: () => {
         unlockAudio();
-        lastOutcome = null;
         scoreSubmitted = false;
         uiOverlay = none;
         state = startNewGame(state);
@@ -352,7 +344,6 @@ export function createApp(root: HTMLElement): void {
     if (state.status !== playing) {
       return;
     }
-    lastOutcome = null;
     const before = state.cauldronIngredients;
     const afterAdd = addIngredient(state, ingredientId);
     if (afterAdd === state) {

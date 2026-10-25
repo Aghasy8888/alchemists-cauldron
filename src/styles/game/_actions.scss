@@ -2,7 +2,6 @@
 @use '../functions' as *;
 @use './locals' as *;
 
-$brew-status-motion: 0.45s ease-out; // no exact $duration-* match
 $menu-panel-max: 22rem; // no exact $size-* match
 $menu-panel-max-tablet: 28rem; // no exact $size-* match
 $menu-panel-max-laptop: 34rem; // no exact $size-* match
@@ -257,38 +256,4 @@ $menu-primary-icon: 1.15rem; // no exact $size-* match
     border-color: var(--color-tertiary);
     color: var(--color-white);
   }
-}
-
-@keyframes brew-status-pulse {
-  0% {
-    opacity: 0;
-    transform: scale(0.96); // no exact $size-* match
-  }
-
-  40% {
-    opacity: 1;
-    transform: scale(1.03); // no exact $size-* match
-  }
-
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.brew-controls__status {
-  margin: 0;
-  font-size: var(--font-size-body-small);
-  font-weight: var(--font-weight-medium);
-  animation: brew-status-pulse $brew-status-motion;
-}
-
-.brew-controls__status--success {
-  color: var(--color-param-zone);
-  text-shadow: 0 0 var(--size-1) rgb(62 207 142 / 45%);
-}
-
-.brew-controls__status--failure {
-  color: var(--color-error);
-  text-shadow: 0 0 var(--size-1) rgb(199 62 58 / 45%);
 }

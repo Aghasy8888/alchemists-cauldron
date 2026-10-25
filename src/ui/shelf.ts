@@ -22,10 +22,6 @@ export function renderShelf(
   container.append(title);
 
   if (state.status === menu) {
-    const empty = document.createElement('p');
-    empty.className = 'shelf__hint';
-    empty.textContent = 'Start a game to fill the shelf.';
-    container.append(empty);
     return;
   }
 
@@ -125,11 +121,4 @@ export function renderShelf(
   }
 
   container.append(list);
-
-  if (canAdd && cauldronFull) {
-    const note = document.createElement('p');
-    note.className = 'shelf__hint';
-    note.textContent = 'Cauldron is full. Clear it before adding more.';
-    container.append(note);
-  }
 }

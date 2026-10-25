@@ -1,20 +1,8 @@
 import { createUiIcon, type UiIconId } from '../assets/ui-icons';
 import { difficultyLabel } from '../data/difficulty';
-import { BREW_OUTCOME, type BrewOutcome } from '../logic/brew';
 import { GAME_STATUS, type Difficulty, type GameStatus } from '../data/types';
 
 const { menu, playing } = GAME_STATUS;
-const { success, failure } = BREW_OUTCOME;
-
-const BREW_STATUS_CLASS = {
-  [success]: 'brew-controls__status--success',
-  [failure]: 'brew-controls__status--failure',
-} as const;
-
-const BREW_STATUS_MESSAGE = {
-  [success]: 'Brew succeeded!',
-  [failure]: 'Brew failed — mixture was off.',
-} as const;
 
 function createMenuButton(options: {
   className: string;
@@ -49,7 +37,6 @@ export function renderActionControls(
     canBrew: boolean;
     canPourOut: boolean;
     canContinue: boolean;
-    lastOutcome: BrewOutcome | null;
     onStart: () => void;
     onContinue: () => void;
     onBrew: () => void;
@@ -178,14 +165,5 @@ export function renderActionControls(
 
   row.append(button, pourOut, pause);
   wrap.append(row);
-
-  if (options.lastOutcome === success || options.lastOutcome === failure) {
-    const status = document.createElement('p');
-    status.className = 'brew-controls__status';
-    status.classList.add(BREW_STATUS_CLASS[options.lastOutcome]);
-    status.textContent = BREW_STATUS_MESSAGE[options.lastOutcome];
-    wrap.append(status);
-  }
-
   container.append(wrap);
 }

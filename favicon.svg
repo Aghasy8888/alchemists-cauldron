@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Alchemist's Cauldron">
+  <defs>
+    <radialGradient id="badge" cx="50%" cy="42%" r="58%">
+      <stop offset="0%" stop-color="#2a2340"/>
+      <stop offset="100%" stop-color="#14101f"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#d4b84a"/>
+      <stop offset="55%" stop-color="#c9a227"/>
+      <stop offset="100%" stop-color="#a8861c"/>
+    </linearGradient>
+    <linearGradient id="pot" x1="20%" y1="15%" x2="80%" y2="100%">
+      <stop offset="0%" stop-color="#3a3348"/>
+      <stop offset="45%" stop-color="#1c1a22"/>
+      <stop offset="100%" stop-color="#0e0c14"/>
+    </linearGradient>
+    <linearGradient id="brew" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d4a8ef"/>
+      <stop offset="40%" stop-color="#9b4dca"/>
+      <stop offset="100%" stop-color="#7d6bb8"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#3ecf8e" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#3ecf8e" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Badge -->
+  <circle cx="32" cy="32" r="31" fill="url(#badge)"/>
+  <circle cx="32" cy="32" r="29.5" fill="none" stroke="url(#gold)" stroke-width="1.6"/>
+
+  <!-- Rising spark -->
+  <path
+    fill="#ffe566"
+    d="M32 8.2l1.35 3.55 3.8.2-2.95 2.45 1 3.65L32 15.9l-3.2 2.15 1-3.65-2.95-2.45 3.8-.2z"
+  />
+  <circle cx="41.5" cy="12.5" r="1.1" fill="#d4b84a"/>
+  <circle cx="23" cy="14" r="0.85" fill="#d4b84a"/>
+
+  <!-- Handles -->
+  <path
+    fill="none"
+    stroke="url(#gold)"
+    stroke-width="2.4"
+    stroke-linecap="round"
+    d="M15.5 30.5c-3.2 1.2-5 4.2-5 7.4 0 2.4 1.2 4.6 3.2 5.6"
+  />
+  <path
+    fill="none"
+    stroke="url(#gold)"
+    stroke-width="2.4"
+    stroke-linecap="round"
+    d="M48.5 30.5c3.2 1.2 5 4.2 5 7.4 0 2.4-1.2 4.6-3.2 5.6"
+  />
+  <circle cx="14.2" cy="39.2" r="1.55" fill="none" stroke="url(#gold)" stroke-width="1.4"/>
+  <circle cx="49.8" cy="39.2" r="1.55" fill="none" stroke="url(#gold)" stroke-width="1.4"/>
+
+  <!-- Pot body -->
+  <path
+    fill="url(#pot)"
+    d="M17.5 29.5c0 13.8 6.4 23.5 14.5 23.5s14.5-9.7 14.5-23.5c0-1.2-9.7-2-14.5-2s-14.5.8-14.5 2z"
+  />
+  <path
+    fill="#4a4258"
+    opacity="0.35"
+    d="M21 31c1.5 7.5 4.2 14 8 16.8-5.2-1.2-9.8-8.5-10.8-17.5.8.3 1.9.6 2.8.7z"
+  />
+
+  <!-- Gold rim + brew -->
+  <ellipse cx="32" cy="28.2" rx="15.2" ry="5.2" fill="url(#gold)"/>
+  <ellipse cx="32" cy="28.4" rx="12.8" ry="3.9" fill="url(#brew)"/>
+  <ellipse cx="27" cy="27.6" rx="2.1" ry="1.5" fill="#d4a8ef" opacity="0.85"/>
+  <ellipse cx="36.5" cy="28.8" rx="1.7" ry="1.2" fill="#b57adf" opacity="0.9"/>
+  <circle cx="32" cy="28.2" r="5" fill="url(#glow)"/>
+  <path
+    fill="#3ecf8e"
+    d="M32 24.8l0.85 2.2 2.35.12-1.82 1.52.62 2.25L32 29.5l-1.99 1.39.62-2.25-1.82-1.52 2.35-.12z"
+  />
+
+  <!-- Emblem -->
+  <ellipse cx="32" cy="42" rx="4.2" ry="5.2" fill="none" stroke="url(#gold)" stroke-width="1.3"/>
+  <path fill="url(#gold)" d="M32 38.4l2.4 3.6-2.4 3.6-2.4-3.6z"/>
+
+  <!-- Feet -->
+  <ellipse cx="22.5" cy="53.2" rx="3.1" ry="2.2" fill="url(#gold)"/>
+  <ellipse cx="32" cy="54.2" rx="3.1" ry="2.2" fill="url(#gold)"/>
+  <ellipse cx="41.5" cy="53.2" rx="3.1" ry="2.2" fill="url(#gold)"/>
+</svg>

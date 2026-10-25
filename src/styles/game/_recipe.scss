@@ -2,8 +2,10 @@
 
 .recipe-panel__counter {
   flex-shrink: 0;
-  font-size: var(--font-size-body-medium);
+  min-width: var(--size-15);
+  font-size: var(--font-size-body-small); // 0.875rem = 14px
   font-weight: var(--font-weight-medium);
+  color: var(--color-on-bg-low);
 
   @include media-up('tablet') {
     font-size: var(--font-size-body-large);
@@ -11,8 +13,9 @@
 }
 
 .recipe-panel__counter--full {
-  color: var(--color-tertiary);
+  color: var(--color-primary);
   font-weight: var(--font-weight-bold);
+  text-shadow: 0 0 var(--size-1) rgb(201 162 39 / 30%);
 }
 
 .recipe-panel__name {
@@ -20,8 +23,10 @@
   margin-top: var(--size-05);
   font-size: var(--font-size-body-medium);
   font-weight: var(--font-weight-bold);
+  letter-spacing: 0.02em; // no exact $size-* match
   color: var(--color-tertiary);
   line-height: 1.2;
+  text-shadow: 0 0 var(--size-1) rgb(125 107 184 / 30%);
 
   @include media-up('tablet') {
     font-size: var(--font-size-body-large);
@@ -48,7 +53,7 @@
   align-items: center;
   column-gap: var(--size-05);
   padding-block: var(--size-025);
-  border-bottom: var(--border-width) solid var(--color-outline);
+  border-bottom: var(--border-width-xs) solid var(--color-outline);
 
   &:last-child {
     border-bottom: none;
@@ -63,4 +68,17 @@
 .recipe-panel__range-value {
   font-weight: var(--font-weight-bold);
   font-variant-numeric: tabular-nums;
+}
+
+.recipe-panel__tolerance {
+  flex-shrink: 0;
+  margin-top: auto;
+  padding-top: var(--size-05);
+  font-size: var(--font-size-label-small);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-on-bg-low);
+
+  @include media-up('tablet') {
+    font-size: var(--font-size-body-small);
+  }
 }

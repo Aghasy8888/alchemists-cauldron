@@ -2,7 +2,14 @@
 @use '../functions' as *;
 @use './locals' as *;
 
-$brew-status-motion: 0.45s ease-out; // no exact $duration-* match
+$menu-panel-max: 22rem; // no exact $size-* match
+$menu-panel-max-tablet: 28rem; // no exact $size-* match
+$menu-panel-max-laptop: 34rem; // no exact $size-* match
+$menu-panel-max-desktop: 40rem; // no exact $size-* match
+$menu-chrome-icon: 1.35rem; // no exact $size-* match
+$menu-chrome-icon-laptop: 1.5rem; // no exact $size-* match
+$menu-primary-icon: 1.15rem; // no exact $size-* match
+$opacity-menu-scrim: 0.94; // no exact $opacity-* match — denser than dialog overlay
 
 .game__actions {
   display: flex;
@@ -10,6 +17,46 @@ $brew-status-motion: 0.45s ease-out; // no exact $duration-* match
   justify-content: center;
   margin-top: var(--size-1);
   min-height: space(5);
+}
+
+.game__board--menu .game__actions {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 2;
+  margin-top: 0;
+  padding-block: var(--size-2) var(--size-1);
+  overflow: visible;
+  isolation: isolate;
+
+  &::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset-inline: 0;
+    top: calc(-1 * var(--size-10));
+    bottom: 0;
+    pointer-events: none;
+    background-color: rgb(8 7 11 / #{$opacity-menu-scrim});
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgb(0 0 0 / 0.4) 18%,
+      black 32%,
+      black 100%
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgb(0 0 0 / 0.4) 18%,
+      black 32%,
+      black 100%
+    );
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+  }
 }
 
 .brew-controls,
@@ -21,14 +68,178 @@ $brew-status-motion: 0.45s ease-out; // no exact $duration-* match
 }
 
 .menu-controls {
-  gap: var(--size-1);
+  width: min(100%, $menu-panel-max);
+  gap: var(--size-125);
+
+  @include media-up('tablet') {
+    width: min(100%, $menu-panel-max-tablet);
+  }
+
+  @include media-up('laptop') {
+    width: min(100%, $menu-panel-max-laptop);
+  }
+
+  @include media-up('desktop') {
+    width: min(100%, $menu-panel-max-desktop);
+  }
 }
 
 .menu-controls__difficulty {
   margin: 0;
-  font-size: var(--font-size-body-small);
+  font-size: var(--font-size-label-medium);
   font-weight: var(--font-weight-medium);
+  letter-spacing: 0.04em; // no exact $size-* match
+  text-transform: uppercase;
+  color: var(--color-on-bg-low);
+}
+
+.menu-controls__primary,
+.menu-controls__chrome {
+  display: grid;
+  width: 100%;
+  gap: var(--size-1);
+}
+
+.menu-controls__primary {
+  grid-template-columns: 1fr;
+}
+
+.menu-controls__primary--split {
+  grid-template-columns: 1fr 1fr;
+}
+
+.menu-controls__chrome {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.menu-controls__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--size-1);
+  width: 100%;
+  min-width: 0;
+  min-height: var(--size-5);
+  padding: var(--btn-padding-small);
+  border: var(--border-width) solid transparent;
+  border-radius: var(--corner-medium);
+  cursor: pointer;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.02em; // no exact $size-* match
+  box-shadow: var(--shadow-panel);
+  @include interactive-lift;
+
+  @include media-up('tablet') {
+    min-height: var(--size-6);
+    padding: var(--btn-padding-medium);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--shadow-focus-glow);
+  }
+}
+
+.menu-controls__btn-icon {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  font-size: $menu-primary-icon;
+  line-height: 0;
+}
+
+.menu-controls__btn-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+
+.menu-controls__btn--primary {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary-high);
+  color: var(--color-on-primary);
+  font-size: var(--font-size-body-medium);
+
+  @include hover {
+    background-color: var(--color-primary-low);
+    border-color: var(--color-primary-low);
+  }
+}
+
+.menu-controls__btn--continue {
+  background-color: var(--color-surface);
+  border-color: var(--color-primary);
+  color: var(--color-primary-high);
+  font-size: var(--font-size-body-small);
+
+  @include hover {
+    background-color: var(--color-bg-footer-low);
+    border-color: var(--color-primary-high);
+    color: var(--color-white);
+  }
+}
+
+.menu-controls__btn--chrome {
+  flex-direction: column;
+  gap: var(--size-05);
+  min-height: var(--size-7);
+  padding: var(--size-1) var(--size-05);
+  background-color: var(--color-surface);
+  border-color: var(--color-outline-variant);
   color: var(--color-on-bg);
+  font-size: var(--font-size-label-small);
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.04em; // no exact $size-* match
+  box-shadow: none;
+
+  .menu-controls__btn-icon {
+    font-size: $menu-chrome-icon;
+    color: var(--color-primary);
+  }
+
+  .menu-controls__btn-label {
+    max-width: 100%;
+    // Grow with the button — do not ellipsis “Leaderboard” when the panel widens
+    overflow: visible;
+    text-overflow: clip;
+  }
+
+  @include media-up('tablet') {
+    min-height: var(--size-8);
+    padding: var(--size-125) var(--size-1);
+    font-size: var(--font-size-label-medium);
+  }
+
+  @include media-up('laptop') {
+    min-height: var(--size-9);
+    gap: var(--size-1);
+    padding: var(--size-2) var(--size-125);
+    font-size: var(--font-size-label-large);
+    letter-spacing: 0.03em; // no exact $size-* match
+
+    .menu-controls__btn-icon {
+      font-size: $menu-chrome-icon-laptop;
+    }
+  }
+
+  @include media-up('desktop') {
+    min-height: var(--size-10);
+    padding: var(--size-2) var(--size-2);
+    font-size: var(--font-size-label-extra-large);
+  }
+
+  @include hover {
+    background-color: var(--color-bg-footer-low);
+    border-color: var(--color-tertiary);
+    color: var(--color-white);
+
+    .menu-controls__btn-icon {
+      color: var(--color-primary-high);
+    }
+  }
 }
 
 .brew-controls__row {
@@ -39,72 +250,51 @@ $brew-status-motion: 0.45s ease-out; // no exact $duration-* match
   gap: var(--size-1);
 }
 
-.game__start,
-.game__continue,
-.game__leaderboard,
-.game__help,
-.game__settings,
 .brew-controls__button,
+.brew-controls__pour-out,
 .brew-controls__pause {
   cursor: pointer;
   padding: var(--btn-padding-small);
-  border: var(--border-width) solid var(--color-outline);
+  border: var(--border-width) solid var(--color-primary-high);
   border-radius: var(--corner-medium);
   background-color: var(--color-primary);
   color: var(--color-on-primary);
   font-weight: var(--font-weight-bold);
+  letter-spacing: 0.03em; // no exact $size-* match
+  box-shadow: var(--shadow-panel);
+  @include interactive-lift;
 
   @include media-up('tablet') {
     padding: var(--btn-padding-medium);
   }
 
   @include hover {
-    background-color: var(--color-primary-high);
+    background-color: var(--color-primary-low);
+    border-color: var(--color-primary-low);
   }
 
   &:focus-visible {
-    outline: var(--border-width-md) solid var(--color-tertiary);
-    outline-offset: var(--size-05);
-  }
-
-  &:active:not(:disabled) {
-    background-color: var(--color-primary-high);
+    outline: none;
+    box-shadow: var(--shadow-focus-glow);
   }
 
   &:disabled {
     cursor: not-allowed;
     opacity: $opacity-disabled;
+    transform: none;
+    box-shadow: none;
   }
 }
 
-@keyframes brew-status-pulse {
-  0% {
-    opacity: 0;
-    transform: scale(0.96); // no exact $size-* match
+.brew-controls__pour-out,
+.brew-controls__pause {
+  background-color: var(--color-surface);
+  border-color: var(--color-outline-variant);
+  color: var(--color-on-bg);
+
+  @include hover {
+    background-color: var(--color-bg-footer-low);
+    border-color: var(--color-tertiary);
+    color: var(--color-white);
   }
-
-  40% {
-    opacity: 1;
-    transform: scale(1.03); // no exact $size-* match
-  }
-
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.brew-controls__status {
-  margin: 0;
-  font-size: var(--font-size-body-small);
-  font-weight: var(--font-weight-medium);
-  animation: brew-status-pulse $brew-status-motion;
-}
-
-.brew-controls__status--success {
-  color: var(--color-param-zone-strong);
-}
-
-.brew-controls__status--failure {
-  color: var(--color-error);
 }

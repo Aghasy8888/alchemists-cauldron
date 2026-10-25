@@ -7,7 +7,20 @@ const LEGACY_LEADERBOARD_KEY = 'alchemists-cauldron:leaderboard';
 
 export const LEADERBOARD_MAX_ENTRIES = 10;
 
+export const LEADERBOARD_SORT = {
+  score: 'score',
+  difficulty: 'difficulty',
+} as const;
+
+export type LeaderboardSort = (typeof LEADERBOARD_SORT)[keyof typeof LEADERBOARD_SORT];
+
 const ALL_DIFFICULTIES: readonly Difficulty[] = [easy, medium, hard];
+
+const DIFFICULTY_SORT_ORDER: Record<Difficulty, number> = {
+  [easy]: 0,
+  [medium]: 1,
+  [hard]: 2,
+};
 
 export interface ILeaderboardEntry {
   name: string;
@@ -49,6 +62,34 @@ export function sortLeaderboardEntries(entries: ILeaderboardEntry[]): ILeaderboa
       return b.score - a.score;
     }
     return a.createdAt - b.createdAt;
+  });
+}
+
+function compareByScoreThenDate(a: ILeaderboardEntry, b: ILeaderboardEntry): number {
+  if (b.score !== a.score) {
+    return b.score - a.score;
+  }
+  return a.createdAt - b.createdAt;
+}
+
+/** Sort merged rows for the leaderboard table (score-first or Easy→Medium→Hard). */
+export function sortLeaderboardRows(
+  rows: readonly ILeaderboardRow[],
+  mode: LeaderboardSort,
+): ILeaderboardRow[] {
+  const { score } = LEADERBOARD_SORT;
+  const copy = [...rows];
+
+  if (mode === score) {
+    return copy.sort(compareByScoreThenDate);
+  }
+
+  return copy.sort((a, b) => {
+    const orderDiff = DIFFICULTY_SORT_ORDER[a.difficulty] - DIFFICULTY_SORT_ORDER[b.difficulty];
+    if (orderDiff !== 0) {
+      return orderDiff;
+    }
+    return compareByScoreThenDate(a, b);
   });
 }
 
@@ -138,15 +179,9 @@ export function loadAllLeaderboards(): ILeaderboardRow[] {
       rows.push({ ...entry, difficulty });
     }
   }
-  return [...rows].sort((a, b) => {
-    if (b.score !== a.score) {
-      return b.score - a.score;
-    }
-    return a.createdAt - b.createdAt;
-  });
+  return rows;
 }
 
-/** Clear all per-difficulty leaderboard keys. */
 export function clearLeaderboard(): void {
   migrateLegacyLeaderboard();
   for (const difficulty of ALL_DIFFICULTIES) {

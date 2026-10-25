@@ -1,16 +1,25 @@
 import { useGameTimer } from '../hooks/use-game-timer';
+import { useKeyboardShortcuts } from '../hooks/use-keyboard-shortcuts';
 import { useVisibilityPause } from '../hooks/use-visibility-pause';
 import { addIngredient } from '../logic/add-ingredient';
-import { brew, type BrewOutcome } from '../logic/brew';
+import { BREW_OUTCOME, brew } from '../logic/brew';
 import { applyEndChecks } from '../logic/game-over';
 import { pauseRun, resumeRun } from '../logic/pause';
+import { pourOut } from '../logic/pour-out';
+import { applyReactionTransitions } from '../logic/reaction-transitions';
 import { createMenuState, startNewGame } from '../state/game-state';
 import { loadLeaderboard, qualifiesForLeaderboard } from '../storage/leaderboard';
 import { clearSave, continueSavedGame, hasContinuableSave, saveGame } from '../storage/save';
+import { DIFFICULTY_CONFIG } from '../data/difficulty';
+import { getShelfIngredients } from '../data/ingredients';
 import { GAME_STATUS, type Difficulty, type IGameState } from '../data/types';
+import { LOW_TIME_THRESHOLD_SEC } from '../logic/timer';
+import { playUrgentTimerChime, unlockAudio } from '../utils/urgent-timer-chime';
 import { renderBars } from './bars';
 import { renderActionControls } from './brew';
+import { playBrewFx } from './brew-fx';
 import { renderCauldron } from './cauldron';
+import { setupCauldronDropZone } from './cauldron-drop';
 import { renderGameOver } from './game-over';
 import { renderHelp } from './help';
 import { renderHud } from './hud';
@@ -22,6 +31,7 @@ import { renderSettings } from './settings';
 import { renderShelf } from './shelf';
 
 const { menu, playing, paused, gameOver } = GAME_STATUS;
+const { success } = BREW_OUTCOME;
 
 const UI_OVERLAY = {
   none: 'none',
@@ -37,10 +47,18 @@ const { none, leaderboard, clearConfirm, help, settings } = UI_OVERLAY;
 
 export function createApp(root: HTMLElement): void {
   let state: IGameState = createMenuState();
-  let lastOutcome: BrewOutcome | null = null;
   let uiOverlay: UiOverlay = none;
   let scoreSubmitted = false;
   let previousStatus: typeof menu | typeof playing | typeof paused | typeof gameOver = menu;
+  let wasUrgentTime = false;
+
+  const syncUrgentTimerChime = (): void => {
+    const isUrgent = state.status === playing && state.timeLeft < LOW_TIME_THRESHOLD_SEC;
+    if (isUrgent && !wasUrgentTime) {
+      playUrgentTimerChime();
+    }
+    wasUrgentTime = isUrgent;
+  };
 
   const {
     root: layout,
@@ -69,6 +87,7 @@ export function createApp(root: HTMLElement): void {
       state = next;
     },
     onHudTick: () => {
+      syncUrgentTimerChime();
       renderHud(hudSlot, state);
     },
     onEnded: () => {
@@ -128,7 +147,6 @@ export function createApp(root: HTMLElement): void {
   };
 
   const playAgain = (): void => {
-    lastOutcome = null;
     scoreSubmitted = false;
     uiOverlay = none;
     state = startNewGame(state);
@@ -146,17 +164,39 @@ export function createApp(root: HTMLElement): void {
     render();
   };
 
+  const brewGame = (): void => {
+    if (state.status !== playing) {
+      return;
+    }
+    const result = brew(state);
+    state = result.state;
+    persistIfUnfinished();
+    render();
+    const timeBonusSec =
+      result.outcome === success ? DIFFICULTY_CONFIG[state.difficulty].timeBonusPerBrew : 0;
+    playBrewFx(cauldronSlot, board, result.outcome, timeBonusSec);
+  };
+
+  const pourOutGame = (): void => {
+    if (state.status !== playing) {
+      return;
+    }
+    state = pourOut(state);
+    persistIfUnfinished();
+    render();
+  };
+
   const resumeGame = (): void => {
     if (state.status !== paused) {
       return;
     }
+    unlockAudio();
     state = resumeRun(state);
     saveGame(state);
     render();
   };
 
   const exitToMenu = (): void => {
-    lastOutcome = null;
     scoreSubmitted = false;
     uiOverlay = none;
     clearSave();
@@ -165,12 +205,12 @@ export function createApp(root: HTMLElement): void {
   };
 
   const continueGame = (): void => {
+    unlockAudio();
     const restored = continueSavedGame();
     if (restored === null) {
       render();
       return;
     }
-    lastOutcome = null;
     scoreSubmitted = false;
     uiOverlay = none;
     state = restored;
@@ -182,6 +222,10 @@ export function createApp(root: HTMLElement): void {
     getStatus: () => state.status,
     onPause: pauseGame,
   });
+
+  let handleAddFromShelf: (ingredientId: string) => void = () => {
+    // assigned after render is defined
+  };
 
   const renderOverlay = (): void => {
     if (uiOverlay === clearConfirm) {
@@ -230,6 +274,7 @@ export function createApp(root: HTMLElement): void {
           render();
         },
         onOpenLeaderboard: openLeaderboard,
+        onExitToMenu: exitToMenu,
       });
       return;
     }
@@ -254,18 +299,22 @@ export function createApp(root: HTMLElement): void {
 
     const isPaused = state.status === paused;
     board.classList.toggle('game__board--paused', isPaused);
+    board.classList.toggle('game__board--menu', state.status === menu);
 
+    syncUrgentTimerChime();
     renderHud(hudSlot, state);
     renderOverlay();
+
+    const canUseCauldron = state.status === playing && state.cauldronIngredients.length >= 1;
 
     renderActionControls(actionSlot, {
       status: state.status,
       difficulty: state.difficulty,
-      canBrew: state.status === playing && state.cauldronIngredients.length >= 1,
+      canBrew: canUseCauldron,
+      canPourOut: canUseCauldron,
       canContinue: state.status === menu && hasContinuableSave(),
-      lastOutcome,
       onStart: () => {
-        lastOutcome = null;
+        unlockAudio();
         scoreSubmitted = false;
         uiOverlay = none;
         state = startNewGame(state);
@@ -273,31 +322,15 @@ export function createApp(root: HTMLElement): void {
         render();
       },
       onContinue: continueGame,
-      onBrew: () => {
-        if (state.status !== playing) {
-          return;
-        }
-        const result = brew(state);
-        state = result.state;
-        lastOutcome = result.outcome;
-        persistIfUnfinished();
-        render();
-      },
+      onBrew: brewGame,
+      onPourOut: pourOutGame,
       onPause: pauseGame,
       onOpenLeaderboard: openLeaderboard,
       onOpenHelp: openHelp,
       onOpenSettings: openSettings,
     });
     renderRecipePanel(recipeSlot, state);
-    renderShelf(shelfSlot, state, (ingredientId) => {
-      if (state.status !== playing) {
-        return;
-      }
-      lastOutcome = null;
-      state = applyEndChecks(addIngredient(state, ingredientId));
-      persistIfUnfinished();
-      render();
-    });
+    renderShelf(shelfSlot, state, handleAddFromShelf);
     renderCauldron(cauldronSlot, state);
     renderBars(barsSlot, state);
 
@@ -307,6 +340,45 @@ export function createApp(root: HTMLElement): void {
       timer.stop();
     }
   };
+
+  handleAddFromShelf = (ingredientId: string): void => {
+    if (state.status !== playing) {
+      return;
+    }
+    const before = state.cauldronIngredients;
+    const afterAdd = addIngredient(state, ingredientId);
+    if (afterAdd === state) {
+      return;
+    }
+    state = applyEndChecks(applyReactionTransitions(before, afterAdd));
+    persistIfUnfinished();
+    render();
+  };
+
+  const addShelfByIndex = (index: number): void => {
+    const count = DIFFICULTY_CONFIG[state.difficulty].shelfIngredientCount;
+    const shelf = getShelfIngredients(count);
+    const ingredient = shelf[index];
+    if (ingredient === undefined) {
+      return;
+    }
+    handleAddFromShelf(ingredient.id);
+  };
+
+  useKeyboardShortcuts({
+    getStatus: () => state.status,
+    isOverlayOpen: () => uiOverlay !== none,
+    onPause: pauseGame,
+    onBrew: brewGame,
+    onPourOut: pourOutGame,
+    onAddShelfIndex: addShelfByIndex,
+  });
+
+  setupCauldronDropZone(cauldronSlot, {
+    onDrop: (ingredientId) => {
+      handleAddFromShelf(ingredientId);
+    },
+  });
 
   render();
 }

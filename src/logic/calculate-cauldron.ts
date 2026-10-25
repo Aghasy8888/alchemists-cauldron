@@ -1,10 +1,6 @@
-import type { IIngredient } from '../data/types';
+import type { ICauldronValues, IIngredient } from '../data/types';
 
-export interface ICauldronValues {
-  temperature: number;
-  density: number;
-  magicPower: number;
-}
+export type { ICauldronValues };
 
 /** Pure sum of ingredient parameters. Empty cauldron → 0 / 0 / 0. */
 export function calculateCauldron(ingredients: readonly IIngredient[]): ICauldronValues {

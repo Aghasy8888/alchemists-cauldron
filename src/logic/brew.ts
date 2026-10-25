@@ -1,9 +1,10 @@
 import { DIFFICULTY_CONFIG } from '../data/difficulty';
 import { GAME_STATUS, type IGameState } from '../data/types';
-import { calculateCauldron } from './calculate-cauldron';
 import { expandRecipeRanges, isBrewSuccess } from './brew-check';
+import { clearCauldron } from './cauldron';
 import { applyEndChecks } from './game-over';
 import { pickRandomRecipe } from './recipe-generator';
+import { resolveCauldronValues } from './resolve-cauldron';
 import { createEndTime } from './timer';
 
 /** Canonical brew outcomes — destructure in consumers; use bare names. */
@@ -24,7 +25,7 @@ export interface IBrewResult {
 }
 
 /**
- * Run a brew: check sums vs recipe ± tolerance, clear cauldron.
+ * Run a brew: check resolved values vs recipe ± tolerance, clear cauldron.
  * Success: score + time bonus (capped at start time) + new recipe.
  * Failure: lose 1 life. Stock is never restored.
  */
@@ -38,14 +39,11 @@ export function brew(state: IGameState): IBrewResult {
   }
 
   const config = DIFFICULTY_CONFIG[state.difficulty];
-  const values = calculateCauldron(state.cauldronIngredients);
+  const values = resolveCauldronValues(state.cauldronIngredients, state.difficulty);
   const checked = expandRecipeRanges(state.activeRecipe, config.recipeTolerance);
   const brewSucceeded = isBrewSuccess(values, checked);
 
-  const cleared: IGameState = {
-    ...state,
-    cauldronIngredients: [],
-  };
+  const cleared = clearCauldron(state);
 
   if (brewSucceeded) {
     const timeLeft = Math.min(cleared.timeLeft + config.timeBonusPerBrew, config.startingTime);

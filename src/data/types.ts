@@ -76,3 +76,18 @@ export interface IDifficultyConfig {
   timeBonusPerBrew: number;
   reactionCount: number;
 }
+
+export interface ICauldronValues {
+  temperature: number;
+  density: number;
+  magicPower: number;
+}
+
+/** Reaction catalog entry — Easy uses none; Medium/Hard enable a subset via reactionCount. */
+export interface IReaction {
+  id: string;
+  name: string;
+  difficulty: Exclude<Difficulty, 'easy'>;
+  isActive: (ingredients: readonly IIngredient[]) => boolean;
+  apply: (values: ICauldronValues) => ICauldronValues;
+}

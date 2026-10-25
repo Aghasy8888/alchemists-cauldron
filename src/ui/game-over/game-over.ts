@@ -9,6 +9,7 @@ export function renderGameOver(
     onPlayAgain: () => void;
     onSubmitScore: () => void;
     onOpenLeaderboard: () => void;
+    onExitToMenu: () => void;
   },
 ): void {
   container.replaceChildren();
@@ -52,7 +53,13 @@ export function renderGameOver(
   playAgain.textContent = 'Play again';
   playAgain.addEventListener('click', options.onPlayAgain);
 
-  actions.append(leaderboard, playAgain);
+  const exit = document.createElement('button');
+  exit.type = 'button';
+  exit.className = 'game-over__exit';
+  exit.textContent = 'Exit to Menu';
+  exit.addEventListener('click', options.onExitToMenu);
+
+  actions.append(leaderboard, playAgain, exit);
   dialog.append(actions);
   container.append(dialog);
 }

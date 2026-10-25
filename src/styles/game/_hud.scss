@@ -16,7 +16,9 @@
 .game__hud-score {
   font-size: var(--font-size-body-medium);
   font-weight: var(--font-weight-bold);
-  color: var(--color-tertiary);
+  letter-spacing: 0.04em; // no exact $size-* match
+  color: var(--color-param-zone);
+  text-shadow: 0 0 var(--size-1) rgb(62 207 142 / 35%);
 }
 
 .game__hud-time {
@@ -35,6 +37,7 @@
   font-size: var(--font-size-body-medium);
   font-weight: var(--font-weight-bold);
   font-variant-numeric: tabular-nums;
+  color: var(--color-on-bg);
 }
 
 .game__hud-time-track {
@@ -42,14 +45,16 @@
   overflow: hidden;
   border: var(--border-width-xs) solid var(--color-outline);
   border-radius: var(--corner-full);
-  background-color: var(--color-surface-low);
+  background-color: var(--color-bg-footer);
+  box-shadow: var(--shadow-inset-rim);
 }
 
 .game__hud-time-fill {
   height: 100%;
   border-radius: var(--corner-full);
-  background-color: var(--color-primary);
-  transition: width 0.2s linear; // no exact $duration-* match
+  background: linear-gradient(90deg, var(--color-primary-high), var(--color-primary-low));
+  box-shadow: 0 0 var(--size-1) rgb(201 162 39 / 40%);
+  transition: width var(--duration-hover) linear;
 }
 
 .game__hud-time--urgent .game__hud-time-label {
@@ -58,7 +63,8 @@
 }
 
 .game__hud-time--urgent .game__hud-time-fill {
-  background-color: var(--color-error);
+  background: linear-gradient(90deg, var(--color-error), var(--color-like));
+  box-shadow: 0 0 var(--size-1) rgb(199 62 58 / 50%);
 }
 
 @keyframes hud-time-pulse {
@@ -77,6 +83,7 @@
   align-items: center;
   gap: var(--size-05);
   color: var(--color-like);
+  filter: drop-shadow(0 0 var(--size-05) rgb(224 69 90 / 45%));
 }
 
 .game__hud-lives-empty {

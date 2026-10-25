@@ -34,4 +34,5 @@ export function renderPauseDialog(
   actions.append(resume, exit);
   dialog.append(title, actions);
   container.append(dialog);
+  resume.focus();
 }

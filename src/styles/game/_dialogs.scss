@@ -12,20 +12,42 @@
   flex-direction: column;
   align-items: center;
   gap: var(--size-2);
-  max-width: space(40);
-  width: 100%;
   padding: var(--size-3);
-  border: var(--border-width) solid var(--color-outline);
-  border-radius: var(--corner-large);
-  background-color: var(--color-white);
   text-align: center;
+  @include panel-surface;
+  background-color: color-mix(in srgb, var(--color-surface) 92%, transparent);
+  backdrop-filter: blur(var(--size-1));
 }
 
-.leaderboard,
+.game-over,
+.pause-dialog,
+.leaderboard-confirm,
+.settings-dialog {
+  width: 100%;
+  max-width: space(40);
+}
+
+.leaderboard {
+  width: fit-content;
+  max-width: 96%; // no exact $size-* match
+  max-height: 100%;
+  overflow: hidden;
+}
+
 .help-dialog {
+  width: 100%;
   max-width: space(56);
   max-height: 100%;
-  overflow: auto;
+  overflow: hidden;
+}
+
+.leaderboard__title,
+.leaderboard__hint,
+.leaderboard__toolbar,
+.leaderboard__actions,
+.help-dialog__title,
+.help-dialog__button {
+  flex-shrink: 0;
 }
 
 .game-over__title,
@@ -36,7 +58,9 @@
 .settings-dialog__title {
   font-size: var(--font-size-headline-small);
   font-weight: var(--font-weight-bold);
-  color: var(--color-on-bg);
+  letter-spacing: 0.03em; // no exact $size-* match
+  color: var(--color-primary-low);
+  text-shadow: 0 0 var(--size-2) rgb(201 162 39 / 25%);
 }
 
 .game-over__actions,
@@ -51,6 +75,7 @@
 
 .game-over__play-again,
 .game-over__leaderboard,
+.game-over__exit,
 .game-over__submit,
 .pause-dialog__button,
 .leaderboard__button,
@@ -60,61 +85,62 @@
 .settings-dialog__option {
   cursor: pointer;
   padding: var(--btn-padding-medium);
-  border: var(--border-width) solid var(--color-outline);
+  border: var(--border-width) solid var(--color-primary-high);
   border-radius: var(--corner-medium);
   background-color: var(--color-primary);
   color: var(--color-on-primary);
   font-weight: var(--font-weight-bold);
+  box-shadow: var(--shadow-panel);
+  @include interactive-lift;
 
   @include hover {
-    background-color: var(--color-primary-high);
+    background-color: var(--color-primary-low);
   }
 
   &:focus-visible {
-    outline: var(--border-width-md) solid var(--color-tertiary);
-    outline-offset: var(--size-05);
-  }
-
-  &:active:not(:disabled) {
-    background-color: var(--color-primary-high);
+    outline: none;
+    box-shadow: var(--shadow-focus-glow);
   }
 
   &:disabled {
     cursor: not-allowed;
     opacity: $opacity-disabled;
+    transform: none;
+    box-shadow: none;
   }
 }
 
 .pause-dialog__button--exit,
 .game-over__leaderboard,
+.game-over__exit,
 .leaderboard__button--back,
 .leaderboard-confirm__button--cancel,
 .help-dialog__button,
 .settings-dialog__button {
-  background-color: var(--color-surface-low);
+  background-color: var(--color-surface);
+  border-color: var(--color-outline-variant);
   color: var(--color-on-bg);
 
   @include hover {
-    background-color: var(--color-surface);
-  }
-
-  &:active:not(:disabled) {
-    background-color: var(--color-surface);
+    background-color: var(--color-bg-footer-low);
+    border-color: var(--color-tertiary);
   }
 }
 
 .settings-dialog__option--selected {
-  outline: var(--border-width-md) solid var(--color-tertiary);
-  outline-offset: var(--size-05);
+  box-shadow: var(--shadow-focus-glow);
+  border-color: var(--color-tertiary);
 }
 
 .leaderboard__button--clear,
 .leaderboard-confirm__button--confirm {
   background-color: var(--color-error);
-  color: var(--color-on-primary);
+  border-color: var(--color-error);
+  color: var(--color-white);
 
   @include hover {
-    background-color: var(--color-error);
-    filter: brightness(0.92); // no exact $opacity-* match
+    background-color: var(--color-like);
+    border-color: var(--color-like);
+    filter: brightness(1.05); // no exact $opacity-* match
   }
 }

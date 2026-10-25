@@ -299,6 +299,7 @@ export function createApp(root: HTMLElement): void {
 
     const isPaused = state.status === paused;
     board.classList.toggle('game__board--paused', isPaused);
+    board.classList.toggle('game__board--menu', state.status === menu);
 
     syncUrgentTimerChime();
     renderHud(hudSlot, state);

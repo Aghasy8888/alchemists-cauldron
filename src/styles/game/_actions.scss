@@ -18,6 +18,38 @@ $menu-primary-icon: 1.15rem; // no exact $size-* match
   min-height: space(5);
 }
 
+.game__board--menu .game__actions {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 2;
+  margin-top: 0;
+  padding-block: var(--size-2) var(--size-1);
+  overflow: visible;
+  isolation: isolate;
+
+  &::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset-inline: 0;
+    top: calc(-1 * var(--size-6));
+    bottom: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgb(8 7 11 / 0.25) 45%,
+      rgb(8 7 11 / #{$opacity-overlay}) 75%,
+      rgb(8 7 11 / #{$opacity-overlay}) 100%
+    );
+    box-shadow:
+      0 -1.25rem 2.5rem rgb(8 7 11 / 0.65),
+      // no exact $shadow-* match
+      0 -0.5rem 1.5rem rgb(201 162 39 / 10%); // no exact $shadow-* match
+  }
+}
+
 .brew-controls,
 .menu-controls {
   display: flex;

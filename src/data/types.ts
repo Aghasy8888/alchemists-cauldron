@@ -17,6 +17,18 @@ export const GAME_STATUS = {
 
 export type GameStatus = (typeof GAME_STATUS)[keyof typeof GAME_STATUS];
 
+/** Canonical brew results — destructure in consumers; use bare names (see domain-constants). */
+export const BREW_OUTCOME = {
+  success: 'success',
+  failure: 'failure',
+  ignored: 'ignored',
+} as const;
+
+export type BrewOutcome = (typeof BREW_OUTCOME)[keyof typeof BREW_OUTCOME];
+
+/** Brew FX only fires for real attempts (not ignored). */
+export type BrewFxOutcome = Exclude<BrewOutcome, (typeof BREW_OUTCOME)['ignored']>;
+
 export type IngredientIconId =
   | 'dragon-tears'
   | 'fairy-dust'
@@ -50,6 +62,13 @@ export interface IRecipe {
   magicPower: IRecipeRange;
 }
 
+/** One-shot brew visual feedback; not persisted. */
+export interface IBrewFx {
+  token: number;
+  outcome: BrewFxOutcome;
+  timeBonusSec: number;
+}
+
 export interface IGameState {
   status: GameStatus;
   score: number;
@@ -64,6 +83,10 @@ export interface IGameState {
   lastReactionId?: string | null;
   /** Set when status is game-over; cleared on a new run. */
   gameOverReason: string | null;
+  /** Ephemeral brew FX signal; cleared on new run / menu / load. */
+  brewFx: IBrewFx | null;
+  /** True after Continue until the player resumes; Exit then keeps the save untouched. Not persisted. */
+  continuedUntouched: boolean;
 }
 
 export interface IDifficultyConfig {

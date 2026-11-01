@@ -15,6 +15,22 @@ const { playing, paused } = GAME_STATUS;
 
 export const SAVE_STORAGE_KEY = 'alchemists-cauldron:save';
 
+/** Notified on save/clear so React can re-read storage (localStorage alone does not re-render). */
+const saveVersionListeners = new Set<() => void>();
+
+function emitSaveVersion(): void {
+  saveVersionListeners.forEach((listener) => {
+    listener();
+  });
+}
+
+export function subscribeSaveVersion(listener: () => void): () => void {
+  saveVersionListeners.add(listener);
+  return () => {
+    saveVersionListeners.delete(listener);
+  };
+}
+
 const DIFFICULTIES: ReadonlySet<string> = new Set([easy, medium, hard]);
 const CONTINUABLE_STATUSES: ReadonlySet<string> = new Set([playing, paused]);
 
@@ -169,6 +185,8 @@ function toGameState(save: IPersistedSave): IGameState {
     difficulty: save.difficulty,
     lastReactionId: null,
     gameOverReason: null,
+    brewFx: null,
+    continuedUntouched: false,
   };
 }
 
@@ -180,6 +198,7 @@ export function saveGame(state: IGameState, now: number = Date.now()): void {
   }
   try {
     localStorage.setItem(SAVE_STORAGE_KEY, JSON.stringify(payload));
+    emitSaveVersion();
   } catch {
     // Storage full or blocked — keep UI running.
   }
@@ -195,12 +214,14 @@ export function loadGame(): IGameState | null {
     const data: unknown = JSON.parse(raw);
     if (!isValidSave(data)) {
       localStorage.removeItem(SAVE_STORAGE_KEY);
+      emitSaveVersion();
       return null;
     }
     return toGameState(data);
   } catch {
     try {
       localStorage.removeItem(SAVE_STORAGE_KEY);
+      emitSaveVersion();
     } catch {
       // ignore
     }
@@ -235,4 +256,5 @@ export function clearSave(): void {
   } catch {
     // ignore
   }
+  emitSaveVersion();
 }

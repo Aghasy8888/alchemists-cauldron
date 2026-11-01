@@ -44,7 +44,7 @@ $board-shake-motion: 0.45s ease-out; // no exact $duration-* match
   user-select: none;
 }
 
-html.ui-surfaces-ready .cauldron__art {
+.game--surfaces-ready .cauldron__art {
   opacity: 1;
 }
 

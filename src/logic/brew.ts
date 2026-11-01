@@ -1,5 +1,5 @@
 import { DIFFICULTY_CONFIG } from '../data/difficulty';
-import { GAME_STATUS, type IGameState } from '../data/types';
+import { BREW_OUTCOME, GAME_STATUS, type BrewOutcome, type IGameState } from '../data/types';
 import { expandRecipeRanges, isBrewSuccess } from './brew-check';
 import { clearCauldron } from './cauldron';
 import { applyEndChecks } from './game-over';
@@ -7,14 +7,7 @@ import { pickRandomRecipe } from './recipe-generator';
 import { resolveCauldronValues } from './resolve-cauldron';
 import { createEndTime } from './timer';
 
-/** Canonical brew outcomes — destructure in consumers; use bare names. */
-export const BREW_OUTCOME = {
-  success: 'success',
-  failure: 'failure',
-  ignored: 'ignored',
-} as const;
-
-export type BrewOutcome = (typeof BREW_OUTCOME)[keyof typeof BREW_OUTCOME];
+export { BREW_OUTCOME, type BrewOutcome } from '../data/types';
 
 const { success, failure, ignored } = BREW_OUTCOME;
 const { playing } = GAME_STATUS;
@@ -24,11 +17,6 @@ export interface IBrewResult {
   outcome: BrewOutcome;
 }
 
-/**
- * Run a brew: check resolved values vs recipe ± tolerance, clear cauldron.
- * Success: score + time bonus (capped at start time) + new recipe.
- * Failure: lose 1 life. Stock is never restored.
- */
 export function brew(state: IGameState): IBrewResult {
   if (state.status !== playing || state.activeRecipe === null) {
     return { state, outcome: ignored };

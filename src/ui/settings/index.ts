@@ -1,1 +1,0 @@
-export { renderSettings } from './settings';

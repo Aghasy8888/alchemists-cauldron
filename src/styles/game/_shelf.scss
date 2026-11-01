@@ -120,7 +120,7 @@
   }
 }
 
-html.ui-surfaces-ready .shelf-card::before {
+.game--surfaces-ready .shelf-card::before {
   opacity: 1;
 }
 
@@ -181,7 +181,7 @@ $tooltip-caret: 0.45rem; // no exact $size-* match
 $tooltip-border-gold: var(--color-primary-high);
 
 // Hide every shelf tooltip while a card drag is in progress (source + drag ghost).
-html.is-shelf-dragging .shelf-card__tooltip {
+.game__board--shelf-dragging .shelf-card__tooltip {
   visibility: hidden !important;
   opacity: 0 !important;
 }

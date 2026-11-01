@@ -7,31 +7,21 @@ import mandrakeRootSvg from './icons/ingredients/mandrake-root.svg?raw';
 import phoenixFeatherSvg from './icons/ingredients/phoenix-feather.svg?raw';
 import toadSlimeSvg from './icons/ingredients/toad-slime.svg?raw';
 import type { IngredientIconId } from '../data/types';
-import { applyIconLabel, cloneSvg, parseSvg } from './svg-utils';
-
-const templates = {
-  'dragon-tears': parseSvg(dragonTearsSvg),
-  'fairy-dust': parseSvg(fairyDustSvg),
-  'frost-lotus': parseSvg(frostLotusSvg),
-  'mandrake-root': parseSvg(mandrakeRootSvg),
-  'caustic-acid': parseSvg(causticAcidSvg),
-  'essence-of-the-void': parseSvg(essenceOfTheVoidSvg),
-  'phoenix-feather': parseSvg(phoenixFeatherSvg),
-  'toad-slime': parseSvg(toadSlimeSvg),
-} as const satisfies Record<IngredientIconId, SVGSVGElement>;
+import { trimSvgMarkup } from './svg-utils';
 
 export type { IngredientIconId };
 
-export interface CreateIngredientIconOptions {
-  /** When set, icon is exposed to assistive tech (not decorative). */
-  label?: string;
-}
+const markupById = {
+  'dragon-tears': trimSvgMarkup(dragonTearsSvg),
+  'fairy-dust': trimSvgMarkup(fairyDustSvg),
+  'frost-lotus': trimSvgMarkup(frostLotusSvg),
+  'mandrake-root': trimSvgMarkup(mandrakeRootSvg),
+  'caustic-acid': trimSvgMarkup(causticAcidSvg),
+  'essence-of-the-void': trimSvgMarkup(essenceOfTheVoidSvg),
+  'phoenix-feather': trimSvgMarkup(phoenixFeatherSvg),
+  'toad-slime': trimSvgMarkup(toadSlimeSvg),
+} as const satisfies Record<IngredientIconId, string>;
 
-export function createIngredientIcon(
-  iconId: IngredientIconId,
-  options: CreateIngredientIconOptions = {},
-): SVGSVGElement {
-  const svg = cloneSvg(templates[iconId]);
-  applyIconLabel(svg, options.label);
-  return svg;
+export function getIngredientIconMarkup(id: IngredientIconId): string {
+  return markupById[id];
 }

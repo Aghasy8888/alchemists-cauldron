@@ -15,7 +15,7 @@ import { useGameOverlay } from './hooks/use-game-overlay';
 import { useGameTimer } from './hooks/use-game-timer';
 import { useKeyboardShortcuts } from './hooks/use-keyboard-shortcuts';
 import { usePauseOnHidden } from './hooks/use-pause-on-hidden';
-import { useSaveOnPauseResume } from './hooks/use-save-on-pause-resume';
+import { usePersistGame } from './hooks/use-persist-game';
 
 const { paused, gameOver } = GAME_STATUS;
 
@@ -45,7 +45,7 @@ export function App() {
 
   useGameTimer();
   useClearSaveOnGameOver();
-  useSaveOnPauseResume();
+  usePersistGame();
   usePauseOnHidden({ shelfDragging });
   useKeyboardShortcuts({ overlayOpen });
 

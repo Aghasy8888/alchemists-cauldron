@@ -1,0 +1,175 @@
+import type { UiIconId } from '../../assets/ui-icons';
+import { difficultyLabel } from '../../data/difficulty';
+import { GAME_STATUS } from '../../data/types';
+import { useGame } from '../../hooks/use-game';
+import { GAME_ACTION } from '../../state/game-actions';
+import { continueSavedGame, hasContinuableSave } from '../../storage/save';
+import { UiIcon } from '../icons';
+
+const { menu, playing, gameOver } = GAME_STATUS;
+const { startGame, continueGame, brew, pourOut, pause } = GAME_ACTION;
+
+type MenuButtonProps = {
+  className: string;
+  label: string;
+  icon: UiIconId;
+  onClick: () => void;
+  variant: 'primary' | 'continue' | 'chrome';
+};
+
+function MenuButton({ className, label, icon, onClick, variant }: MenuButtonProps) {
+  return (
+    <button
+      type="button"
+      className={`menu-controls__btn menu-controls__btn--${variant} ${className}`}
+      onClick={onClick}
+    >
+      <span className="menu-controls__btn-icon">
+        <UiIcon id={icon} />
+      </span>
+      <span className="menu-controls__btn-label">{label}</span>
+    </button>
+  );
+}
+
+function noop() {
+  // Dialogs land in a later step.
+}
+
+export function ActionControls() {
+  const { state, dispatch } = useGame();
+  const { status, difficulty, cauldronIngredients } = state;
+  const canBrew = cauldronIngredients.length >= 1;
+  const canPourOut = cauldronIngredients.length >= 1;
+  const canContinue = hasContinuableSave();
+
+  if (status === menu) {
+    const primaryClassName = canContinue
+      ? 'menu-controls__primary menu-controls__primary--split'
+      : 'menu-controls__primary';
+
+    return (
+      <div className="menu-controls">
+        <p className="menu-controls__difficulty">Difficulty: {difficultyLabel(difficulty)}</p>
+
+        <div className={primaryClassName}>
+          <MenuButton
+            className="game__start"
+            label="Start Game"
+            icon="play"
+            variant="primary"
+            onClick={() => {
+              dispatch({ type: startGame });
+            }}
+          />
+          {canContinue ? (
+            <MenuButton
+              className="game__continue"
+              label="Continue"
+              icon="continue"
+              variant="continue"
+              onClick={() => {
+                const restored = continueSavedGame();
+                if (restored !== null) {
+                  dispatch({ type: continueGame, state: restored });
+                }
+              }}
+            />
+          ) : null}
+        </div>
+
+        <div className="menu-controls__chrome">
+          <MenuButton
+            className="game__settings"
+            label="Settings"
+            icon="settings"
+            variant="chrome"
+            onClick={noop}
+          />
+          <MenuButton
+            className="game__help"
+            label="Help"
+            icon="help"
+            variant="chrome"
+            onClick={noop}
+          />
+          <MenuButton
+            className="game__leaderboard"
+            label="Leaderboard"
+            icon="leaderboard"
+            variant="chrome"
+            onClick={noop}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (status === gameOver) {
+    return (
+      <div className="menu-controls">
+        <p className="menu-controls__difficulty">
+          {state.gameOverReason ?? 'Game over'} · Score: {state.score}
+        </p>
+        <div className="menu-controls__primary">
+          <MenuButton
+            className="game__start"
+            label="Play again"
+            icon="play"
+            variant="primary"
+            onClick={() => {
+              dispatch({ type: startGame });
+            }}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (status !== playing) {
+    return null;
+  }
+
+  return (
+    <div className="brew-controls">
+      <div className="brew-controls__row">
+        <button
+          type="button"
+          className="brew-controls__button"
+          disabled={!canBrew}
+          aria-label={canBrew ? 'Brew the cauldron mixture' : 'Add at least one ingredient to brew'}
+          onClick={() => {
+            dispatch({ type: brew });
+          }}
+        >
+          Brew
+        </button>
+        <button
+          type="button"
+          className="brew-controls__pour-out"
+          disabled={!canPourOut}
+          aria-label={
+            canPourOut
+              ? 'Pour out the cauldron (costs 10 seconds)'
+              : 'Cauldron is empty — nothing to pour out'
+          }
+          onClick={() => {
+            dispatch({ type: pourOut });
+          }}
+        >
+          Pour Out
+        </button>
+        <button
+          type="button"
+          className="brew-controls__pause"
+          aria-label="Pause the game"
+          onClick={() => {
+            dispatch({ type: pause });
+          }}
+        >
+          Pause
+        </button>
+      </div>
+    </div>
+  );
+}

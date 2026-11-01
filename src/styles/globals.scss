@@ -1,5 +1,4 @@
 @use './tokens' as *;
-@use './functions' as *;
 
 @import '@fontsource/inter/400.css';
 @import '@fontsource/inter/500.css';
@@ -236,26 +235,4 @@ body {
   height: 100%;
   max-height: var(--layout-viewport-height);
   overflow: hidden;
-}
-
-/* Temporary smoke shell until the play board is ported */
-.app {
-  min-height: 100%;
-  display: grid;
-  place-items: center;
-  padding: space(2);
-  gap: space(2);
-}
-
-.app__title {
-  margin: 0;
-  font-size: $font-size-headline-medium;
-  font-weight: $font-weight-bold;
-  text-align: center;
-}
-
-.app__status {
-  margin: 0;
-  text-align: center;
-  color: var(--color-on-bg-low);
 }

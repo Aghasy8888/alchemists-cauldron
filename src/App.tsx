@@ -1,14 +1,15 @@
+import { ActionControls } from './components/action-controls';
+import { GameShell } from './components/game-shell';
+import { Hud } from './components/hud';
+import { GAME_STATUS } from './data/types';
 import { useGame } from './hooks/use-game';
+
+const { paused } = GAME_STATUS;
 
 export function App() {
   const { state } = useGame();
 
   return (
-    <main className="app">
-      <h1 className="app__title">Alchemist&apos;s Cauldron</h1>
-      <p className="app__status">
-        Status: {state.status} · Difficulty: {state.difficulty}
-      </p>
-    </main>
+    <GameShell hud={<Hud />} actions={<ActionControls />} boardPaused={state.status === paused} />
   );
 }

@@ -43,6 +43,19 @@ Gameplay rules and scoring match [`game-alchemists-cauldron֊req`](../game-alche
 
 On the pause screen, shortcuts are off — use the focused **Resume** button. Menu and Game Over keep normal browser keys.
 
+## Task set structure
+
+Work is cumulative. You may stop after any finished level.
+
+| Stage                   | What you add                                                          | Total score |
+| ----------------------- | --------------------------------------------------------------------- | ----------: |
+| **Precondition 1**      | Repository setup, tooling, folder structure, quality checks           |          58 |
+| **Level 1 — Basic**     | One full playable game with a fixed rule set                          |         228 |
+| **Level 2 — Extended**  | Difficulty selection and save / continue                              |         278 |
+| **Level 3 — Full game** | Drag & drop, tooltip, reactions, Pour Out, shortcuts, visual feedback |         393 |
+
+Maximum score: **423**. This React app implements through Level 3 (full game) as a Creative Extension framework migration.
+
 ## Stack
 
 - **React 19** + **react-dom** (SPA)

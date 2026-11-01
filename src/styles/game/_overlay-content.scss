@@ -134,7 +134,8 @@
 }
 
 .leaderboard__empty,
-.leaderboard-confirm__message {
+.leaderboard-confirm__message,
+.exit-confirm__message {
   margin: 0;
   font-size: var(--font-size-body-medium);
   color: var(--color-on-bg);

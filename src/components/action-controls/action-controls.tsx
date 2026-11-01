@@ -1,17 +1,19 @@
 import type { UiIconId } from '../../assets/ui-icons';
 import { difficultyLabel } from '../../data/difficulty';
 import { GAME_STATUS } from '../../data/types';
+import { useContinuableSave } from '../../hooks/use-continuable-save';
 import { useGame } from '../../hooks/use-game';
 import { useGameOverlay } from '../../hooks/use-game-overlay';
 import { useOpenLeaderboard } from '../../hooks/use-open-leaderboard';
+import { usePauseGame } from '../../hooks/use-pause-game';
 import { GAME_ACTION } from '../../state/game-actions';
-import { continueSavedGame, hasContinuableSave } from '../../storage/save';
+import { continueSavedGame } from '../../storage/save';
 import { unlockAudio } from '../../utils/urgent-timer-chime';
 import { HelpDialog, SettingsDialog } from '../dialogs';
 import { UiIcon } from '../icons';
 
 const { menu, playing } = GAME_STATUS;
-const { startGame, continueGame, brew, pourOut, pause } = GAME_ACTION;
+const { startGame, continueGame, brew, pourOut } = GAME_ACTION;
 
 type MenuButtonProps = {
   className: string;
@@ -40,10 +42,11 @@ export function ActionControls() {
   const { state, dispatch } = useGame();
   const { setOverlay, clearOverlay } = useGameOverlay();
   const openLeaderboard = useOpenLeaderboard();
+  const pauseGame = usePauseGame();
+  const canContinue = useContinuableSave();
   const { status, difficulty, cauldronIngredients } = state;
   const canBrew = cauldronIngredients.length >= 1;
   const canPourOut = cauldronIngredients.length >= 1;
-  const canContinue = hasContinuableSave();
 
   if (status === menu) {
     const primaryClassName = canContinue
@@ -150,9 +153,7 @@ export function ActionControls() {
           type="button"
           className="brew-controls__pause"
           aria-label="Pause the game"
-          onClick={() => {
-            dispatch({ type: pause });
-          }}
+          onClick={pauseGame}
         >
           Pause
         </button>

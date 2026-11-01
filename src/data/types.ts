@@ -85,6 +85,8 @@ export interface IGameState {
   gameOverReason: string | null;
   /** Ephemeral brew FX signal; cleared on new run / menu / load. */
   brewFx: IBrewFx | null;
+  /** True after Continue until the player resumes; Exit then keeps the save untouched. Not persisted. */
+  continuedUntouched: boolean;
 }
 
 export interface IDifficultyConfig {

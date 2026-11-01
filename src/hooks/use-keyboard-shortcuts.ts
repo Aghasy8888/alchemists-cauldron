@@ -4,9 +4,10 @@ import { getShelfIngredients } from '../data/ingredients';
 import { GAME_STATUS } from '../data/types';
 import { GAME_ACTION } from '../state/game-actions';
 import { useGame } from './use-game';
+import { usePauseGame } from './use-pause-game';
 
 const { playing } = GAME_STATUS;
-const { pause, brew, pourOut, addIngredient } = GAME_ACTION;
+const { brew, pourOut, addIngredient } = GAME_ACTION;
 
 const DIGIT_CODES: Readonly<Record<string, number>> = {
   Digit1: 0,
@@ -37,6 +38,7 @@ function isTypingTarget(target: EventTarget | null): boolean {
 /** Game shortcuts while playing (Escape/P, B, O, Digit1–8). */
 export function useKeyboardShortcuts({ overlayOpen }: UseKeyboardShortcutsOptions): void {
   const { state, dispatch } = useGame();
+  const pauseGame = usePauseGame();
 
   const onKeyDown = useEffectEvent((event: KeyboardEvent) => {
     if (state.status !== playing || overlayOpen || isTypingTarget(event.target)) {
@@ -45,7 +47,7 @@ export function useKeyboardShortcuts({ overlayOpen }: UseKeyboardShortcutsOption
 
     if (event.key === 'Escape' || event.code === 'KeyP') {
       event.preventDefault();
-      dispatch({ type: pause });
+      pauseGame();
       return;
     }
 

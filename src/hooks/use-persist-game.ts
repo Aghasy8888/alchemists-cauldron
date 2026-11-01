@@ -10,12 +10,13 @@ export function usePersistGame(): void {
   const { status, score, lives, activeRecipe, cauldronIngredients, shelfStock } = state;
 
   const persistIfUnfinished = useEffectEvent(() => {
-    if (status === playing || status === paused) {
-      saveGame(state);
-    }
+    saveGame(state);
   });
 
   useEffect(() => {
+    if (status !== playing && status !== paused) {
+      return;
+    }
     persistIfUnfinished();
   }, [status, score, lives, activeRecipe, cauldronIngredients, shelfStock]);
 }

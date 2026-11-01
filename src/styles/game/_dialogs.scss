@@ -4,6 +4,7 @@
 
 .game-over,
 .pause-dialog,
+.exit-confirm,
 .leaderboard,
 .leaderboard-confirm,
 .help-dialog,
@@ -21,6 +22,7 @@
 
 .game-over,
 .pause-dialog,
+.exit-confirm,
 .leaderboard-confirm,
 .settings-dialog {
   width: 100%;
@@ -52,6 +54,7 @@
 
 .game-over__title,
 .pause-dialog__title,
+.exit-confirm__title,
 .leaderboard__title,
 .leaderboard-confirm__title,
 .help-dialog__title,
@@ -65,6 +68,7 @@
 
 .game-over__actions,
 .pause-dialog__actions,
+.exit-confirm__actions,
 .leaderboard__actions,
 .leaderboard-confirm__actions {
   display: flex;
@@ -78,6 +82,7 @@
 .game-over__exit,
 .game-over__submit,
 .pause-dialog__button,
+.exit-confirm__button,
 .leaderboard__button,
 .leaderboard-confirm__button,
 .help-dialog__button,
@@ -111,6 +116,7 @@
 }
 
 .pause-dialog__button--exit,
+.exit-confirm__button--back,
 .game-over__leaderboard,
 .game-over__exit,
 .leaderboard__button--back,
@@ -133,7 +139,8 @@
 }
 
 .leaderboard__button--clear,
-.leaderboard-confirm__button--confirm {
+.leaderboard-confirm__button--confirm,
+.exit-confirm__button--discard {
   background-color: var(--color-error);
   border-color: var(--color-error);
   color: var(--color-white);

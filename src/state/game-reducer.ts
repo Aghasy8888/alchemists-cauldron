@@ -32,7 +32,7 @@ export function gameReducer(state: IGameState, action: GameAction): IGameState {
     }
 
     case continueGame: {
-      return action.state;
+      return { ...action.state, continuedUntouched: true };
     }
 
     case exitToMenu: {
@@ -99,7 +99,7 @@ export function gameReducer(state: IGameState, action: GameAction): IGameState {
       if (state.status !== paused) {
         return state;
       }
-      return resumeRun(state);
+      return { ...resumeRun(state), continuedUntouched: false };
     }
 
     case syncTimeLeft: {

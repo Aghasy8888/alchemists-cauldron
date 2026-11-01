@@ -1,19 +1,50 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useGame } from '../../hooks/use-game';
 import { GAME_ACTION } from '../../state/game-actions';
-import { clearSave } from '../../storage/save';
+import { clearSave, saveGame } from '../../storage/save';
 import { unlockAudio } from '../../utils/urgent-timer-chime';
+import { ExitConfirmDialog } from './exit-confirm-dialog';
 
 const { resume, exitToMenu } = GAME_ACTION;
 
-/** Pause overlay: Resume or Exit to Menu. */
+const PAUSE_VIEW = {
+  pause: 'pause',
+  confirmExit: 'confirm-exit',
+} as const;
+
+type PauseView = (typeof PAUSE_VIEW)[keyof typeof PAUSE_VIEW];
+
+const { pause: pauseView, confirmExit } = PAUSE_VIEW;
+
+/** Pause overlay: Resume or Exit to Menu (with save prompt when the run was played). */
 export function PauseDialog() {
-  const { dispatch } = useGame();
+  const { state, dispatch } = useGame();
+  const [view, setView] = useState<PauseView>(pauseView);
   const resumeRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    resumeRef.current?.focus();
-  }, []);
+    if (view === pauseView) {
+      resumeRef.current?.focus();
+    }
+  }, [view]);
+
+  if (view === confirmExit) {
+    return (
+      <ExitConfirmDialog
+        onSaveAndExit={() => {
+          saveGame(state);
+          dispatch({ type: exitToMenu });
+        }}
+        onExitWithoutSaving={() => {
+          clearSave();
+          dispatch({ type: exitToMenu });
+        }}
+        onBack={() => {
+          setView(pauseView);
+        }}
+      />
+    );
+  }
 
   return (
     <div
@@ -41,8 +72,11 @@ export function PauseDialog() {
           type="button"
           className="pause-dialog__button pause-dialog__button--exit"
           onClick={() => {
-            clearSave();
-            dispatch({ type: exitToMenu });
+            if (state.continuedUntouched) {
+              dispatch({ type: exitToMenu });
+              return;
+            }
+            setView(confirmExit);
           }}
         >
           Exit to Menu

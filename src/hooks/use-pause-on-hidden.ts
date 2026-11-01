@@ -1,10 +1,5 @@
 import { useEffect, useEffectEvent } from 'react';
-import { GAME_STATUS } from '../data/types';
-import { GAME_ACTION } from '../state/game-actions';
-import { useGame } from './use-game';
-
-const { playing } = GAME_STATUS;
-const { pause } = GAME_ACTION;
+import { usePauseGame } from './use-pause-game';
 
 type UsePauseOnHiddenOptions = {
   shelfDragging: boolean;
@@ -12,11 +7,11 @@ type UsePauseOnHiddenOptions = {
 
 /** Pause when the tab is hidden or the window blurs (skip blur during shelf drag). */
 export function usePauseOnHidden({ shelfDragging }: UsePauseOnHiddenOptions): void {
-  const { state, dispatch } = useGame();
+  const pauseGame = usePauseGame();
 
   const onVisibilityChange = useEffectEvent(() => {
-    if (document.hidden && state.status === playing) {
-      dispatch({ type: pause });
+    if (document.hidden) {
+      pauseGame();
     }
   });
 
@@ -24,9 +19,7 @@ export function usePauseOnHidden({ shelfDragging }: UsePauseOnHiddenOptions): vo
     if (shelfDragging) {
       return;
     }
-    if (state.status === playing) {
-      dispatch({ type: pause });
-    }
+    pauseGame();
   });
 
   useEffect(() => {

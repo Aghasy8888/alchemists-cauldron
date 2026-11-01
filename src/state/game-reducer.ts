@@ -5,7 +5,6 @@ import { applyEndChecks } from '../logic/game-over';
 import { pauseRun, resumeRun } from '../logic/pause';
 import { pourOut } from '../logic/pour-out';
 import { applyReactionTransitions } from '../logic/reaction-transitions';
-import { createEndTime } from '../logic/timer';
 import { GAME_ACTION, type GameAction } from './game-actions';
 import { createMenuState, startNewGame } from './game-state';
 
@@ -93,10 +92,10 @@ export function gameReducer(state: IGameState, action: GameAction): IGameState {
         return state;
       }
       const timeLeft = Math.max(0, action.timeLeft);
+      // Keep existing endTime — rebuilding it each tick drifts the clock.
       return applyEndChecks({
         ...state,
         timeLeft,
-        endTime: timeLeft > 0 ? createEndTime(timeLeft) : null,
       });
     }
 

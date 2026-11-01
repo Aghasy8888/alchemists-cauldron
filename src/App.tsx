@@ -4,6 +4,7 @@ import { ActionControls } from './components/action-controls';
 import { Cauldron } from './components/cauldron';
 import { GameShell } from './components/game-shell';
 import { Hud } from './components/hud';
+import { ParameterBars } from './components/parameter-bars';
 import { RecipePanel } from './components/recipe-panel';
 import { Shelf } from './components/shelf';
 import { GAME_STATUS } from './data/types';
@@ -35,6 +36,7 @@ export function App() {
       shelf={<Shelf onDraggingChange={setShelfDragging} />}
       cauldron={<Cauldron />}
       recipe={<RecipePanel />}
+      bars={<ParameterBars />}
       boardPaused={state.status === paused}
       shelfDragging={shelfDragging}
       surfacesReady={surfacesReady}

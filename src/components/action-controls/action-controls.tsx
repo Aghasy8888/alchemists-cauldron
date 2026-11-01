@@ -2,8 +2,10 @@ import type { UiIconId } from '../../assets/ui-icons';
 import { difficultyLabel } from '../../data/difficulty';
 import { GAME_STATUS } from '../../data/types';
 import { useGame } from '../../hooks/use-game';
+import { useGameOverlay } from '../../hooks/use-game-overlay';
 import { GAME_ACTION } from '../../state/game-actions';
 import { continueSavedGame, hasContinuableSave } from '../../storage/save';
+import { HelpDialog, SettingsDialog } from '../dialogs';
 import { UiIcon } from '../icons';
 
 const { menu, playing, gameOver } = GAME_STATUS;
@@ -38,6 +40,7 @@ function noop() {
 
 export function ActionControls() {
   const { state, dispatch } = useGame();
+  const { setOverlay, clearOverlay } = useGameOverlay();
   const { status, difficulty, cauldronIngredients } = state;
   const canBrew = cauldronIngredients.length >= 1;
   const canPourOut = cauldronIngredients.length >= 1;
@@ -84,14 +87,18 @@ export function ActionControls() {
             label="Settings"
             icon="settings"
             variant="chrome"
-            onClick={noop}
+            onClick={() => {
+              setOverlay(<SettingsDialog onBack={clearOverlay} />);
+            }}
           />
           <MenuButton
             className="game__help"
             label="Help"
             icon="help"
             variant="chrome"
-            onClick={noop}
+            onClick={() => {
+              setOverlay(<HelpDialog onBack={clearOverlay} />);
+            }}
           />
           <MenuButton
             className="game__leaderboard"

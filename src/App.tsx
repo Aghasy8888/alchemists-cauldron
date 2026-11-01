@@ -1,8 +1,8 @@
-import { useEffect, useEffectEvent, useState } from 'react';
+import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import { preloadUiSurfaceImages } from './assets/ui-surfaces';
 import { ActionControls } from './components/action-controls';
 import { Cauldron } from './components/cauldron';
-import { PauseDialog } from './components/dialogs';
+import { GameOverDialog, PauseDialog } from './components/dialogs';
 import { GameShell } from './components/game-shell';
 import { Hud } from './components/hud';
 import { ParameterBars } from './components/parameter-bars';
@@ -17,15 +17,30 @@ import { useKeyboardShortcuts } from './hooks/use-keyboard-shortcuts';
 import { usePauseOnHidden } from './hooks/use-pause-on-hidden';
 import { useSaveOnPauseResume } from './hooks/use-save-on-pause-resume';
 
-const { paused } = GAME_STATUS;
+const { paused, gameOver } = GAME_STATUS;
 
 export function App() {
   const { state } = useGame();
   const { overlay: menuOverlay, clearOverlay } = useGameOverlay();
   const [shelfDragging, setShelfDragging] = useState(false);
   const [surfacesReady, setSurfacesReady] = useState(false);
-  const isPaused = state.status === paused;
-  const overlay = isPaused ? <PauseDialog /> : menuOverlay;
+  const [scoreSubmitted, setScoreSubmitted] = useState(false);
+  const previousStatusRef = useRef(state.status);
+  const { status } = state;
+  const isPaused = status === paused;
+  const isGameOver = status === gameOver;
+  const overlay =
+    menuOverlay ??
+    (isPaused ? (
+      <PauseDialog />
+    ) : isGameOver ? (
+      <GameOverDialog
+        scoreSubmitted={scoreSubmitted}
+        onScoreSubmitted={() => {
+          setScoreSubmitted(true);
+        }}
+      />
+    ) : null);
   const overlayOpen = overlay != null;
 
   useGameTimer();
@@ -34,15 +49,22 @@ export function App() {
   usePauseOnHidden({ shelfDragging });
   useKeyboardShortcuts({ overlayOpen });
 
-  const clearMenuOverlayOnPause = useEffectEvent(() => {
+  const clearMenuOverlayOnEnter = useEffectEvent(() => {
     clearOverlay();
   });
 
   useEffect(() => {
-    if (isPaused) {
-      clearMenuOverlayOnPause();
+    const previous = previousStatusRef.current;
+    previousStatusRef.current = status;
+
+    if (previous !== paused && status === paused) {
+      clearMenuOverlayOnEnter();
     }
-  }, [isPaused]);
+    if (previous !== gameOver && status === gameOver) {
+      clearMenuOverlayOnEnter();
+      setScoreSubmitted(false);
+    }
+  }, [status]);
 
   useEffect(() => {
     let cancelled = false;

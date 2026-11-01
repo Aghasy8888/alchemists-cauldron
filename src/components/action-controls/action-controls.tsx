@@ -3,12 +3,13 @@ import { difficultyLabel } from '../../data/difficulty';
 import { GAME_STATUS } from '../../data/types';
 import { useGame } from '../../hooks/use-game';
 import { useGameOverlay } from '../../hooks/use-game-overlay';
+import { useOpenLeaderboard } from '../../hooks/use-open-leaderboard';
 import { GAME_ACTION } from '../../state/game-actions';
 import { continueSavedGame, hasContinuableSave } from '../../storage/save';
 import { HelpDialog, SettingsDialog } from '../dialogs';
 import { UiIcon } from '../icons';
 
-const { menu, playing, gameOver } = GAME_STATUS;
+const { menu, playing } = GAME_STATUS;
 const { startGame, continueGame, brew, pourOut, pause } = GAME_ACTION;
 
 type MenuButtonProps = {
@@ -34,13 +35,10 @@ function MenuButton({ className, label, icon, onClick, variant }: MenuButtonProp
   );
 }
 
-function noop() {
-  // Dialogs land in a later step.
-}
-
 export function ActionControls() {
   const { state, dispatch } = useGame();
   const { setOverlay, clearOverlay } = useGameOverlay();
+  const openLeaderboard = useOpenLeaderboard();
   const { status, difficulty, cauldronIngredients } = state;
   const canBrew = cauldronIngredients.length >= 1;
   const canPourOut = cauldronIngredients.length >= 1;
@@ -105,28 +103,7 @@ export function ActionControls() {
             label="Leaderboard"
             icon="leaderboard"
             variant="chrome"
-            onClick={noop}
-          />
-        </div>
-      </div>
-    );
-  }
-
-  if (status === gameOver) {
-    return (
-      <div className="menu-controls">
-        <p className="menu-controls__difficulty">
-          {state.gameOverReason ?? 'Game over'} · Score: {state.score}
-        </p>
-        <div className="menu-controls__primary">
-          <MenuButton
-            className="game__start"
-            label="Play again"
-            icon="play"
-            variant="primary"
-            onClick={() => {
-              dispatch({ type: startGame });
-            }}
+            onClick={openLeaderboard}
           />
         </div>
       </div>

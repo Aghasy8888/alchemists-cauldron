@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useGame } from '../../hooks/use-game';
 import { GAME_ACTION } from '../../state/game-actions';
 import { clearSave } from '../../storage/save';
+import { unlockAudio } from '../../utils/urgent-timer-chime';
 
 const { resume, exitToMenu } = GAME_ACTION;
 
@@ -30,6 +31,7 @@ export function PauseDialog() {
           type="button"
           className="pause-dialog__button pause-dialog__button--resume"
           onClick={() => {
+            unlockAudio();
             dispatch({ type: resume });
           }}
         >

@@ -9,6 +9,7 @@ import { ParameterBars } from './components/parameter-bars';
 import { RecipePanel } from './components/recipe-panel';
 import { Shelf } from './components/shelf';
 import { GAME_STATUS } from './data/types';
+import { useBrewFx } from './hooks/use-brew-fx';
 import { useClearSaveOnGameOver } from './hooks/use-clear-save-on-game-over';
 import { useGame } from './hooks/use-game';
 import { useGameOverlay } from './hooks/use-game-overlay';
@@ -16,6 +17,7 @@ import { useGameTimer } from './hooks/use-game-timer';
 import { useKeyboardShortcuts } from './hooks/use-keyboard-shortcuts';
 import { usePauseOnHidden } from './hooks/use-pause-on-hidden';
 import { usePersistGame } from './hooks/use-persist-game';
+import { useUrgentTimerChime } from './hooks/use-urgent-timer-chime';
 
 const { paused, gameOver } = GAME_STATUS;
 
@@ -26,6 +28,8 @@ export function App() {
   const [surfacesReady, setSurfacesReady] = useState(false);
   const [scoreSubmitted, setScoreSubmitted] = useState(false);
   const previousStatusRef = useRef(state.status);
+  const cauldronRef = useRef<HTMLElement>(null);
+  const boardRef = useRef<HTMLDivElement>(null);
   const { status } = state;
   const isPaused = status === paused;
   const isGameOver = status === gameOver;
@@ -46,6 +50,8 @@ export function App() {
   useGameTimer();
   useClearSaveOnGameOver();
   usePersistGame();
+  useBrewFx({ cauldronRef, boardRef });
+  useUrgentTimerChime();
   usePauseOnHidden({ shelfDragging });
   useKeyboardShortcuts({ overlayOpen });
 
@@ -83,13 +89,14 @@ export function App() {
       hud={<Hud />}
       actions={<ActionControls />}
       shelf={<Shelf onDraggingChange={setShelfDragging} />}
-      cauldron={<Cauldron />}
+      cauldron={<Cauldron ref={cauldronRef} />}
       recipe={<RecipePanel />}
       bars={<ParameterBars />}
       overlay={overlay}
       boardPaused={isPaused}
       shelfDragging={shelfDragging}
       surfacesReady={surfacesReady}
+      boardRef={boardRef}
     />
   );
 }

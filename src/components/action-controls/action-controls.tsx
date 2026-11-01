@@ -6,6 +6,7 @@ import { useGameOverlay } from '../../hooks/use-game-overlay';
 import { useOpenLeaderboard } from '../../hooks/use-open-leaderboard';
 import { GAME_ACTION } from '../../state/game-actions';
 import { continueSavedGame, hasContinuableSave } from '../../storage/save';
+import { unlockAudio } from '../../utils/urgent-timer-chime';
 import { HelpDialog, SettingsDialog } from '../dialogs';
 import { UiIcon } from '../icons';
 
@@ -60,6 +61,7 @@ export function ActionControls() {
             icon="play"
             variant="primary"
             onClick={() => {
+              unlockAudio();
               dispatch({ type: startGame });
             }}
           />
@@ -70,6 +72,7 @@ export function ActionControls() {
               icon="continue"
               variant="continue"
               onClick={() => {
+                unlockAudio();
                 const restored = continueSavedGame();
                 if (restored !== null) {
                   dispatch({ type: continueGame, state: restored });

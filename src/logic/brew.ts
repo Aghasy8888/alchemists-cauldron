@@ -1,5 +1,5 @@
 import { DIFFICULTY_CONFIG } from '../data/difficulty';
-import { GAME_STATUS, type IGameState } from '../data/types';
+import { BREW_OUTCOME, GAME_STATUS, type BrewOutcome, type IGameState } from '../data/types';
 import { expandRecipeRanges, isBrewSuccess } from './brew-check';
 import { clearCauldron } from './cauldron';
 import { applyEndChecks } from './game-over';
@@ -7,13 +7,7 @@ import { pickRandomRecipe } from './recipe-generator';
 import { resolveCauldronValues } from './resolve-cauldron';
 import { createEndTime } from './timer';
 
-export const BREW_OUTCOME = {
-  success: 'success',
-  failure: 'failure',
-  ignored: 'ignored',
-} as const;
-
-export type BrewOutcome = (typeof BREW_OUTCOME)[keyof typeof BREW_OUTCOME];
+export { BREW_OUTCOME, type BrewOutcome } from '../data/types';
 
 const { success, failure, ignored } = BREW_OUTCOME;
 const { playing } = GAME_STATUS;

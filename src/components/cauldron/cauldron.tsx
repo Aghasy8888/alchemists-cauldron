@@ -1,6 +1,6 @@
-import { useState, type CSSProperties, type DragEvent } from 'react';
+import { useState, type CSSProperties, type DragEvent, type Ref } from 'react';
 import cauldronArtUrl from '../../assets/images/game-cauldron.png';
-import { GAME_STATUS } from '../../data/types';
+import { BREW_OUTCOME, GAME_STATUS } from '../../data/types';
 import { useGame } from '../../hooks/use-game';
 import { isCauldronFull } from '../../logic/add-ingredient';
 import { GAME_ACTION } from '../../state/game-actions';
@@ -11,12 +11,23 @@ const DROP_TARGET_CLASS = 'game__cauldron--drop-target';
 
 const { playing } = GAME_STATUS;
 const { addIngredient } = GAME_ACTION;
+const { success } = BREW_OUTCOME;
 
-export function Cauldron() {
+type CauldronProps = {
+  ref?: Ref<HTMLElement>;
+};
+
+export function Cauldron({ ref }: CauldronProps) {
   const { state, dispatch } = useGame();
   const [isDropTarget, setIsDropTarget] = useState(false);
-  const { cauldronIngredients } = state;
+  const [dismissedBonusToken, setDismissedBonusToken] = useState<number | null>(null);
+  const { cauldronIngredients, brewFx } = state;
   const canAcceptDrop = state.status === playing && !isCauldronFull(state);
+  const showTimeBonus =
+    brewFx !== null &&
+    brewFx.outcome === success &&
+    brewFx.timeBonusSec > 0 &&
+    brewFx.token !== dismissedBonusToken;
 
   const sectionClassName = isDropTarget ? `game__cauldron ${DROP_TARGET_CLASS}` : 'game__cauldron';
 
@@ -63,6 +74,7 @@ export function Cauldron() {
 
   return (
     <section
+      ref={ref}
       className={sectionClassName}
       aria-label="Cauldron"
       onDragOver={handleDragOver}
@@ -94,6 +106,18 @@ export function Cauldron() {
             </span>
           );
         })}
+        {showTimeBonus && brewFx !== null ? (
+          <span
+            key={brewFx.token}
+            className="cauldron__time-bonus"
+            aria-hidden="true"
+            onAnimationEnd={() => {
+              setDismissedBonusToken(brewFx.token);
+            }}
+          >
+            +{brewFx.timeBonusSec}s
+          </span>
+        ) : null}
       </div>
     </section>
   );

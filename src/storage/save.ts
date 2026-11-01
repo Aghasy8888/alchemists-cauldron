@@ -169,6 +169,7 @@ function toGameState(save: IPersistedSave): IGameState {
     difficulty: save.difficulty,
     lastReactionId: null,
     gameOverReason: null,
+    brewFx: null,
   };
 }
 

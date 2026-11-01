@@ -20,6 +20,7 @@ export function createMenuState(difficulty: Difficulty = LEVEL_1_DIFFICULTY): IG
     difficulty,
     lastReactionId: null,
     gameOverReason: null,
+    brewFx: null,
   };
 }
 
@@ -43,5 +44,6 @@ export function startNewGame(previous: IGameState = createMenuState()): IGameSta
     difficulty,
     lastReactionId: null,
     gameOverReason: null,
+    brewFx: null,
   };
 }

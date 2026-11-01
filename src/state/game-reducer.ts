@@ -1,4 +1,5 @@
-import { GAME_STATUS, type IGameState } from '../data/types';
+import { DIFFICULTY_CONFIG } from '../data/difficulty';
+import { BREW_OUTCOME, GAME_STATUS, type IGameState } from '../data/types';
 import { addIngredient } from '../logic/add-ingredient';
 import { brew } from '../logic/brew';
 import { applyEndChecks } from '../logic/game-over';
@@ -22,6 +23,7 @@ const {
 } = GAME_ACTION;
 
 const { menu, playing, paused } = GAME_STATUS;
+const { success, failure, ignored } = BREW_OUTCOME;
 
 export function gameReducer(state: IGameState, action: GameAction): IGameState {
   switch (action.type) {
@@ -63,7 +65,20 @@ export function gameReducer(state: IGameState, action: GameAction): IGameState {
       if (state.status !== playing) {
         return state;
       }
-      return brew(state).state;
+      const result = brew(state);
+      if (result.outcome === ignored) {
+        return state;
+      }
+      const timeBonusSec =
+        result.outcome === success ? DIFFICULTY_CONFIG[state.difficulty].timeBonusPerBrew : 0;
+      return {
+        ...result.state,
+        brewFx: {
+          token: (state.brewFx?.token ?? 0) + 1,
+          outcome: result.outcome === success ? success : failure,
+          timeBonusSec,
+        },
+      };
     }
 
     case pourOutAction: {

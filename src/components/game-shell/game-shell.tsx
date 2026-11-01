@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ReactNode, Ref } from 'react';
 import { GAME_SURFACES_READY_CLASS } from '../../assets/ui-surfaces';
 
 type GameShellProps = {
@@ -12,6 +12,7 @@ type GameShellProps = {
   shelfDragging?: boolean;
   surfacesReady?: boolean;
   overlay?: ReactNode;
+  boardRef?: Ref<HTMLDivElement>;
 };
 
 export function GameShell({
@@ -25,6 +26,7 @@ export function GameShell({
   shelfDragging = false,
   surfacesReady = false,
   overlay,
+  boardRef,
 }: GameShellProps) {
   const gameClassName = surfacesReady ? `game ${GAME_SURFACES_READY_CLASS}` : 'game';
   const boardClassName = [
@@ -42,7 +44,7 @@ export function GameShell({
         <div className="game__hud">{hud}</div>
       </header>
 
-      <div className={boardClassName}>
+      <div ref={boardRef} className={boardClassName}>
         <main className="game__main">
           {shelf}
           {cauldron}

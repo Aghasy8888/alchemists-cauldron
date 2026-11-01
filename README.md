@@ -4,33 +4,35 @@ Browser mini-game: mix ingredients in a cauldron, match three target ranges (**T
 
 This folder is the **React 19** creative-extension of the game. The completed vanilla TypeScript version lives in [`alchemists-cauldron-pure-ts/`](./alchemists-cauldron-pure-ts/) (reference for rules and behavior).
 
-**Live demo (vanilla, current public deploy):** [https://aghasy8888.github.io/alchemists-cauldron/](https://aghasy8888.github.io/alchemists-cauldron/)
+**Live demo (vanilla deploy, until React is published):** [https://aghasy8888.github.io/alchemists-cauldron/](https://aghasy8888.github.io/alchemists-cauldron/)
 
 Production `base` is `/alchemists-cauldron/`. Deploy with `npm run deploy` (publishes `dist/` to the `gh-pages` branch). Do not commit `dist/` on story branches.
 
 ## Migration status
 
-In progress. Ported so far:
+**Complete** for gameplay / UX parity with pure-ts (React-first UI, not 1:1 DOM factories).
+
+Implemented:
 
 - Pure game **data**, **logic**, **utils**, and **storage** (save / leaderboard)
 - **State:** `useReducer` + `GameProvider` / `useGame`
-- Shell layout, **HUD**, menu / brew **action controls**
+- Play board: **HUD**, shelf (tooltips + drag-and-drop), cauldron (floating icons), recipe panel, parameter bars
+- Menu / brew **action controls**; dialogs: Help, Settings, Pause, Game Over (+ name entry), Leaderboard (+ clear confirm)
+- Hooks: game timer (`endTime` / rAF), pause on hidden / blur, keyboard shortcuts, auto-save, brew FX, urgent timer chime
 - Declarative **SVG icon** components (`UiIcon`, `ParamIcon`, `IngredientIcon`, HUD icons)
 - Tooling: TypeScript strict, ESLint (`recommended-latest`), Prettier, Husky, **React Compiler**
 
-Still to port (React-first, not 1:1 vanilla DOM): shelf, cauldron, recipe panel, parameter bars, dialogs (help / settings / pause / game over / leaderboard / name entry), timer / visibility / keyboard hooks, drag-and-drop, brew FX.
-
 Gameplay rules and scoring match [`game-alchemists-cauldron֊req`](../game-alchemists-cauldron֊req/README.md) and the pure-ts implementation.
 
-## How to play (target behavior)
+## How to play
 
-1. On the start screen, open **Settings** for Easy / Medium / Hard, read **Help** if needed, then **Start Game** (or **Continue Game** if a save exists).
+1. On the start screen, open **Settings** for Easy / Medium / Hard, read **Help** if needed, then **Start Game** (or **Continue** if a save exists).
 2. Add ingredients from the shelf by click or drag-and-drop. Stock decreases; portions are not returned.
 3. Watch the three bars vs the recipe ranges. **Brew** when ready (success: score + time bonus, new recipe; failure: −1 life). Cauldron clears either way; stock is not restored.
 4. **Pour Out** dumps a bad mix for a time cost. **Pause** (or hide the tab) freezes the timer.
 5. The run ends when time is up, lives are 0, or usable shelf stock and cauldron are empty. Qualify for the Top-10 to enter a name.
 
-### Keyboard (active play only, when wired)
+### Keyboard (active play only)
 
 | Key          | Action     |
 | ------------ | ---------- |
@@ -38,6 +40,8 @@ Gameplay rules and scoring match [`game-alchemists-cauldron֊req`](../game-alche
 | `B`          | Brew       |
 | `O`          | Pour Out   |
 | `1`–`8`      | Shelf slot |
+
+On the pause screen, shortcuts are off — use the focused **Resume** button. Menu and Game Over keep normal browser keys.
 
 ## Stack
 

@@ -218,8 +218,8 @@ $ambient-glow-size: 55%; // no exact $size-* match
   }
 }
 
-html.ui-surfaces-ready .game__recipe::before,
-html.ui-surfaces-ready .game__bars::before {
+.game--surfaces-ready .game__recipe::before,
+.game--surfaces-ready .game__bars::before {
   opacity: 1;
 }
 

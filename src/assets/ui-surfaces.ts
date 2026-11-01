@@ -4,7 +4,8 @@ import barsBgWideUrl from './images/game-bars-bg-wide.png';
 import shelfItemBgUrl from './images/Ingredient-shelf-item.png';
 import recipeBgUrl from './images/recipe-bg-image.png';
 
-export const UI_SURFACES_READY_CLASS = 'ui-surfaces-ready';
+/** BEM modifier on `.game` after surface PNGs are decoded (React-owned, not `html`). */
+export const GAME_SURFACES_READY_CLASS = 'game--surfaces-ready';
 
 const SURFACE_IMAGE_URLS = [
   shelfItemBgUrl,
@@ -15,8 +16,9 @@ const SURFACE_IMAGE_URLS = [
 ] as const;
 
 /**
- * Register UI surface images as CSS custom properties.
+ * Register UI surface images as CSS custom properties on `:root`.
  * Vite tracks these imports, so replacing a PNG updates the URL (SCSS `url()` alone can 404 after replace).
+ * Call once at bootstrap (allowed document `:root` style write — not UI chrome class toggles).
  */
 export function applyUiSurfaceImages(): void {
   const { style } = document.documentElement;
@@ -61,8 +63,7 @@ function loadImage(url: string): Promise<void> {
   });
 }
 
-/** Decode every surface PNG, then mark the document ready for the CSS fade-in. */
+/** Decode every surface PNG (caller applies React-owned ready class). */
 export async function preloadUiSurfaceImages(): Promise<void> {
   await Promise.all(SURFACE_IMAGE_URLS.map((url) => loadImage(url)));
-  document.documentElement.classList.add(UI_SURFACES_READY_CLASS);
 }

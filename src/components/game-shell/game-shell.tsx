@@ -1,17 +1,42 @@
 import type { ReactNode } from 'react';
+import { GAME_SURFACES_READY_CLASS } from '../../assets/ui-surfaces';
 
 type GameShellProps = {
   hud: ReactNode;
   actions: ReactNode;
+  shelf?: ReactNode;
+  cauldron?: ReactNode;
+  recipe?: ReactNode;
+  bars?: ReactNode;
   boardPaused?: boolean;
+  shelfDragging?: boolean;
+  surfacesReady?: boolean;
   overlay?: ReactNode;
 };
 
-export function GameShell({ hud, actions, boardPaused = false, overlay }: GameShellProps) {
-  const boardClassName = boardPaused ? 'game__board game__board--paused' : 'game__board';
+export function GameShell({
+  hud,
+  actions,
+  shelf,
+  cauldron,
+  recipe,
+  bars,
+  boardPaused = false,
+  shelfDragging = false,
+  surfacesReady = false,
+  overlay,
+}: GameShellProps) {
+  const gameClassName = surfacesReady ? `game ${GAME_SURFACES_READY_CLASS}` : 'game';
+  const boardClassName = [
+    'game__board',
+    boardPaused ? 'game__board--paused' : '',
+    shelfDragging ? 'game__board--shelf-dragging' : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   return (
-    <div className="game">
+    <div className={gameClassName}>
       <header className="game__header">
         <h1 className="game__title">Alchemist&apos;s Cauldron</h1>
         <div className="game__hud">{hud}</div>
@@ -19,10 +44,10 @@ export function GameShell({ hud, actions, boardPaused = false, overlay }: GameSh
 
       <div className={boardClassName}>
         <main className="game__main">
-          <section className="game__shelf" aria-label="Shelf" />
-          <section className="game__cauldron" aria-label="Cauldron" />
-          <section className="game__recipe" aria-label="Recipe panel" />
-          <section className="game__bars" aria-label="Parameter bars" />
+          {shelf}
+          {cauldron}
+          {recipe}
+          {bars ?? <section className="game__bars" aria-label="Parameter bars" />}
         </main>
 
         <div className="game__actions">{actions}</div>

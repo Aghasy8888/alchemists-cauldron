@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" class="ingredient-icon ingredient-icon--dragon-tears" aria-hidden="true">
+  <circle class="ingredient-icon__primary" cx="20" cy="14" r="8" />
+  <path class="ingredient-icon__secondary" d="M20 22 C12 28 12 34 20 36 C28 34 28 28 20 22 Z" />
+</svg>

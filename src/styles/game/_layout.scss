@@ -1,0 +1,307 @@
+@use '../mixins' as *;
+@use '../functions' as *;
+@use '../tokens' as *;
+@use './locals' as *;
+
+// Play board: one no-scroll viewport (375–1920). Dialogs may scroll later; the board does not.
+
+$viewport-short-max-height: 700px; // no exact $breakpoints match (height MQ)
+$ambient-glow-size: 55%; // no exact $size-* match
+
+.game {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: var(--layout-viewport-height);
+  max-width: var(--layout-max-width);
+  margin-inline: auto;
+  padding: var(--size-1);
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgb(125 107 184 / 18%), transparent 55%),
+    radial-gradient(ellipse 60% 40% at 80% 100%, rgb(62 207 142 / 8%), transparent 50%),
+    var(--color-bg);
+
+  @include media-up('tablet') {
+    padding: var(--size-2);
+  }
+}
+
+.game__header {
+  flex-shrink: 0;
+  margin-bottom: var(--size-1);
+  text-align: center;
+}
+
+.game__title {
+  font-size: var(--font-size-headline-small);
+  font-weight: var(--font-weight-extra-bold);
+  letter-spacing: 0.04em; // no exact $size-* match
+  color: var(--color-primary);
+  text-shadow: 0 0 var(--size-2) rgb(201 162 39 / 35%);
+  line-height: 1.2;
+
+  @include media-up('tablet') {
+    font-size: var(--font-size-headline-medium);
+  }
+
+  @include media-up('desktop') {
+    font-size: var(--font-size-headline-large);
+  }
+}
+
+.game__board {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.game__board--paused {
+  .game__main,
+  .game__actions {
+    filter: blur(var(--size-05));
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .shelf-card__tooltip {
+    visibility: hidden !important;
+    opacity: 0 !important;
+  }
+}
+
+.game__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  padding: var(--size-2);
+  background-color: rgb(8 7 11 / #{$opacity-overlay});
+}
+
+.game__overlay[hidden] {
+  display: none;
+}
+
+.game__main {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  gap: var(--size-1);
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) minmax(0, auto) auto;
+  grid-template-areas:
+    'shelf cauldron'
+    'shelf recipe'
+    'bars bars';
+  overflow: hidden;
+
+  @include media-up('tablet') {
+    gap: var(--size-2);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) auto;
+    grid-template-areas:
+      'shelf cauldron recipe'
+      'bars bars bars';
+  }
+
+  // Ambient focal glows — decorative only
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    z-index: 0;
+    width: $ambient-glow-size;
+    height: $ambient-glow-size;
+    border-radius: var(--corner-full);
+    pointer-events: none;
+    filter: blur(var(--size-6));
+  }
+
+  &::before {
+    top: 10%;
+    left: 35%;
+    background: rgb(62 207 142 / 12%);
+  }
+
+  &::after {
+    top: 15%;
+    right: 5%;
+    background: rgb(125 107 184 / 14%);
+  }
+}
+
+.game__cauldron {
+  position: relative;
+  z-index: 1;
+  grid-area: cauldron;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  padding: 0;
+  overflow: hidden;
+  @include panel-surface;
+  transition:
+    box-shadow var(--duration-hover) var(--easing-standard),
+    border-color var(--duration-hover) var(--easing-standard);
+}
+
+.game__cauldron--drop-target {
+  border-color: var(--color-param-zone);
+  @include glow-effect($color-param-zone, 0.5);
+}
+
+.game__recipe,
+.game__bars {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  padding: var(--size-2) var(--size-3);
+  overflow: hidden;
+  border: var(--border-width) solid transparent;
+  border-radius: var(--corner-large);
+  background-color: transparent;
+  box-shadow: none;
+
+  @include media-up('tablet') {
+    padding: var(--size-3) var(--size-4);
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    border-radius: inherit;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
+    opacity: 0;
+    transition: opacity var(--duration-glow) var(--easing-standard);
+    pointer-events: none;
+  }
+
+  > * {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+.game__recipe {
+  grid-area: recipe;
+
+  &::before {
+    background-image: var(--img-recipe-bg);
+  }
+}
+
+.game__bars {
+  grid-area: bars;
+
+  &::before {
+    background-image: var(--img-bars-bg);
+  }
+
+  @include media-up('laptop') {
+    &::before {
+      background-image: var(--img-bars-bg-wide);
+    }
+  }
+}
+
+html.ui-surfaces-ready .game__recipe::before,
+html.ui-surfaces-ready .game__bars::before {
+  opacity: 1;
+}
+
+.game__shelf {
+  position: relative;
+  z-index: 3;
+  grid-area: shelf;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  padding: var(--size-1);
+  overflow: visible;
+  @include panel-surface;
+
+  @include media-up('tablet') {
+    padding: var(--size-2);
+  }
+}
+
+.shelf__title,
+.recipe-panel__title {
+  flex-shrink: 0;
+  margin-bottom: var(--size-1);
+  font-size: var(--font-size-body-large);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.02em; // no exact $size-* match
+  color: var(--color-primary-low);
+  line-height: 1.2;
+
+  @include media-up('tablet') {
+    font-size: var(--font-size-headline-small);
+  }
+}
+
+.recipe-panel__hint {
+  font-size: var(--font-size-label-medium);
+  color: var(--color-on-bg-low);
+
+  @include media-up('tablet') {
+    font-size: var(--font-size-body-small);
+  }
+}
+
+@media (max-height: $viewport-short-max-height) {
+  .game {
+    padding: var(--size-05) var(--size-1);
+  }
+
+  .game__header,
+  .game__start {
+    margin-bottom: var(--size-05);
+  }
+
+  .game__start {
+    min-height: 0;
+  }
+
+  .game__title {
+    font-size: var(--font-size-body-large);
+  }
+
+  .shelf__title,
+  .recipe-panel__title {
+    margin-bottom: var(--size-05);
+    font-size: var(--font-size-body-medium);
+  }
+
+  .param-bar__track {
+    height: var(--size-2);
+  }
+
+  .bars__list {
+    gap: var(--size-05);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .game__recipe::before,
+  .game__bars::before,
+  .shelf-card::before,
+  .cauldron__art {
+    transition: none;
+  }
+}

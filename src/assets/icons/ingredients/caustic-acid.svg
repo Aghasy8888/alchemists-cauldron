@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" class="ingredient-icon ingredient-icon--caustic-acid" aria-hidden="true">
+  <path class="ingredient-icon__secondary" d="M14 8 H26 L24 16 H16 Z" />
+  <path class="ingredient-icon__primary" d="M12 16 H28 L26 34 H14 Z" />
+  <circle class="ingredient-icon__accent" cx="20" cy="24" r="3" />
+</svg>

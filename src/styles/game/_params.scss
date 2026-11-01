@@ -1,0 +1,34 @@
+// Shared T / D / M colors — same hues on shelf, recipe, bars, cauldron list.
+.param-chip {
+  display: inline-block;
+  padding: var(--border-width-xs) var(--size-05);
+  border-radius: var(--corner-extra-small);
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+  color: var(--color-white);
+}
+
+.param-chip--temperature {
+  background-color: var(--color-param-temperature);
+}
+
+.param-chip--density {
+  background-color: var(--color-param-density);
+}
+
+.param-chip--magic {
+  background-color: var(--color-param-magic);
+}
+
+.param-label--temperature {
+  color: var(--color-param-temperature);
+}
+
+.param-label--density {
+  color: var(--color-param-density);
+}
+
+.param-label--magic {
+  color: var(--color-param-magic);
+}

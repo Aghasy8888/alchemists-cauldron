@@ -33,19 +33,19 @@
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  align-items: stretch;
+  justify-content: flex-start;
   gap: var(--size-025);
   width: 100%;
   min-height: 0;
-  padding: var(--size-05);
+  padding: var(--size-025) var(--size-05) var(--size-05);
   border: none;
   border-radius: var(--corner-medium);
   background-color: transparent;
   color: var(--color-on-bg);
   box-shadow: none;
   cursor: pointer;
-  text-align: center;
+  text-align: left;
   @include interactive-lift;
 
   &::before {
@@ -70,6 +70,13 @@
     z-index: 1;
   }
 
+  @include media-up('phablet') {
+    align-items: center;
+    justify-content: center;
+    padding: var(--size-05);
+    text-align: center;
+  }
+
   @include media-up('tablet') {
     gap: var(--size-05);
     padding: var(--size-1);
@@ -79,11 +86,6 @@
     &::before {
       filter: brightness(1.12);
     }
-
-    .shelf-card__tooltip {
-      visibility: visible;
-      opacity: 1;
-    }
   }
 
   &:focus-visible {
@@ -92,20 +94,6 @@
 
     &::before {
       filter: brightness(1.12);
-    }
-
-    .shelf-card__tooltip {
-      visibility: visible;
-      opacity: 1;
-    }
-  }
-
-  &--dragging,
-  &--dragging:hover,
-  &--dragging:focus-visible {
-    .shelf-card__tooltip {
-      visibility: hidden !important;
-      opacity: 0 !important;
     }
   }
 
@@ -134,8 +122,8 @@
 
 .shelf-card__badge {
   position: absolute;
-  top: var(--size-025);
   right: var(--size-025);
+  bottom: var(--size-025);
   display: grid;
   place-items: center;
   width: var(--size-2);
@@ -147,6 +135,11 @@
   font-weight: var(--font-weight-bold);
   box-shadow: 0 0 var(--size-1) rgb(201 162 39 / 40%);
 
+  @include media-up('phablet') {
+    top: var(--size-025);
+    bottom: auto;
+  }
+
   @include media-up('tablet') {
     top: var(--size-05);
     right: var(--size-05);
@@ -156,85 +149,249 @@
   }
 }
 
-.shelf-card__icon {
+.shelf-card__header {
   display: flex;
-  flex-shrink: 1;
-  min-height: 0;
-  filter: drop-shadow(0 0 var(--size-05) rgb(232 226 212 / 20%));
+  align-items: center;
+  gap: var(--size-025);
+  min-width: 0;
+  width: 100%;
+
+  @include media-up('phablet') {
+    flex-direction: column;
+    width: auto;
+  }
 }
 
+.shelf-card__icon {
+  display: flex;
+  flex-shrink: 0;
+  min-height: 0;
+  filter: drop-shadow(0 0 var(--size-05) rgb(232 226 212 / 20%));
+
+  .ingredient-icon {
+    font-size: var(--size-2);
+  }
+
+  @include media-up('phablet') {
+    flex-shrink: 1;
+
+    .ingredient-icon {
+      font-size: clamp(var(--size-25), 3.5vh, var(--size-5));
+    }
+  }
+}
+
+$shelf-name-marquee-gap: var(--size-3);
+$shelf-name-overflow-glyph: '»';
+
 .shelf-card__name {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  min-width: 0;
+  overflow: hidden;
   font-size: var(--font-size-label-small);
   font-weight: var(--font-weight-medium);
   line-height: 1.15;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 100%;
+
+  @include media-up('phablet') {
+    flex: none;
+    max-width: 100%;
+  }
 
   @include media-up('tablet') {
     font-size: var(--font-size-label-large);
   }
 }
 
+.shelf-card__name-scroller {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: $shelf-name-marquee-gap;
+  width: max-content;
+}
+
+.shelf-card__name-text {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.shelf-card__name-text--copy {
+  display: none;
+}
+
+.shelf-card__name--overflow:not(.shelf-card__name--marquee) {
+  .shelf-card__name-scroller {
+    flex: 1 1 auto;
+    min-width: 0;
+    width: auto;
+    overflow: hidden;
+  }
+
+  &::after {
+    content: $shelf-name-overflow-glyph;
+    flex: 0 0 auto;
+    margin-inline-start: var(--size-025);
+    margin-block-end: auto;
+    color: var(--color-primary);
+    font-size: var(--font-size-label-small);
+    font-weight: var(--font-weight-bold);
+    line-height: 1;
+    pointer-events: none;
+  }
+}
+
+.shelf-card__name--marquee {
+  .shelf-card__name-text--copy {
+    display: block;
+  }
+
+  .shelf-card__name-scroller {
+    animation-name: shelf-card-name-marquee;
+    animation-duration: var(--shelf-name-duration);
+    animation-timing-function: linear;
+    animation-iteration-count: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shelf-card__name--marquee .shelf-card__name-scroller {
+    animation: none;
+  }
+}
+
+@keyframes shelf-card-name-marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(calc(-1 * var(--shelf-name-scroll-width)));
+  }
+}
+
+.shelf-card__params {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: var(--size-025);
+  width: 100%;
+  flex-shrink: 0;
+
+  @include media-up('phablet') {
+    display: none;
+  }
+}
+
+.shelf-card__param {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--size-025);
+  min-width: 0;
+
+  .param-icon {
+    font-size: var(--font-size-label-medium);
+    width: 1em;
+    height: auto;
+    flex-shrink: 0;
+  }
+}
+
+.shelf-card__param-value {
+  font-size: var(--font-size-label-small);
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  white-space: nowrap;
+}
+
 $tooltip-caret: 0.45rem; // no exact $size-* match
 $tooltip-border-gold: var(--color-primary-high);
 
-// Hide every shelf tooltip while a card drag is in progress (source + drag ghost).
-.game__board--shelf-dragging .shelf-card__tooltip {
-  visibility: hidden !important;
-  opacity: 0 !important;
+.shelf-card__tooltip {
+  display: none;
 }
 
-.shelf-card__tooltip {
-  position: absolute;
-  top: 50%;
-  left: calc(100% + var(--size-1));
-  z-index: 20;
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  min-width: space(22);
-  max-width: space(28);
-  padding: var(--size-1) var(--size-2);
-  border: var(--border-width-md) solid $tooltip-border-gold;
-  border-radius: var(--corner-small);
-  background:
-    linear-gradient(180deg, rgb(36 32 48 / 96%) 0%, rgb(18 15 28 / 98%) 100%), var(--color-bg);
-  box-shadow:
-    var(--shadow-panel-raised),
-    inset 0 0 0 var(--border-width-xs) rgb(201 162 39 / 25%),
-    0 0 0 var(--border-width) rgb(26 20 16 / 80%);
-  text-align: left;
-  visibility: hidden;
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(-50%);
-  transition: opacity var(--duration-hover) var(--easing-standard);
-
-  // Side caret (points at the card)
-  &::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 0;
-    width: $tooltip-caret;
-    height: $tooltip-caret;
-    border: var(--border-width-md) solid $tooltip-border-gold;
-    border-right: none;
-    border-top: none;
-    background: rgb(22 18 32 / 98%);
-    transform: translate(-50%, -50%) rotate(45deg);
+@include media-up('phablet') {
+  .game__board--shelf-dragging .shelf-card__tooltip {
+    visibility: hidden !important;
+    opacity: 0 !important;
   }
 
-  // Subtle corner studs (ornate frame hint without composite art)
-  &::after {
-    content: '';
+  .shelf-card {
+    @include hover {
+      .shelf-card__tooltip {
+        visibility: visible;
+        opacity: 1;
+      }
+    }
+
+    &:focus-visible {
+      .shelf-card__tooltip {
+        visibility: visible;
+        opacity: 1;
+      }
+    }
+
+    &--dragging,
+    &--dragging:hover,
+    &--dragging:focus-visible {
+      .shelf-card__tooltip {
+        visibility: hidden !important;
+        opacity: 0 !important;
+      }
+    }
+  }
+
+  .shelf-card__tooltip {
     position: absolute;
-    inset: var(--size-05);
-    border: var(--border-width-xs) solid rgb(201 162 39 / 35%);
-    border-radius: var(--corner-extra-small);
+    top: 50%;
+    left: calc(100% + var(--size-1));
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    min-width: space(22);
+    max-width: space(28);
+    padding: var(--size-1) var(--size-2);
+    border: var(--border-width-md) solid $tooltip-border-gold;
+    border-radius: var(--corner-small);
+    background:
+      linear-gradient(180deg, rgb(36 32 48 / 96%) 0%, rgb(18 15 28 / 98%) 100%), var(--color-bg);
+    box-shadow:
+      var(--shadow-panel-raised),
+      inset 0 0 0 var(--border-width-xs) rgb(201 162 39 / 25%),
+      0 0 0 var(--border-width) rgb(26 20 16 / 80%);
+    text-align: left;
+    visibility: hidden;
+    opacity: 0;
     pointer-events: none;
+    transform: translateY(-50%);
+    transition: opacity var(--duration-hover) var(--easing-standard);
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: $tooltip-caret;
+      height: $tooltip-caret;
+      border: var(--border-width-md) solid $tooltip-border-gold;
+      border-right: none;
+      border-top: none;
+      background: rgb(22 18 32 / 98%);
+      transform: translate(-50%, -50%) rotate(45deg);
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: var(--size-05);
+      border: var(--border-width-xs) solid rgb(201 162 39 / 35%);
+      border-radius: var(--corner-extra-small);
+      pointer-events: none;
+    }
   }
 }
 

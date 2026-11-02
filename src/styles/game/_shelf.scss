@@ -101,10 +101,64 @@
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
+    touch-action: auto;
 
     &::before {
       filter: none;
     }
+  }
+
+  &:not(:disabled) {
+    touch-action: none;
+  }
+}
+
+$shelf-touch-ghost-opacity: 0.92; // no exact $opacity-* match
+$shelf-touch-lift-scale: 1.06; // no exact $size-* match
+
+.shelf-card--touch-pressed:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: var(--shadow-inset-rim);
+
+  &::before {
+    filter: brightness(0.92); // no exact $opacity-* match
+  }
+}
+
+.shelf-card--touch-origin {
+  opacity: $opacity-muted;
+  pointer-events: none;
+
+  &::before {
+    filter: brightness(0.85); // no exact $opacity-* match
+  }
+}
+
+.shelf-card--touch-ghost {
+  position: fixed;
+  z-index: 30;
+  margin: 0;
+  pointer-events: none;
+  transform: scale($shelf-touch-lift-scale);
+  transform-origin: center center;
+  box-shadow: var(--shadow-panel-raised);
+  transition:
+    transform var(--duration-hover) var(--easing-standard),
+    box-shadow var(--duration-hover) var(--easing-standard);
+  opacity: $shelf-touch-ghost-opacity;
+  cursor: grabbing;
+
+  &::before {
+    opacity: 1;
+    transition: none;
+    filter: brightness(1.08); // no exact $opacity-* match
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shelf-card--touch-ghost {
+    transform: none;
+    transition: none;
   }
 }
 

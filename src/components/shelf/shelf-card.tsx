@@ -1,5 +1,7 @@
 import { useState, type DragEvent, type FocusEvent, type MouseEvent } from 'react';
 import type { IIngredient } from '../../data/types';
+import { useNameMarquee } from '../../hooks/use-name-marquee';
+import { useShelfTouchDrag } from '../../hooks/use-shelf-touch-drag';
 import { formatSigned } from '../../utils/format-signed';
 import { IngredientIcon, ParamIcon } from '../icons';
 
@@ -33,6 +35,23 @@ export function ShelfCard({
   const [dragging, setDragging] = useState(false);
   const isEmpty = stock <= 0;
   const isAddable = !isEmpty && canAdd && !cauldronFull;
+  const { nameRef, playMarquee } = useNameMarquee(isEmpty ? '' : ingredient.name);
+  const {
+    cardRef,
+    isTouchPressed,
+    isTouchDragging,
+    shouldSuppressNativeDrag,
+    consumeClickSuppression,
+    onPointerDown,
+    onPointerMove,
+    onPointerUp,
+    onPointerCancel,
+  } = useShelfTouchDrag({
+    enabled: isAddable,
+    ingredientId: ingredient.id,
+    onAdd,
+    onDraggingChange,
+  });
 
   const syncTooltipFlip = (
     event: MouseEvent<HTMLButtonElement> | FocusEvent<HTMLButtonElement>,
@@ -55,7 +74,9 @@ export function ShelfCard({
   const cardClassName = [
     'shelf-card',
     isEmpty ? 'shelf-card--empty' : '',
-    dragging ? 'shelf-card--dragging' : '',
+    dragging || isTouchDragging ? 'shelf-card--dragging' : '',
+    isTouchPressed ? 'shelf-card--touch-pressed' : '',
+    isTouchDragging ? 'shelf-card--touch-origin' : '',
   ]
     .filter(Boolean)
     .join(' ');
@@ -65,6 +86,10 @@ export function ShelfCard({
     : 'shelf-card__tooltip';
 
   const handleDragStart = (event: DragEvent<HTMLButtonElement>) => {
+    if (shouldSuppressNativeDrag()) {
+      event.preventDefault();
+      return;
+    }
     if (!isAddable || event.dataTransfer === null) {
       event.preventDefault();
       return;
@@ -89,6 +114,7 @@ export function ShelfCard({
   return (
     <li className="shelf__item">
       <button
+        ref={cardRef}
         type="button"
         className={cardClassName}
         data-ingredient-id={ingredient.id}
@@ -98,9 +124,20 @@ export function ShelfCard({
         aria-label={ariaLabel}
         onMouseEnter={syncTooltipFlip}
         onFocus={syncTooltipFlip}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        onPointerCancel={onPointerCancel}
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
-        onClick={() => {
+        onClick={(event) => {
+          if (consumeClickSuppression()) {
+            return;
+          }
+          if (event.target instanceof Element && event.target.closest('.shelf-card__name')) {
+            playMarquee();
+            return;
+          }
           if (isAddable) {
             onAdd(ingredient.id);
           }
@@ -112,10 +149,36 @@ export function ShelfCard({
 
         {!isEmpty ? (
           <>
-            <span className="shelf-card__icon">
-              <IngredientIcon id={ingredient.icon} />
+            <span className="shelf-card__header">
+              <span className="shelf-card__icon">
+                <IngredientIcon id={ingredient.icon} />
+              </span>
+              <span ref={nameRef} className="shelf-card__name">
+                <span className="shelf-card__name-scroller">
+                  <span className="shelf-card__name-text">{ingredient.name}</span>
+                  <span
+                    className="shelf-card__name-text shelf-card__name-text--copy"
+                    aria-hidden="true"
+                  >
+                    {ingredient.name}
+                  </span>
+                </span>
+              </span>
             </span>
-            <span className="shelf-card__name">{ingredient.name}</span>
+
+            <div className="shelf-card__params" aria-hidden="true">
+              {PARAM_ROWS.map((row) => (
+                <span
+                  key={row.param}
+                  className={`shelf-card__param shelf-card__param--${row.param}`}
+                >
+                  <ParamIcon id={row.param} />
+                  <span className={`shelf-card__param-value param-label param-label--${row.param}`}>
+                    {formatSigned(ingredient[row.valueKey])}
+                  </span>
+                </span>
+              ))}
+            </div>
 
             <div className={tooltipClassName} aria-hidden="true">
               <div className="shelf-card__tooltip-header">

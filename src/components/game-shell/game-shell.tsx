@@ -9,6 +9,7 @@ type GameShellProps = {
   recipe?: ReactNode;
   bars?: ReactNode;
   boardPaused?: boolean;
+  boardMenu?: boolean;
   shelfDragging?: boolean;
   surfacesReady?: boolean;
   overlay?: ReactNode;
@@ -23,6 +24,7 @@ export function GameShell({
   recipe,
   bars,
   boardPaused = false,
+  boardMenu = false,
   shelfDragging = false,
   surfacesReady = false,
   overlay,
@@ -32,6 +34,7 @@ export function GameShell({
   const boardClassName = [
     'game__board',
     boardPaused ? 'game__board--paused' : '',
+    boardMenu ? 'game__board--menu' : '',
     shelfDragging ? 'game__board--shelf-dragging' : '',
   ]
     .filter(Boolean)

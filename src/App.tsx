@@ -19,7 +19,7 @@ import { usePauseOnHidden } from './hooks/use-pause-on-hidden';
 import { usePersistGame } from './hooks/use-persist-game';
 import { useUrgentTimerChime } from './hooks/use-urgent-timer-chime';
 
-const { paused, gameOver } = GAME_STATUS;
+const { menu, paused, gameOver } = GAME_STATUS;
 
 export function App() {
   const { state } = useGame();
@@ -94,6 +94,7 @@ export function App() {
       bars={<ParameterBars />}
       overlay={overlay}
       boardPaused={isPaused}
+      boardMenu={status === menu}
       shelfDragging={shelfDragging}
       surfacesReady={surfacesReady}
       boardRef={boardRef}

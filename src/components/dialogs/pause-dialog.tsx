@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useGame } from '../../hooks/use-game';
 import { GAME_ACTION } from '../../state/game-actions';
 import { clearSave, saveGame } from '../../storage/save';
-import { unlockAudio } from '../../utils/urgent-timer-chime';
+import { unlockAudio } from '../../audio';
 import { ExitConfirmDialog } from './exit-confirm-dialog';
 
 const { resume, exitToMenu } = GAME_ACTION;

@@ -8,7 +8,7 @@ import { useOpenLeaderboard } from '../../hooks/use-open-leaderboard';
 import { usePauseGame } from '../../hooks/use-pause-game';
 import { GAME_ACTION } from '../../state/game-actions';
 import { continueSavedGame } from '../../storage/save';
-import { unlockAudio } from '../../utils/urgent-timer-chime';
+import { unlockAudio } from '../../audio';
 import { HelpDialog, SettingsDialog } from '../dialogs';
 import { UiIcon } from '../icons';
 

@@ -40,6 +40,18 @@
   color: var(--color-primary-low);
 }
 
+.settings-dialog__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--size-2);
+  padding-inline-end: var(--size-2);
+}
+
 .settings-dialog__hint {
   margin: 0;
   font-size: var(--font-size-body-small);

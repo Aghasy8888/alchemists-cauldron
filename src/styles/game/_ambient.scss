@@ -4,9 +4,10 @@ $ambient-mesh-size: 70%; // no exact $size-* match
 $opacity-ambient-mesh: 0.55; // no exact $opacity-* match
 
 .game {
-  --ambient-blob-a: rgb(145 120 220 / 45%);
-  --ambient-blob-b: rgb(55 200 150 / 35%);
-  --ambient-blob-c: rgb(220 175 55 / 30%);
+  // Fallback — Classic / Ember remap in _themes.scss
+  --ambient-blob-a: rgb(150 125 235 / 48%);
+  --ambient-blob-b: rgb(45 210 160 / 36%);
+  --ambient-blob-c: rgb(180 165 240 / 32%);
 
   isolation: isolate;
 

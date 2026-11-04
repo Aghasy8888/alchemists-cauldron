@@ -29,40 +29,42 @@ export function SettingsDialog({ onBack }: SettingsDialogProps) {
       <h2 id="settings-dialog-title" className="settings-dialog__title">
         Settings
       </h2>
-      <p className="settings-dialog__hint">
-        Choose difficulty before starting. Current: {difficultyLabel(current)}.
-      </p>
-      <div className="settings-dialog__list" role="group" aria-label="Difficulty">
-        {DIFFICULTY_ORDER.map((difficulty) => {
-          const config = DIFFICULTY_CONFIG[difficulty];
-          const selected = difficulty === current;
-          return (
-            <button
-              key={difficulty}
-              type="button"
-              className={
-                selected
-                  ? 'settings-dialog__option settings-dialog__option--selected'
-                  : 'settings-dialog__option'
-              }
-              aria-pressed={selected}
-              aria-label={`${difficultyLabel(difficulty)}, ${config.shelfIngredientCount} ingredients, ${config.startingTime} seconds, ${config.lives} lives`}
-              onClick={() => {
-                runWithUiClick(() => {
-                  dispatch({ type: setDifficulty, difficulty });
-                  onBack();
-                });
-              }}
-            >
-              {difficultyButtonLabel(difficulty)}
-            </button>
-          );
-        })}
+      <div className="settings-dialog__body">
+        <p className="settings-dialog__hint">
+          Choose difficulty before starting. Current: {difficultyLabel(current)}.
+        </p>
+        <div className="settings-dialog__list" role="group" aria-label="Difficulty">
+          {DIFFICULTY_ORDER.map((difficulty) => {
+            const config = DIFFICULTY_CONFIG[difficulty];
+            const selected = difficulty === current;
+            return (
+              <button
+                key={difficulty}
+                type="button"
+                className={
+                  selected
+                    ? 'settings-dialog__option settings-dialog__option--selected'
+                    : 'settings-dialog__option'
+                }
+                aria-pressed={selected}
+                aria-label={`${difficultyLabel(difficulty)}, ${config.shelfIngredientCount} ingredients, ${config.startingTime} seconds, ${config.lives} lives`}
+                onClick={() => {
+                  runWithUiClick(() => {
+                    dispatch({ type: setDifficulty, difficulty });
+                    onBack();
+                  });
+                }}
+              >
+                {difficultyButtonLabel(difficulty)}
+              </button>
+            );
+          })}
+        </div>
+
+        <SettingsSoundSection />
+
+        <SettingsThemeSection />
       </div>
-
-      <SettingsSoundSection />
-
-      <SettingsThemeSection />
 
       <button
         type="button"

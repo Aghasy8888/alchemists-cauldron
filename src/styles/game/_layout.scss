@@ -36,7 +36,7 @@ $ambient-glow-size: 55%; // no exact $size-* match
   font-weight: var(--font-weight-extra-bold);
   letter-spacing: 0.04em; // no exact $size-* match
   color: var(--color-primary);
-  text-shadow: 0 0 var(--size-2) rgb(201 162 39 / 35%);
+  text-shadow: 0 0 var(--size-2) color-mix(in srgb, var(--color-primary) 35%, transparent);
   line-height: 1.2;
 
   @include media-up('tablet') {
@@ -123,13 +123,13 @@ $ambient-glow-size: 55%; // no exact $size-* match
   &::before {
     top: 10%;
     left: 35%;
-    background: rgb(62 207 142 / 12%);
+    background: color-mix(in srgb, var(--color-param-zone) 12%, transparent);
   }
 
   &::after {
     top: 15%;
     right: 5%;
-    background: rgb(125 107 184 / 14%);
+    background: color-mix(in srgb, var(--color-tertiary) 14%, transparent);
   }
 }
 

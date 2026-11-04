@@ -75,7 +75,7 @@ $hud-lives-loss-duration: 0.4s; // no exact $duration-* match
   height: 100%;
   border-radius: var(--corner-full);
   background: linear-gradient(90deg, var(--color-primary-high), var(--color-primary-low));
-  box-shadow: 0 0 var(--size-1) rgb(201 162 39 / 40%);
+  box-shadow: 0 0 var(--size-1) color-mix(in srgb, var(--color-primary) 40%, transparent);
   transition: width var(--duration-hover) linear;
 }
 

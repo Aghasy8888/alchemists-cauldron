@@ -134,7 +134,12 @@ export function ShelfCard({
           if (consumeClickSuppression()) {
             return;
           }
-          if (event.target instanceof Element && event.target.closest('.shelf-card__name')) {
+          const isPhabletUp = window.matchMedia('(min-width: 540px)').matches;
+          if (
+            !isPhabletUp &&
+            event.target instanceof Element &&
+            event.target.closest('.shelf-card__name')
+          ) {
             playMarquee();
             return;
           }

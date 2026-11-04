@@ -4,12 +4,16 @@ import {
   playAddIngredientCue,
   playBrewFailCue,
   playBrewSuccessCue,
+  playLifeLostCue,
   playPourOutCue,
+  playScoreUpCue,
+  playUiClickCue,
   playUrgentTimerCue,
 } from './cues';
 import { SFX_ID, type SfxId } from './sfx-id';
 
-const { urgentTimer, brewSuccess, brewFail, addIngredient, pourOut } = SFX_ID;
+const { urgentTimer, brewSuccess, brewFail, addIngredient, pourOut, scoreUp, lifeLost, uiClick } =
+  SFX_ID;
 
 type CuePlayer = (graph: AudioGraph) => void;
 
@@ -19,6 +23,9 @@ const CUE_BY_ID = {
   [brewFail]: playBrewFailCue,
   [addIngredient]: playAddIngredientCue,
   [pourOut]: playPourOutCue,
+  [scoreUp]: playScoreUpCue,
+  [lifeLost]: playLifeLostCue,
+  [uiClick]: playUiClickCue,
 } as const satisfies Record<SfxId, CuePlayer>;
 
 function scheduleCue(id: SfxId): void {

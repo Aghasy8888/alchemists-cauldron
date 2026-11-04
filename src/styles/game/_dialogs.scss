@@ -138,7 +138,8 @@
   border-color: var(--color-tertiary);
 }
 
-.settings-dialog__sound {
+.settings-dialog__sound,
+.settings-dialog__theme {
   display: flex;
   flex-direction: column;
   align-items: stretch;

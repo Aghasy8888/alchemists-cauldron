@@ -1,0 +1,42 @@
+// Visual skins via CSS custom properties on `.game[data-theme]`.
+// Classic = :root / tokens baseline (no overrides). Ember remaps neutrals + chrome only —
+// do not override --color-param-temperature|density|magic|zone (T/D/M + success green).
+//
+// `body:has(...)` mirrors page-level --color-bg / text so letterboxing outside max-width
+// `.game` matches the skin (theme still lives on React-owned `.game`, not document classes).
+
+@mixin ember-theme-vars {
+  // warmer charcoal bg — no exact $color-* match (skin-only)
+  --color-bg: #140e0c;
+  --color-on-bg: #f0e6d8;
+  --color-on-bg-low: #a89888;
+  --color-bg-footer: #1c1410;
+  --color-bg-footer-low: #2a1e16;
+  --color-bg-footer-lowest: #3a2a1e;
+  --color-on-bg-footer: #d4c4b0;
+  --color-surface: #221812;
+  --color-surface-low: #1a120e;
+  // amber-leaning primary accents — no exact $color-* match (skin-only)
+  --color-primary: #e08a2e;
+  --color-primary-low: #f0a04a;
+  --color-primary-high: #c46e1c;
+  --color-on-primary: #1a1008;
+  --color-secondary: #2e2218;
+  --color-outline: #4a3a2e;
+  --color-outline-variant: #5a4a3a;
+  // warm ambient mesh (animated layers on `.game::before` / `::after`)
+  --ambient-blob-a: rgb(235 145 50 / 55%);
+  --ambient-blob-b: rgb(210 95 40 / 42%);
+  --ambient-blob-c: rgb(245 180 70 / 38%);
+}
+
+.game[data-theme='ember'] {
+  @include ember-theme-vars;
+}
+
+body:has(.game[data-theme='ember']) {
+  @include ember-theme-vars;
+
+  background-color: var(--color-bg);
+  color: var(--color-on-bg);
+}

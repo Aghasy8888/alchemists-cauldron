@@ -3,6 +3,7 @@ import { DIFFICULTY, type Difficulty } from '../../data/types';
 import { useGame } from '../../hooks/use-game';
 import { GAME_ACTION } from '../../state/game-actions';
 import { SettingsSoundSection } from './settings-sound-section';
+import { SettingsThemeSection } from './settings-theme-section';
 
 const { easy, medium, hard } = DIFFICULTY;
 const { setDifficulty } = GAME_ACTION;
@@ -13,7 +14,6 @@ type SettingsDialogProps = {
   onBack: () => void;
 };
 
-/** Menu Settings overlay for difficulty and sound preferences. */
 export function SettingsDialog({ onBack }: SettingsDialogProps) {
   const { state, dispatch } = useGame();
   const { difficulty: current } = state;
@@ -58,6 +58,8 @@ export function SettingsDialog({ onBack }: SettingsDialogProps) {
       </div>
 
       <SettingsSoundSection />
+
+      <SettingsThemeSection />
 
       <button type="button" className="settings-dialog__button" onClick={onBack}>
         Back

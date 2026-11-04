@@ -8,13 +8,18 @@ import { useOpenLeaderboard } from '../../hooks/use-open-leaderboard';
 import { usePauseGame } from '../../hooks/use-pause-game';
 import { GAME_ACTION } from '../../state/game-actions';
 import { continueSavedGame } from '../../storage/save';
-import { playSfx, SFX_ID, unlockAudio } from '../../audio';
+import { playSfx, playUiClick, SFX_ID, unlockAudio } from '../../audio';
 import { HelpDialog, SettingsDialog } from '../dialogs';
 import { UiIcon } from '../icons';
 
 const { menu, playing } = GAME_STATUS;
 const { startGame, continueGame, brew, pourOut } = GAME_ACTION;
 const { pourOut: pourOutSfx } = SFX_ID;
+
+function dismissOverlay(clearOverlay: () => void): void {
+  playUiClick();
+  clearOverlay();
+}
 
 type MenuButtonProps = {
   className: string;
@@ -93,7 +98,14 @@ export function ActionControls() {
             icon="settings"
             variant="chrome"
             onClick={() => {
-              setOverlay(<SettingsDialog onBack={clearOverlay} />);
+              playUiClick();
+              setOverlay(
+                <SettingsDialog
+                  onBack={() => {
+                    dismissOverlay(clearOverlay);
+                  }}
+                />,
+              );
             }}
           />
           <MenuButton
@@ -102,7 +114,14 @@ export function ActionControls() {
             icon="help"
             variant="chrome"
             onClick={() => {
-              setOverlay(<HelpDialog onBack={clearOverlay} />);
+              playUiClick();
+              setOverlay(
+                <HelpDialog
+                  onBack={() => {
+                    dismissOverlay(clearOverlay);
+                  }}
+                />,
+              );
             }}
           />
           <MenuButton

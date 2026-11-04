@@ -1,5 +1,6 @@
 import type { ReactNode, Ref } from 'react';
 import { GAME_SURFACES_READY_CLASS } from '../../assets/ui-surfaces';
+import { usePlayerSettings } from '../../hooks/use-player-settings';
 
 type GameShellProps = {
   hud: ReactNode;
@@ -30,6 +31,7 @@ export function GameShell({
   overlay,
   boardRef,
 }: GameShellProps) {
+  const { theme } = usePlayerSettings();
   const gameClassName = surfacesReady ? `game ${GAME_SURFACES_READY_CLASS}` : 'game';
   const boardClassName = [
     'game__board',
@@ -41,7 +43,7 @@ export function GameShell({
     .join(' ');
 
   return (
-    <div className={gameClassName}>
+    <div className={gameClassName} data-theme={theme}>
       <header className="game__header">
         <h1 className="game__title">Alchemist&apos;s Cauldron</h1>
         <div className="game__hud">{hud}</div>

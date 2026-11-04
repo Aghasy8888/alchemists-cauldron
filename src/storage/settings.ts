@@ -1,6 +1,11 @@
+import { THEME, isTheme, type Theme } from '../data/theme';
+
+const { classic } = THEME;
+
 export interface IPlayerSettings {
   muted: boolean;
   volume: number;
+  theme: Theme;
 }
 
 export const SETTINGS_STORAGE_KEY = 'alchemists-cauldron:settings';
@@ -8,6 +13,7 @@ export const SETTINGS_STORAGE_KEY = 'alchemists-cauldron:settings';
 export const DEFAULT_SETTINGS: IPlayerSettings = {
   muted: false,
   volume: 0.7,
+  theme: classic,
 };
 
 const settingsListeners = new Set<() => void>();
@@ -34,18 +40,33 @@ function clampVolume(volume: number): number {
   return Math.min(1, Math.max(0, volume));
 }
 
-function isValidSettings(value: unknown): value is IPlayerSettings {
+function isValidSettings(value: unknown): value is {
+  muted: boolean;
+  volume: number;
+  theme?: Theme;
+} {
   if (typeof value !== 'object' || value === null) {
     return false;
   }
   const record = value as Record<string, unknown>;
-  return typeof record.muted === 'boolean' && typeof record.volume === 'number';
+  if (typeof record.muted !== 'boolean' || typeof record.volume !== 'number') {
+    return false;
+  }
+  if (!('theme' in record) || record.theme === undefined) {
+    return true;
+  }
+  return isTheme(record.theme);
 }
 
-function normalizeSettings(settings: IPlayerSettings): IPlayerSettings {
+function normalizeSettings(settings: {
+  muted: boolean;
+  volume: number;
+  theme?: Theme;
+}): IPlayerSettings {
   return {
     muted: settings.muted,
     volume: clampVolume(settings.volume),
+    theme: settings.theme !== undefined && isTheme(settings.theme) ? settings.theme : classic,
   };
 }
 
@@ -101,6 +122,7 @@ export function updateSettings(partial: Partial<IPlayerSettings>): IPlayerSettin
   const next = normalizeSettings({
     muted: partial.muted ?? current.muted,
     volume: partial.volume ?? current.volume,
+    theme: partial.theme ?? current.theme,
   });
   saveSettings(next);
   return next;

@@ -6,3 +6,8 @@ const { uiClick } = SFX_ID;
 export function playUiClick(): void {
   playSfx(uiClick);
 }
+
+export function runWithUiClick(action: () => void): void {
+  playUiClick();
+  action();
+}

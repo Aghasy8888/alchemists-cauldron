@@ -1,3 +1,4 @@
+import { runWithUiClick } from '../../audio';
 import { DIFFICULTY_CONFIG, difficultyButtonLabel, difficultyLabel } from '../../data/difficulty';
 import { DIFFICULTY, type Difficulty } from '../../data/types';
 import { useGame } from '../../hooks/use-game';
@@ -47,8 +48,10 @@ export function SettingsDialog({ onBack }: SettingsDialogProps) {
               aria-pressed={selected}
               aria-label={`${difficultyLabel(difficulty)}, ${config.shelfIngredientCount} ingredients, ${config.startingTime} seconds, ${config.lives} lives`}
               onClick={() => {
-                dispatch({ type: setDifficulty, difficulty });
-                onBack();
+                runWithUiClick(() => {
+                  dispatch({ type: setDifficulty, difficulty });
+                  onBack();
+                });
               }}
             >
               {difficultyButtonLabel(difficulty)}
@@ -61,7 +64,11 @@ export function SettingsDialog({ onBack }: SettingsDialogProps) {
 
       <SettingsThemeSection />
 
-      <button type="button" className="settings-dialog__button" onClick={onBack}>
+      <button
+        type="button"
+        className="settings-dialog__button"
+        onClick={() => runWithUiClick(onBack)}
+      >
         Back
       </button>
     </div>

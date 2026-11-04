@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { runWithUiClick } from '../../audio';
 
 type ExitConfirmDialogProps = {
   onSaveAndExit: () => void;
@@ -6,7 +7,6 @@ type ExitConfirmDialogProps = {
   onBack: () => void;
 };
 
-/** Asked when leaving a run that was played this session: keep a save for Continue or drop it. */
 export function ExitConfirmDialog({
   onSaveAndExit,
   onExitWithoutSaving,
@@ -36,21 +36,21 @@ export function ExitConfirmDialog({
           ref={saveRef}
           type="button"
           className="exit-confirm__button exit-confirm__button--save"
-          onClick={onSaveAndExit}
+          onClick={() => runWithUiClick(onSaveAndExit)}
         >
           Save &amp; Exit
         </button>
         <button
           type="button"
           className="exit-confirm__button exit-confirm__button--discard"
-          onClick={onExitWithoutSaving}
+          onClick={() => runWithUiClick(onExitWithoutSaving)}
         >
           Exit without saving
         </button>
         <button
           type="button"
           className="exit-confirm__button exit-confirm__button--back"
-          onClick={onBack}
+          onClick={() => runWithUiClick(onBack)}
         >
           Back
         </button>

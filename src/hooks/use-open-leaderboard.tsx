@@ -9,17 +9,11 @@ export function useOpenLeaderboard(): () => void {
   const { setOverlay, clearOverlay } = useGameOverlay();
 
   const openLeaderboard = (): void => {
-    const dismissLeaderboard = (): void => {
-      playUiClick();
-      clearOverlay();
-    };
-
     const showLeaderboard = (): void => {
       setOverlay(
         <LeaderboardDialog
-          onBack={dismissLeaderboard}
+          onBack={clearOverlay}
           onRequestClear={() => {
-            playUiClick();
             setOverlay(
               <ClearLeaderboardConfirm onCancel={showLeaderboard} onConfirm={showLeaderboard} />,
             );

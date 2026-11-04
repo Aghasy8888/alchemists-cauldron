@@ -1,3 +1,4 @@
+import { runWithUiClick } from '../../audio';
 import { clearLeaderboard } from '../../storage/leaderboard';
 
 type ClearLeaderboardConfirmProps = {
@@ -25,8 +26,10 @@ export function ClearLeaderboardConfirm({ onConfirm, onCancel }: ClearLeaderboar
           type="button"
           className="leaderboard-confirm__button leaderboard-confirm__button--confirm"
           onClick={() => {
-            clearLeaderboard();
-            onConfirm();
+            runWithUiClick(() => {
+              clearLeaderboard();
+              onConfirm();
+            });
           }}
         >
           Clear
@@ -34,7 +37,7 @@ export function ClearLeaderboardConfirm({ onConfirm, onCancel }: ClearLeaderboar
         <button
           type="button"
           className="leaderboard-confirm__button leaderboard-confirm__button--cancel"
-          onClick={onCancel}
+          onClick={() => runWithUiClick(onCancel)}
         >
           Cancel
         </button>

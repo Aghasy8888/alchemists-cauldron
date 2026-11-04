@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { runWithUiClick } from '../../audio';
 import {
   LEADERBOARD_SORT,
   loadAllLeaderboards,
@@ -14,7 +15,6 @@ type LeaderboardDialogProps = {
   onRequestClear: () => void;
 };
 
-/** Top Alchemists overlay with optional difficulty sort and clear. */
 export function LeaderboardDialog({ onBack, onRequestClear }: LeaderboardDialogProps) {
   const [entries] = useState(() => loadAllLeaderboards());
   const difficultyCount = new Set(entries.map((entry) => entry.difficulty)).size;
@@ -45,7 +45,9 @@ export function LeaderboardDialog({ onBack, onRequestClear }: LeaderboardDialogP
               className="leaderboard__button leaderboard__button--sort"
               aria-pressed={difficultyMode}
               onClick={() => {
-                setSortMode(difficultyMode ? sortByScore : sortByDifficulty);
+                runWithUiClick(() => {
+                  setSortMode(difficultyMode ? sortByScore : sortByDifficulty);
+                });
               }}
             >
               {difficultyMode ? 'Sort by score' : 'Sort by difficulty'}
@@ -62,14 +64,14 @@ export function LeaderboardDialog({ onBack, onRequestClear }: LeaderboardDialogP
           type="button"
           className="leaderboard__button leaderboard__button--clear"
           disabled={entries.length === 0}
-          onClick={onRequestClear}
+          onClick={() => runWithUiClick(onRequestClear)}
         >
           Clear Leaderboard
         </button>
         <button
           type="button"
           className="leaderboard__button leaderboard__button--back"
-          onClick={onBack}
+          onClick={() => runWithUiClick(onBack)}
         >
           Back
         </button>

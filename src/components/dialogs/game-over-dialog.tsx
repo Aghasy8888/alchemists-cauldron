@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { runWithUiClick } from '../../audio';
 import { useGame } from '../../hooks/use-game';
 import { useOpenLeaderboard } from '../../hooks/use-open-leaderboard';
 import { GAME_ACTION } from '../../state/game-actions';
@@ -13,7 +14,6 @@ type GameOverDialogProps = {
   onScoreSubmitted: () => void;
 };
 
-/** Status-driven Game Over overlay with optional Top-10 name entry. */
 export function GameOverDialog({ scoreSubmitted, onScoreSubmitted }: GameOverDialogProps) {
   const { state, dispatch } = useGame();
   const openLeaderboard = useOpenLeaderboard();
@@ -40,7 +40,9 @@ export function GameOverDialog({ scoreSubmitted, onScoreSubmitted }: GameOverDia
           type="button"
           className="game-over__play-again"
           onClick={() => {
-            dispatch({ type: startGame });
+            runWithUiClick(() => {
+              dispatch({ type: startGame });
+            });
           }}
         >
           Play again
@@ -49,8 +51,10 @@ export function GameOverDialog({ scoreSubmitted, onScoreSubmitted }: GameOverDia
           type="button"
           className="game-over__exit"
           onClick={() => {
-            clearSave();
-            dispatch({ type: exitToMenu });
+            runWithUiClick(() => {
+              clearSave();
+              dispatch({ type: exitToMenu });
+            });
           }}
         >
           Exit to Menu

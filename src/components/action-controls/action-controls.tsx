@@ -16,11 +16,6 @@ const { menu, playing } = GAME_STATUS;
 const { startGame, continueGame, brew, pourOut } = GAME_ACTION;
 const { pourOut: pourOutSfx } = SFX_ID;
 
-function dismissOverlay(clearOverlay: () => void): void {
-  playUiClick();
-  clearOverlay();
-}
-
 type MenuButtonProps = {
   className: string;
   label: string;
@@ -99,13 +94,7 @@ export function ActionControls() {
             variant="chrome"
             onClick={() => {
               playUiClick();
-              setOverlay(
-                <SettingsDialog
-                  onBack={() => {
-                    dismissOverlay(clearOverlay);
-                  }}
-                />,
-              );
+              setOverlay(<SettingsDialog onBack={clearOverlay} />);
             }}
           />
           <MenuButton
@@ -115,13 +104,7 @@ export function ActionControls() {
             variant="chrome"
             onClick={() => {
               playUiClick();
-              setOverlay(
-                <HelpDialog
-                  onBack={() => {
-                    dismissOverlay(clearOverlay);
-                  }}
-                />,
-              );
+              setOverlay(<HelpDialog onBack={clearOverlay} />);
             }}
           />
           <MenuButton

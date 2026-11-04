@@ -1,8 +1,10 @@
 import { useEffect, useEffectEvent, type RefObject } from 'react';
+import { playSfx, SFX_ID } from '../audio';
 import { BREW_OUTCOME } from '../data/types';
 import { useGame } from './use-game';
 
 const { success, failure } = BREW_OUTCOME;
+const { brewSuccess, brewFail } = SFX_ID;
 
 const CAULDRON_SUCCESS_CLASS = 'game__cauldron--brew-success';
 const CAULDRON_FAIL_CLASS = 'game__cauldron--brew-fail';
@@ -47,6 +49,7 @@ export function useBrewFx({ cauldronRef, boardRef }: UseBrewFxOptions): void {
 
     if (brewFx.outcome === success) {
       playOneShot(cauldron, CAULDRON_SUCCESS_CLASS);
+      playSfx(brewSuccess);
       return;
     }
 
@@ -55,6 +58,7 @@ export function useBrewFx({ cauldronRef, boardRef }: UseBrewFxOptions): void {
       if (board !== null) {
         playOneShot(board, BOARD_SHAKE_CLASS);
       }
+      playSfx(brewFail);
     }
   });
 

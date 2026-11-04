@@ -1,3 +1,5 @@
+import { runWithUiClick } from '../../audio';
+
 type HelpDialogProps = {
   onBack: () => void;
 };
@@ -34,7 +36,6 @@ const HELP_SECTIONS: readonly HelpSection[] = [
   },
 ];
 
-/** Menu Help overlay with how-to-play copy. */
 export function HelpDialog({ onBack }: HelpDialogProps) {
   return (
     <div
@@ -59,7 +60,7 @@ export function HelpDialog({ onBack }: HelpDialogProps) {
           </section>
         ))}
       </div>
-      <button type="button" className="help-dialog__button" onClick={onBack}>
+      <button type="button" className="help-dialog__button" onClick={() => runWithUiClick(onBack)}>
         Back
       </button>
     </div>

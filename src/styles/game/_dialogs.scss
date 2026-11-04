@@ -43,12 +43,19 @@
   overflow: hidden;
 }
 
+.settings-dialog {
+  max-height: 100%;
+  overflow: hidden;
+}
+
 .leaderboard__title,
 .leaderboard__hint,
 .leaderboard__toolbar,
 .leaderboard__actions,
 .help-dialog__title,
-.help-dialog__button {
+.help-dialog__button,
+.settings-dialog__title,
+.settings-dialog__button {
   flex-shrink: 0;
 }
 
@@ -63,7 +70,7 @@
   font-weight: var(--font-weight-bold);
   letter-spacing: 0.03em; // no exact $size-* match
   color: var(--color-primary-low);
-  text-shadow: 0 0 var(--size-2) rgb(201 162 39 / 25%);
+  text-shadow: 0 0 var(--size-2) color-mix(in srgb, var(--color-primary) 25%, transparent);
 }
 
 .game-over__actions,
@@ -136,6 +143,46 @@
 .settings-dialog__option--selected {
   box-shadow: var(--shadow-focus-glow);
   border-color: var(--color-tertiary);
+}
+
+.settings-dialog__sound,
+.settings-dialog__theme {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--size-1);
+  width: 100%;
+}
+
+.settings-dialog__section-title {
+  margin: 0;
+  font-size: var(--font-size-body-medium);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary-low);
+}
+
+.settings-dialog__volume {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-05);
+  width: 100%;
+  text-align: start;
+}
+
+.settings-dialog__volume-label {
+  font-size: var(--font-size-body-small);
+  color: var(--color-on-bg);
+}
+
+.settings-dialog__volume-range {
+  width: 100%;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: $opacity-disabled;
+  }
 }
 
 .leaderboard__button--clear,

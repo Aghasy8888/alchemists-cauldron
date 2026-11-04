@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react';
+import { playUiClick } from '../../audio';
 import type { Difficulty } from '../../data/types';
 import { addLeaderboardEntry } from '../../storage/leaderboard';
 import { isValidPlayerName } from '../../utils/player-name';
@@ -9,7 +10,6 @@ type NameEntryProps = {
   onSubmitScore: () => void;
 };
 
-/** Qualifying Top-10 name form on Game Over. */
 export function NameEntry({ score, difficulty, onSubmitScore }: NameEntryProps) {
   const [name, setName] = useState('');
   const valid = isValidPlayerName(name);
@@ -20,6 +20,7 @@ export function NameEntry({ score, difficulty, onSubmitScore }: NameEntryProps) 
     if (!isValidPlayerName(name)) {
       return;
     }
+    playUiClick();
     const saved = addLeaderboardEntry(name, score, difficulty);
     if (saved === null) {
       return;

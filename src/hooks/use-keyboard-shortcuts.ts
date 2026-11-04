@@ -1,4 +1,5 @@
 import { useEffect, useEffectEvent } from 'react';
+import { playSfx, SFX_ID } from '../audio';
 import { DIFFICULTY_CONFIG } from '../data/difficulty';
 import { getShelfIngredients } from '../data/ingredients';
 import { GAME_STATUS } from '../data/types';
@@ -8,6 +9,7 @@ import { usePauseGame } from './use-pause-game';
 
 const { playing } = GAME_STATUS;
 const { brew, pourOut, addIngredient } = GAME_ACTION;
+const { pourOut: pourOutSfx } = SFX_ID;
 
 const DIGIT_CODES: Readonly<Record<string, number>> = {
   Digit1: 0,
@@ -59,6 +61,10 @@ export function useKeyboardShortcuts({ overlayOpen }: UseKeyboardShortcutsOption
 
     if (event.code === 'KeyO') {
       event.preventDefault();
+      if (state.cauldronIngredients.length < 1) {
+        return;
+      }
+      playSfx(pourOutSfx);
       dispatch({ type: pourOut });
       return;
     }

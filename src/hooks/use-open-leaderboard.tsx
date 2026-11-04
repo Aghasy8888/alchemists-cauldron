@@ -1,10 +1,10 @@
+import { playUiClick } from '../audio';
 import {
   ClearLeaderboardConfirm,
   LeaderboardDialog,
 } from '../components/dialogs/leaderboard-overlay';
 import { useGameOverlay } from './use-game-overlay';
 
-/** Opens the Leaderboard overlay with nested clear-confirm support. */
 export function useOpenLeaderboard(): () => void {
   const { setOverlay, clearOverlay } = useGameOverlay();
 
@@ -22,6 +22,7 @@ export function useOpenLeaderboard(): () => void {
       );
     };
 
+    playUiClick();
     showLeaderboard();
   };
 

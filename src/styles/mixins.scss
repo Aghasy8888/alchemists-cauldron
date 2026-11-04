@@ -23,28 +23,29 @@
 }
 
 /// Fantasy HUD panel: border, layered depth, inset rim highlight.
+/// Uses CSS vars so theme skins (classic / ember) retint panels and chrome.
 @mixin panel-surface {
-  border: $border-width solid $color-outline;
-  border-radius: $corner-large;
-  background-color: $color-surface-low;
-  box-shadow: $shadow-panel, $shadow-inset-rim;
+  border: var(--border-width) solid var(--color-outline);
+  border-radius: var(--corner-large);
+  background-color: var(--color-surface-low);
+  box-shadow: var(--shadow-panel), var(--shadow-inset-rim);
 }
 
 /// Interactive control lift — pair with `@include hover { … }`.
 @mixin interactive-lift {
   transition:
-    transform $duration-hover $easing-standard,
-    box-shadow $duration-hover $easing-standard,
-    background-color $duration-hover $easing-standard,
-    border-color $duration-hover $easing-standard;
+    transform var(--duration-hover) var(--easing-standard),
+    box-shadow var(--duration-hover) var(--easing-standard),
+    background-color var(--duration-hover) var(--easing-standard),
+    border-color var(--duration-hover) var(--easing-standard);
 
   @include hover {
     transform: translateY(-1px); // no exact $size-* match
-    box-shadow: $shadow-panel-raised;
+    box-shadow: var(--shadow-panel-raised);
   }
 
   &:active:not(:disabled) {
     transform: translateY(0);
-    box-shadow: $shadow-inset-rim;
+    box-shadow: var(--shadow-inset-rim);
   }
 }

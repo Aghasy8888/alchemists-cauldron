@@ -224,7 +224,7 @@ $param-bar-motion: var(--duration-glow) var(--easing-standard);
   border: var(--border-width) solid var(--color-on-primary);
   border-radius: var(--corner-full);
   background-color: var(--color-primary);
-  box-shadow: 0 0 var(--size-1) rgb(201 162 39 / 55%);
+  box-shadow: 0 0 var(--size-1) color-mix(in srgb, var(--color-primary) 55%, transparent);
   transform: translate(-50%, -50%);
   z-index: 3;
   pointer-events: none;

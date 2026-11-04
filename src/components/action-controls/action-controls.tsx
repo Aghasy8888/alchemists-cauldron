@@ -8,12 +8,13 @@ import { useOpenLeaderboard } from '../../hooks/use-open-leaderboard';
 import { usePauseGame } from '../../hooks/use-pause-game';
 import { GAME_ACTION } from '../../state/game-actions';
 import { continueSavedGame } from '../../storage/save';
-import { unlockAudio } from '../../utils/urgent-timer-chime';
+import { playSfx, playUiClick, SFX_ID, unlockAudio } from '../../audio';
 import { HelpDialog, SettingsDialog } from '../dialogs';
 import { UiIcon } from '../icons';
 
 const { menu, playing } = GAME_STATUS;
 const { startGame, continueGame, brew, pourOut } = GAME_ACTION;
+const { pourOut: pourOutSfx } = SFX_ID;
 
 type MenuButtonProps = {
   className: string;
@@ -92,6 +93,7 @@ export function ActionControls() {
             icon="settings"
             variant="chrome"
             onClick={() => {
+              playUiClick();
               setOverlay(<SettingsDialog onBack={clearOverlay} />);
             }}
           />
@@ -101,6 +103,7 @@ export function ActionControls() {
             icon="help"
             variant="chrome"
             onClick={() => {
+              playUiClick();
               setOverlay(<HelpDialog onBack={clearOverlay} />);
             }}
           />
@@ -144,6 +147,10 @@ export function ActionControls() {
               : 'Cauldron is empty — nothing to pour out'
           }
           onClick={() => {
+            if (cauldronIngredients.length < 1) {
+              return;
+            }
+            playSfx(pourOutSfx);
             dispatch({ type: pourOut });
           }}
         >

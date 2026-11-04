@@ -1,6 +1,8 @@
+import { useRef } from 'react';
 import { DIFFICULTY_CONFIG } from '../../data/difficulty';
 import { GAME_STATUS } from '../../data/types';
 import { useGame } from '../../hooks/use-game';
+import { useHudFeedback } from '../../hooks/use-hud-feedback';
 import { LOW_TIME_THRESHOLD_SEC } from '../../logic/timer';
 import { formatTime } from '../../utils/format-time';
 import { ClockIcon, HeartIcon } from '../icons';
@@ -9,6 +11,9 @@ const { menu, playing } = GAME_STATUS;
 
 export function Hud() {
   const { state } = useGame();
+  const scoreRef = useRef<HTMLParagraphElement>(null);
+  const livesRef = useRef<HTMLDivElement>(null);
+  useHudFeedback({ scoreRef, livesRef });
 
   if (state.status === menu) {
     return (
@@ -37,7 +42,9 @@ export function Hud() {
 
   return (
     <div className="game__hud-row">
-      <p className="game__hud-score">Score: {state.score}</p>
+      <p ref={scoreRef} className="game__hud-score">
+        Score: {state.score}
+      </p>
 
       <div className={timeClassName}>
         <div className="game__hud-time-label">
@@ -56,7 +63,7 @@ export function Hud() {
         </div>
       </div>
 
-      <div className="game__hud-lives" aria-label={`Lives: ${state.lives}`}>
+      <div ref={livesRef} className="game__hud-lives" aria-label={`Lives: ${state.lives}`}>
         {hearts}
         {state.lives === 0 ? <span className="game__hud-lives-empty">0</span> : null}
       </div>

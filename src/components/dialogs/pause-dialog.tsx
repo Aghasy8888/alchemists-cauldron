@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useGame } from '../../hooks/use-game';
 import { GAME_ACTION } from '../../state/game-actions';
 import { clearSave, saveGame } from '../../storage/save';
-import { unlockAudio } from '../../utils/urgent-timer-chime';
+import { runWithUiClick, unlockAudio } from '../../audio';
 import { ExitConfirmDialog } from './exit-confirm-dialog';
 
 const { resume, exitToMenu } = GAME_ACTION;
@@ -16,7 +16,6 @@ type PauseView = (typeof PAUSE_VIEW)[keyof typeof PAUSE_VIEW];
 
 const { pause: pauseView, confirmExit } = PAUSE_VIEW;
 
-/** Pause overlay: Resume or Exit to Menu (with save prompt when the run was played). */
 export function PauseDialog() {
   const { state, dispatch } = useGame();
   const [view, setView] = useState<PauseView>(pauseView);
@@ -62,8 +61,10 @@ export function PauseDialog() {
           type="button"
           className="pause-dialog__button pause-dialog__button--resume"
           onClick={() => {
-            unlockAudio();
-            dispatch({ type: resume });
+            runWithUiClick(() => {
+              unlockAudio();
+              dispatch({ type: resume });
+            });
           }}
         >
           Resume
@@ -72,11 +73,13 @@ export function PauseDialog() {
           type="button"
           className="pause-dialog__button pause-dialog__button--exit"
           onClick={() => {
-            if (state.continuedUntouched) {
-              dispatch({ type: exitToMenu });
-              return;
-            }
-            setView(confirmExit);
+            runWithUiClick(() => {
+              if (state.continuedUntouched) {
+                dispatch({ type: exitToMenu });
+                return;
+              }
+              setView(confirmExit);
+            });
           }}
         >
           Exit to Menu

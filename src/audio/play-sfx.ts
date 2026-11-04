@@ -1,9 +1,25 @@
 import { getSettings } from '../storage/settings';
-import { getAudioGraph, syncMasterGain } from './context';
-import { playUrgentTimerCue } from './cues';
+import { getAudioGraph, syncMasterGain, type AudioGraph } from './context';
+import {
+  playAddIngredientCue,
+  playBrewFailCue,
+  playBrewSuccessCue,
+  playPourOutCue,
+  playUrgentTimerCue,
+} from './cues';
 import { SFX_ID, type SfxId } from './sfx-id';
 
-const { urgentTimer } = SFX_ID;
+const { urgentTimer, brewSuccess, brewFail, addIngredient, pourOut } = SFX_ID;
+
+type CuePlayer = (graph: AudioGraph) => void;
+
+const CUE_BY_ID = {
+  [urgentTimer]: playUrgentTimerCue,
+  [brewSuccess]: playBrewSuccessCue,
+  [brewFail]: playBrewFailCue,
+  [addIngredient]: playAddIngredientCue,
+  [pourOut]: playPourOutCue,
+} as const satisfies Record<SfxId, CuePlayer>;
 
 function scheduleCue(id: SfxId): void {
   const graph = getAudioGraph();
@@ -15,15 +31,7 @@ function scheduleCue(id: SfxId): void {
 
   const play = (): void => {
     try {
-      switch (id) {
-        case urgentTimer: {
-          playUrgentTimerCue(graph);
-          break;
-        }
-        default: {
-          break;
-        }
-      }
+      CUE_BY_ID[id](graph);
     } catch {
       // Ignore environments where oscillator scheduling fails.
     }

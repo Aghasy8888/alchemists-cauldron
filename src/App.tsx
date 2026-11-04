@@ -9,6 +9,7 @@ import { ParameterBars } from './components/parameter-bars';
 import { RecipePanel } from './components/recipe-panel';
 import { Shelf } from './components/shelf';
 import { GAME_STATUS } from './data/types';
+import { useAddIngredientSfx } from './hooks/use-add-ingredient-sfx';
 import { useBrewFx } from './hooks/use-brew-fx';
 import { useClearSaveOnGameOver } from './hooks/use-clear-save-on-game-over';
 import { useGame } from './hooks/use-game';
@@ -52,6 +53,7 @@ export function App() {
   usePersistGame();
   useBrewFx({ cauldronRef, boardRef });
   useUrgentTimerChime();
+  useAddIngredientSfx();
   usePauseOnHidden({ shelfDragging });
   useKeyboardShortcuts({ overlayOpen });
 

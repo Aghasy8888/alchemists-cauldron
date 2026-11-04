@@ -1,12 +1,10 @@
-import { syncMasterGain, unlockAudio } from '../../audio';
+import { applySoundSettings } from '../../audio';
 import { usePlayerSettings } from '../../hooks/use-player-settings';
-import { updateSettings } from '../../storage/settings';
 
 function volumePercentLabel(volume: number): string {
   return `${Math.round(volume * 100)}%`;
 }
 
-/** Mute toggle + volume slider for the Settings dialog. */
 export function SettingsSoundSection() {
   const { muted, volume } = usePlayerSettings();
 
@@ -24,9 +22,7 @@ export function SettingsSoundSection() {
         }
         aria-pressed={muted}
         onClick={() => {
-          unlockAudio();
-          updateSettings({ muted: !muted });
-          syncMasterGain();
+          applySoundSettings({ muted: !muted });
         }}
       >
         {muted ? 'Muted' : 'Sound on'}
@@ -47,9 +43,7 @@ export function SettingsSoundSection() {
           aria-valuenow={Math.round(volume * 100)}
           aria-valuetext={volumePercentLabel(volume)}
           onChange={(event) => {
-            unlockAudio();
-            updateSettings({ volume: Number(event.target.value) });
-            syncMasterGain();
+            applySoundSettings({ volume: Number(event.target.value) });
           }}
         />
       </label>

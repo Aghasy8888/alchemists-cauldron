@@ -1,6 +1,15 @@
-import { GAME_STATUS, type GameStatus } from '../data/types';
+import { useEffect, useEffectEvent } from 'react';
+import { playSfx, SFX_ID } from '../audio';
+import { DIFFICULTY_CONFIG } from '../data/difficulty';
+import { getShelfIngredients } from '../data/ingredients';
+import { GAME_STATUS } from '../data/types';
+import { GAME_ACTION } from '../state/game-actions';
+import { useGame } from './use-game';
+import { usePauseGame } from './use-pause-game';
 
 const { playing } = GAME_STATUS;
+const { brew, pourOut, addIngredient } = GAME_ACTION;
+const { pourOut: pourOutSfx } = SFX_ID;
 
 const DIGIT_CODES: Readonly<Record<string, number>> = {
   Digit1: 0,
@@ -13,18 +22,8 @@ const DIGIT_CODES: Readonly<Record<string, number>> = {
   Digit8: 7,
 };
 
-export type KeyboardShortcutsController = {
-  destroy: () => void;
-};
-
-export type UseKeyboardShortcutsOptions = {
-  getStatus: () => GameStatus;
-  isOverlayOpen: () => boolean;
-  onPause: () => void;
-  onBrew: () => void;
-  onPourOut: () => void;
-  /** 0-based shelf slot index (Digit1 → 0). */
-  onAddShelfIndex: (index: number) => void;
+type UseKeyboardShortcutsOptions = {
+  overlayOpen: boolean;
 };
 
 function isTypingTarget(target: EventTarget | null): boolean {
@@ -38,49 +37,56 @@ function isTypingTarget(target: EventTarget | null): boolean {
   return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT';
 }
 
-export function useKeyboardShortcuts({
-  getStatus,
-  isOverlayOpen,
-  onPause,
-  onBrew,
-  onPourOut,
-  onAddShelfIndex,
-}: UseKeyboardShortcutsOptions): KeyboardShortcutsController {
-  const onKeyDown = (event: KeyboardEvent): void => {
-    if (getStatus() !== playing || isOverlayOpen() || isTypingTarget(event.target)) {
+/** Game shortcuts while playing (Escape/P, B, O, Digit1–8). */
+export function useKeyboardShortcuts({ overlayOpen }: UseKeyboardShortcutsOptions): void {
+  const { state, dispatch } = useGame();
+  const pauseGame = usePauseGame();
+
+  const onKeyDown = useEffectEvent((event: KeyboardEvent) => {
+    if (state.status !== playing || overlayOpen || isTypingTarget(event.target)) {
       return;
     }
 
     if (event.key === 'Escape' || event.code === 'KeyP') {
       event.preventDefault();
-      onPause();
+      pauseGame();
       return;
     }
 
     if (event.code === 'KeyB') {
       event.preventDefault();
-      onBrew();
+      dispatch({ type: brew });
       return;
     }
 
     if (event.code === 'KeyO') {
       event.preventDefault();
-      onPourOut();
+      if (state.cauldronIngredients.length < 1) {
+        return;
+      }
+      playSfx(pourOutSfx);
+      dispatch({ type: pourOut });
       return;
     }
 
     const shelfIndex = DIGIT_CODES[event.code];
-    if (shelfIndex !== undefined) {
-      event.preventDefault();
-      onAddShelfIndex(shelfIndex);
+    if (shelfIndex === undefined) {
+      return;
     }
-  };
 
-  window.addEventListener('keydown', onKeyDown);
+    event.preventDefault();
+    const count = DIFFICULTY_CONFIG[state.difficulty].shelfIngredientCount;
+    const ingredient = getShelfIngredients(count)[shelfIndex];
+    if (ingredient === undefined) {
+      return;
+    }
+    dispatch({ type: addIngredient, id: ingredient.id });
+  });
 
-  return {
-    destroy: () => {
+  useEffect(() => {
+    window.addEventListener('keydown', onKeyDown);
+    return () => {
       window.removeEventListener('keydown', onKeyDown);
-    },
-  };
+    };
+  }, []);
 }

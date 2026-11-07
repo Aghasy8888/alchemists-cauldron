@@ -15,7 +15,7 @@
 .recipe-panel__counter--full {
   color: var(--color-primary);
   font-weight: var(--font-weight-bold);
-  text-shadow: 0 0 var(--size-1) rgb(201 162 39 / 30%);
+  text-shadow: 0 0 var(--size-1) color-mix(in srgb, var(--color-primary) 30%, transparent);
 }
 
 .recipe-panel__name {
@@ -26,7 +26,7 @@
   letter-spacing: 0.02em; // no exact $size-* match
   color: var(--color-tertiary);
   line-height: 1.2;
-  text-shadow: 0 0 var(--size-1) rgb(125 107 184 / 30%);
+  text-shadow: 0 0 var(--size-1) color-mix(in srgb, var(--color-tertiary) 30%, transparent);
 
   @include media-up('tablet') {
     font-size: var(--font-size-body-large);

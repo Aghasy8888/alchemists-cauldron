@@ -1,0 +1,121 @@
+import { DIFFICULTY_CONFIG } from '../data/difficulty';
+import { BREW_OUTCOME, GAME_STATUS, type IGameState } from '../data/types';
+import { addIngredient } from '../logic/add-ingredient';
+import { brew } from '../logic/brew';
+import { applyEndChecks } from '../logic/game-over';
+import { pauseRun, resumeRun } from '../logic/pause';
+import { pourOut } from '../logic/pour-out';
+import { applyReactionTransitions } from '../logic/reaction-transitions';
+import { GAME_ACTION, type GameAction } from './game-actions';
+import { createMenuState, startNewGame } from './game-state';
+
+const {
+  startGame,
+  continueGame,
+  exitToMenu,
+  setDifficulty,
+  addIngredient: addIngredientAction,
+  brew: brewAction,
+  pourOut: pourOutAction,
+  pause,
+  resume,
+  syncTimeLeft,
+} = GAME_ACTION;
+
+const { menu, playing, paused } = GAME_STATUS;
+const { success, failure, ignored } = BREW_OUTCOME;
+
+export function gameReducer(state: IGameState, action: GameAction): IGameState {
+  switch (action.type) {
+    case startGame: {
+      return startNewGame(state);
+    }
+
+    case continueGame: {
+      return { ...action.state, continuedUntouched: true };
+    }
+
+    case exitToMenu: {
+      return createMenuState(state.difficulty);
+    }
+
+    case setDifficulty: {
+      if (state.status !== menu) {
+        return state;
+      }
+      return {
+        ...state,
+        difficulty: action.difficulty,
+      };
+    }
+
+    case addIngredientAction: {
+      if (state.status !== playing) {
+        return state;
+      }
+      const before = state.cauldronIngredients;
+      const afterAdd = addIngredient(state, action.id);
+      if (afterAdd === state) {
+        return state;
+      }
+      return applyEndChecks(applyReactionTransitions(before, afterAdd));
+    }
+
+    case brewAction: {
+      if (state.status !== playing) {
+        return state;
+      }
+      const result = brew(state);
+      if (result.outcome === ignored) {
+        return state;
+      }
+      const timeBonusSec =
+        result.outcome === success ? DIFFICULTY_CONFIG[state.difficulty].timeBonusPerBrew : 0;
+      return {
+        ...result.state,
+        brewFx: {
+          token: (state.brewFx?.token ?? 0) + 1,
+          outcome: result.outcome === success ? success : failure,
+          timeBonusSec,
+        },
+      };
+    }
+
+    case pourOutAction: {
+      if (state.status !== playing) {
+        return state;
+      }
+      return pourOut(state);
+    }
+
+    case pause: {
+      if (state.status !== playing) {
+        return state;
+      }
+      return pauseRun(state);
+    }
+
+    case resume: {
+      if (state.status !== paused) {
+        return state;
+      }
+      return { ...resumeRun(state), continuedUntouched: false };
+    }
+
+    case syncTimeLeft: {
+      if (state.status !== playing) {
+        return state;
+      }
+      const timeLeft = Math.max(0, action.timeLeft);
+      // Keep existing endTime — rebuilding it each tick drifts the clock.
+      return applyEndChecks({
+        ...state,
+        timeLeft,
+      });
+    }
+
+    default: {
+      return state;
+    }
+  }
+}

@@ -1,0 +1,152 @@
+@mixin classic-theme-vars {
+  // Deep void + brighter parchment — higher text/chrome contrast than token baseline
+  // no exact $color-* match (skin-only)
+  --color-bg: #08070f;
+  --color-on-bg: #f4efe3;
+  --color-on-bg-low: #b8b0a0;
+  --color-bg-footer: #100e1a;
+  --color-bg-footer-low: #1a1628;
+  --color-bg-footer-lowest: #2a243c;
+  --color-on-bg-footer: #d8cfc0;
+  --color-surface: #161322;
+  --color-surface-low: #0e0c16;
+  // Moonlit silver-lilac chrome — titles / primary buttons / icons (not yellow gold)
+  --color-primary: #c5b8ef;
+  --color-primary-low: #ddd4f8;
+  --color-primary-high: #9b88d4;
+  --color-on-primary: #121018;
+  --color-secondary: #2a2440;
+  --color-tertiary: #7ec8c0;
+  --color-outline: #4e4662;
+  --color-outline-variant: #635a7a;
+  // Ambient mesh — amethyst / jade / soft lilac (no gold wash)
+  --ambient-blob-a: rgb(150 125 235 / 48%);
+  --ambient-blob-b: rgb(45 210 160 / 36%);
+  --ambient-blob-c: rgb(180 165 240 / 32%);
+}
+
+@mixin ember-theme-vars {
+  // warmer charcoal bg — no exact $color-* match (skin-only)
+  --color-bg: #140e0c;
+  --color-on-bg: #f0e6d8;
+  --color-on-bg-low: #a89888;
+  --color-bg-footer: #1c1410;
+  --color-bg-footer-low: #2a1e16;
+  --color-bg-footer-lowest: #3a2a1e;
+  --color-on-bg-footer: #d4c4b0;
+  --color-surface: #221812;
+  --color-surface-low: #1a120e;
+  // amber-leaning primary accents — buttons, borders, focus chrome
+  --color-primary: #e08a2e;
+  --color-primary-low: #f0a04a;
+  --color-primary-high: #c46e1c;
+  --color-on-primary: #1a1008;
+  --color-secondary: #2e2218;
+  --color-tertiary: #e0a04a;
+  --color-outline: #4a3a2e;
+  --color-outline-variant: #5a4a3a;
+  // warm ambient mesh (animated layers on `.game::before` / `::after`)
+  --ambient-blob-a: rgb(235 145 50 / 55%);
+  --ambient-blob-b: rgb(210 95 40 / 42%);
+  --ambient-blob-c: rgb(245 180 70 / 38%);
+}
+
+@mixin mist-theme-vars {
+  // Light parchment workshop — cool slate chrome (not purple-on-white)
+  // no exact $color-* match (skin-only)
+  --color-bg: #e8e4d8;
+  --color-on-bg: #1c2430;
+  --color-on-bg-low: #5a6570;
+  --color-bg-footer: #dcd6c8;
+  --color-bg-footer-low: #cfc8b8;
+  --color-bg-footer-lowest: #b8b0a0;
+  --color-on-bg-footer: #2a3440;
+  --color-surface: #f4f0e6;
+  --color-surface-low: #ebe6da;
+  // Teal-slate primary accents — buttons, borders, focus chrome
+  --color-primary: #2f6f6a;
+  --color-primary-low: #3d8a84;
+  --color-primary-high: #245854;
+  --color-on-primary: #f5f2ea;
+  --color-secondary: #d4cfc4;
+  --color-tertiary: #4a7a74;
+  --color-outline: #9a9284;
+  --color-outline-variant: #b0a898;
+  // Soft fog / jade ambient mesh
+  --ambient-blob-a: rgb(80 140 130 / 28%);
+  --ambient-blob-b: rgb(160 170 150 / 22%);
+  --ambient-blob-c: rgb(100 150 180 / 20%);
+}
+
+@mixin arcade-theme-vars {
+  // Near-black CRT + neon chrome — distinct from Classic lilac / Ember amber
+  // no exact $color-* match (skin-only)
+  --color-bg: #050508;
+  --color-on-bg: #e8fff6;
+  --color-on-bg-low: #7a9a90;
+  --color-bg-footer: #0a0a10;
+  --color-bg-footer-low: #12121c;
+  --color-bg-footer-lowest: #1c1c2a;
+  --color-on-bg-footer: #b8ffe8;
+  --color-surface: #0e0e16;
+  --color-surface-low: #08080e;
+  // Neon cyan primary + magenta tertiary accents
+  --color-primary: #2ef0c8;
+  --color-primary-low: #6ffae0;
+  --color-primary-high: #18c4a0;
+  --color-on-primary: #041410;
+  --color-secondary: #1a1024;
+  --color-tertiary: #ff3d9a;
+  --color-outline: #2a3a48;
+  --color-outline-variant: #3a5060;
+  // Punchy neon ambient mesh
+  --ambient-blob-a: rgb(46 240 200 / 42%);
+  --ambient-blob-b: rgb(255 61 154 / 36%);
+  --ambient-blob-c: rgb(80 160 255 / 28%);
+  // Retro mono UI chrome (system stack — no extra font package)
+  --font-family-text: ui-monospace, 'Cascadia Code', 'Segoe UI Mono', monospace;
+}
+
+.game[data-theme='classic'] {
+  @include classic-theme-vars;
+}
+
+body:has(.game[data-theme='classic']) {
+  @include classic-theme-vars;
+
+  background-color: var(--color-bg);
+  color: var(--color-on-bg);
+}
+
+.game[data-theme='ember'] {
+  @include ember-theme-vars;
+}
+
+body:has(.game[data-theme='ember']) {
+  @include ember-theme-vars;
+
+  background-color: var(--color-bg);
+  color: var(--color-on-bg);
+}
+
+.game[data-theme='mist'] {
+  @include mist-theme-vars;
+}
+
+body:has(.game[data-theme='mist']) {
+  @include mist-theme-vars;
+
+  background-color: var(--color-bg);
+  color: var(--color-on-bg);
+}
+
+.game[data-theme='arcade'] {
+  @include arcade-theme-vars;
+}
+
+body:has(.game[data-theme='arcade']) {
+  @include arcade-theme-vars;
+
+  background-color: var(--color-bg);
+  color: var(--color-on-bg);
+}

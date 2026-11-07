@@ -1,0 +1,21 @@
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { applyUiSurfaceImages } from './assets/ui-surfaces';
+import { App } from './App';
+import { GameOverlayProvider } from './state/game-overlay-provider';
+import { GameProvider } from './state/game-provider';
+import './styles/globals.scss';
+import './styles/icons.scss';
+import './styles/game.scss';
+
+applyUiSurfaceImages();
+
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <GameProvider>
+      <GameOverlayProvider>
+        <App />
+      </GameOverlayProvider>
+    </GameProvider>
+  </StrictMode>,
+);

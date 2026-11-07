@@ -136,15 +136,23 @@
   --btn-padding-small: #{$btn-padding-small};
   --btn-padding-icon: #{$btn-padding-icon};
 
-  // Shadows
-  --shadow-level-1: #{$shadow-level-1};
-  --shadow-level-2: #{$shadow-level-2};
-  --shadow-level-3: #{$shadow-level-3};
-  --shadow-level-3-dark: #{$shadow-level-3-dark};
-  --shadow-panel: #{$shadow-panel};
-  --shadow-panel-raised: #{$shadow-panel-raised};
-  --shadow-inset-rim: #{$shadow-inset-rim};
-  --shadow-focus-glow: #{$shadow-focus-glow};
+  // Shadows — built from color vars so theme skins retint chrome (buttons / panels / focus)
+  --shadow-panel:
+    0 4px 24px color-mix(in srgb, var(--color-shadow) 55%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--color-primary) 14%, transparent);
+  --shadow-panel-raised:
+    0 8px 32px color-mix(in srgb, var(--color-shadow) 65%, transparent),
+    0 0 20px color-mix(in srgb, var(--color-tertiary) 18%, transparent);
+  --shadow-inset-rim:
+    inset 0 1px 0 color-mix(in srgb, var(--color-on-bg) 8%, transparent),
+    inset 0 -2px 8px color-mix(in srgb, var(--color-shadow) 35%, transparent);
+  --shadow-focus-glow:
+    0 0 0 2px color-mix(in srgb, var(--color-tertiary) 55%, transparent),
+    0 0 16px color-mix(in srgb, var(--color-tertiary) 35%, transparent);
+  --shadow-level-1: var(--shadow-panel);
+  --shadow-level-2: var(--shadow-panel-raised);
+  --shadow-level-3: var(--shadow-panel-raised);
+  --shadow-level-3-dark: 0 10px 36px 0 var(--color-shadow);
 
   // Motion
   --duration-hover: #{$duration-hover};
@@ -230,7 +238,8 @@ body {
   color: var(--color-on-bg);
 }
 
-#app {
+#app,
+#root {
   height: 100%;
   max-height: var(--layout-viewport-height);
   overflow: hidden;

@@ -4,6 +4,7 @@
 
 .game-over,
 .pause-dialog,
+.exit-confirm,
 .leaderboard,
 .leaderboard-confirm,
 .help-dialog,
@@ -21,6 +22,7 @@
 
 .game-over,
 .pause-dialog,
+.exit-confirm,
 .leaderboard-confirm,
 .settings-dialog {
   width: 100%;
@@ -41,17 +43,25 @@
   overflow: hidden;
 }
 
+.settings-dialog {
+  max-height: 100%;
+  overflow: hidden;
+}
+
 .leaderboard__title,
 .leaderboard__hint,
 .leaderboard__toolbar,
 .leaderboard__actions,
 .help-dialog__title,
-.help-dialog__button {
+.help-dialog__button,
+.settings-dialog__title,
+.settings-dialog__button {
   flex-shrink: 0;
 }
 
 .game-over__title,
 .pause-dialog__title,
+.exit-confirm__title,
 .leaderboard__title,
 .leaderboard-confirm__title,
 .help-dialog__title,
@@ -60,11 +70,12 @@
   font-weight: var(--font-weight-bold);
   letter-spacing: 0.03em; // no exact $size-* match
   color: var(--color-primary-low);
-  text-shadow: 0 0 var(--size-2) rgb(201 162 39 / 25%);
+  text-shadow: 0 0 var(--size-2) color-mix(in srgb, var(--color-primary) 25%, transparent);
 }
 
 .game-over__actions,
 .pause-dialog__actions,
+.exit-confirm__actions,
 .leaderboard__actions,
 .leaderboard-confirm__actions {
   display: flex;
@@ -78,6 +89,7 @@
 .game-over__exit,
 .game-over__submit,
 .pause-dialog__button,
+.exit-confirm__button,
 .leaderboard__button,
 .leaderboard-confirm__button,
 .help-dialog__button,
@@ -111,6 +123,7 @@
 }
 
 .pause-dialog__button--exit,
+.exit-confirm__button--back,
 .game-over__leaderboard,
 .game-over__exit,
 .leaderboard__button--back,
@@ -132,8 +145,49 @@
   border-color: var(--color-tertiary);
 }
 
+.settings-dialog__sound,
+.settings-dialog__theme {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--size-1);
+  width: 100%;
+}
+
+.settings-dialog__section-title {
+  margin: 0;
+  font-size: var(--font-size-body-medium);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary-low);
+}
+
+.settings-dialog__volume {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-05);
+  width: 100%;
+  text-align: start;
+}
+
+.settings-dialog__volume-label {
+  font-size: var(--font-size-body-small);
+  color: var(--color-on-bg);
+}
+
+.settings-dialog__volume-range {
+  width: 100%;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: $opacity-disabled;
+  }
+}
+
 .leaderboard__button--clear,
-.leaderboard-confirm__button--confirm {
+.leaderboard-confirm__button--confirm,
+.exit-confirm__button--discard {
   background-color: var(--color-error);
   border-color: var(--color-error);
   color: var(--color-white);

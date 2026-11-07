@@ -1,0 +1,76 @@
+$ambient-mesh-duration-a: 20s; // no exact $duration-* match
+$ambient-mesh-duration-b: 26s; // no exact $duration-* match
+$ambient-mesh-size: 70%; // no exact $size-* match
+$opacity-ambient-mesh: 0.55; // no exact $opacity-* match
+
+.game {
+  // Fallback — Classic / Ember remap in _themes.scss
+  --ambient-blob-a: rgb(150 125 235 / 48%);
+  --ambient-blob-b: rgb(45 210 160 / 36%);
+  --ambient-blob-c: rgb(180 165 240 / 32%);
+
+  isolation: isolate;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    z-index: 0;
+    width: $ambient-mesh-size;
+    height: $ambient-mesh-size;
+    border-radius: var(--corner-full);
+    pointer-events: none;
+    opacity: $opacity-ambient-mesh;
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+
+  &::before {
+    top: -8%;
+    left: -6%;
+    background: radial-gradient(circle at 40% 40%, var(--ambient-blob-a) 0%, transparent 68%);
+    animation: game-ambient-drift-a $ambient-mesh-duration-a ease-in-out infinite alternate;
+  }
+
+  &::after {
+    right: -10%;
+    bottom: -12%;
+    background:
+      radial-gradient(circle at 55% 45%, var(--ambient-blob-b) 0%, transparent 65%),
+      radial-gradient(circle at 30% 70%, var(--ambient-blob-c) 0%, transparent 60%);
+    animation: game-ambient-drift-b $ambient-mesh-duration-b ease-in-out infinite alternate;
+  }
+
+  > * {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+@keyframes game-ambient-drift-a {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  100% {
+    transform: translate3d(18%, 14%, 0) scale(1.12);
+  }
+}
+
+@keyframes game-ambient-drift-b {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1.05);
+  }
+
+  100% {
+    transform: translate3d(-16%, -12%, 0) scale(1.15);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .game::before,
+  .game::after {
+    animation: none;
+  }
+}

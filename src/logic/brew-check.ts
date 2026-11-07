@@ -7,7 +7,6 @@ export interface ICheckedRanges {
   magicPower: IRecipeRange;
 }
 
-/** Expand one recipe range by ±tolerance. */
 export function expandRecipeRange(range: IRecipeRange, tolerance: number): IRecipeRange {
   return {
     min: range.min - tolerance,
@@ -15,7 +14,6 @@ export function expandRecipeRange(range: IRecipeRange, tolerance: number): IReci
   };
 }
 
-/** Expand each recipe range by ±tolerance (Level 1 Medium = 8). */
 export function expandRecipeRanges(recipe: IRecipe, tolerance: number): ICheckedRanges {
   return {
     temperature: expandRecipeRange(recipe.temperature, tolerance),
@@ -28,7 +26,6 @@ export function isInRange(value: number, range: IRecipeRange): boolean {
   return value >= range.min && value <= range.max;
 }
 
-/** True when all three parameters fall inside the expanded ranges. No reactions. */
 export function isBrewSuccess(values: ICauldronValues, checked: ICheckedRanges): boolean {
   return (
     isInRange(values.temperature, checked.temperature) &&

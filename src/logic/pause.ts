@@ -3,7 +3,6 @@ import { createEndTime, getTimeLeftSec } from './timer';
 
 const { playing, paused } = GAME_STATUS;
 
-/** Freeze a run: sync remaining time, clear endTime, set status to paused. */
 export function pauseRun(state: IGameState, now: number = Date.now()): IGameState {
   if (state.status !== playing) {
     return state;
@@ -19,7 +18,6 @@ export function pauseRun(state: IGameState, now: number = Date.now()): IGameStat
   };
 }
 
-/** Continue a paused run: rebuild endTime from timeLeft, set status to playing. */
 export function resumeRun(state: IGameState, now: number = Date.now()): IGameState {
   if (state.status !== paused) {
     return state;

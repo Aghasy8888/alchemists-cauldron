@@ -40,8 +40,21 @@
   color: var(--color-primary-low);
 }
 
+.settings-dialog__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--size-2);
+  padding-inline-end: var(--size-2);
+}
+
 .settings-dialog__hint {
   margin: 0;
+  text-align: start;
   font-size: var(--font-size-body-small);
   color: var(--color-on-bg);
 }
@@ -134,7 +147,8 @@
 }
 
 .leaderboard__empty,
-.leaderboard-confirm__message {
+.leaderboard-confirm__message,
+.exit-confirm__message {
   margin: 0;
   font-size: var(--font-size-body-medium);
   color: var(--color-on-bg);

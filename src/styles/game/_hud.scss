@@ -1,5 +1,8 @@
 @use '../functions' as *;
 
+$hud-score-bump-duration: 0.35s; // no exact $duration-* match
+$hud-lives-loss-duration: 0.4s; // no exact $duration-* match
+
 .game__hud {
   margin-top: var(--size-05);
   min-height: var(--size-25);
@@ -19,6 +22,25 @@
   letter-spacing: 0.04em; // no exact $size-* match
   color: var(--color-param-zone);
   text-shadow: 0 0 var(--size-1) rgb(62 207 142 / 35%);
+}
+
+.game__hud-score--bump {
+  animation: hud-score-bump $hud-score-bump-duration ease-out;
+}
+
+@keyframes hud-score-bump {
+  0% {
+    transform: scale(1);
+  }
+
+  40% {
+    transform: scale(1.12); // no exact $size-* match
+    text-shadow: 0 0 var(--size-2) rgb(62 207 142 / 55%);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
 
 .game__hud-time {
@@ -53,7 +75,7 @@
   height: 100%;
   border-radius: var(--corner-full);
   background: linear-gradient(90deg, var(--color-primary-high), var(--color-primary-low));
-  box-shadow: 0 0 var(--size-1) rgb(201 162 39 / 40%);
+  box-shadow: 0 0 var(--size-1) color-mix(in srgb, var(--color-primary) 40%, transparent);
   transition: width var(--duration-hover) linear;
 }
 
@@ -86,6 +108,29 @@
   filter: drop-shadow(0 0 var(--size-05) rgb(224 69 90 / 45%));
 }
 
+.game__hud-lives--loss {
+  animation: hud-lives-loss $hud-lives-loss-duration ease-out;
+}
+
+@keyframes hud-lives-loss {
+  0%,
+  100% {
+    transform: translateX(0);
+    filter: drop-shadow(0 0 var(--size-05) rgb(224 69 90 / 45%));
+  }
+
+  25% {
+    transform: translateX(calc(-1 * var(--size-05)));
+    filter: drop-shadow(0 0 var(--size-1) rgb(199 62 58 / 70%));
+    color: var(--color-error);
+  }
+
+  50% {
+    transform: translateX(var(--size-05));
+    filter: drop-shadow(0 0 var(--size-1) rgb(199 62 58 / 55%));
+  }
+}
+
 .game__hud-lives-empty {
   font-size: var(--font-size-label-large);
   font-weight: var(--font-weight-bold);
@@ -95,4 +140,6 @@
 .hud-icon {
   display: block;
   flex-shrink: 0;
+  width: 1em;
+  height: 1em;
 }

@@ -36,6 +36,7 @@ const HELP_SECTIONS: readonly HelpSection[] = [
     items: [
       'Choose difficulty in Settings before you start. You cannot change it mid-run.',
       'Mute silences everything. Volume is the master level; Music adjusts background music only.',
+      'Themes in Settings: Classic (dark), Ember (warm), Mist (light), Arcade (retro neon). The choice is saved and applies immediately; Temperature, Density, and Magic colors stay the same in every theme.',
     ],
   },
   {

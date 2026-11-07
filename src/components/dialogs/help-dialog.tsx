@@ -24,6 +24,7 @@ const HELP_SECTIONS: readonly HelpSection[] = [
     title: 'Controls',
     items: [
       'While playing: Esc or P pauses, B brews, O pours out, and keys 1–8 add shelf ingredients. Resume with the Resume button.',
+      'Gamepad (standard layout): Start pauses, A brews, B pours out, and LB/RB/LT/RT plus the D-pad add shelf slots 1–8. Resume with the Resume button.',
     ],
   },
   {
@@ -32,7 +33,10 @@ const HELP_SECTIONS: readonly HelpSection[] = [
   },
   {
     title: 'Settings',
-    items: ['Choose difficulty in Settings before you start. You cannot change it mid-run.'],
+    items: [
+      'Choose difficulty in Settings before you start. You cannot change it mid-run.',
+      'Mute silences everything. Volume is the master level; Music adjusts background music only.',
+    ],
   },
   {
     title: 'Music',

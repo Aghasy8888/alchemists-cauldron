@@ -1,8 +1,12 @@
 import { getSettings } from '../storage/settings';
 
+/** Ceiling for the music bus under master (scaled by musicVolume). */
+const MUSIC_BUS_GAIN = 0.3;
+
 export type AudioGraph = {
   context: AudioContext;
   master: GainNode;
+  music: GainNode;
 };
 
 let sharedGraph: AudioGraph | null = null;
@@ -11,8 +15,10 @@ function createAudioGraph(): AudioGraph | null {
   try {
     const context = new AudioContext();
     const master = context.createGain();
+    const music = context.createGain();
+    music.connect(master);
     master.connect(context.destination);
-    return { context, master };
+    return { context, master, music };
   } catch {
     return null;
   }
@@ -24,6 +30,7 @@ export function getAudioGraph(): AudioGraph | null {
     sharedGraph = createAudioGraph();
     if (sharedGraph !== null) {
       syncMasterGain();
+      syncMusicGain();
     }
   }
   return sharedGraph;
@@ -39,6 +46,16 @@ export function syncMasterGain(): void {
   graph.master.gain.value = muted ? 0 : volume;
 }
 
+/** Apply musicVolume from player settings onto the music bus gain. */
+export function syncMusicGain(): void {
+  const graph = sharedGraph;
+  if (graph === null) {
+    return;
+  }
+  const { musicVolume } = getSettings();
+  graph.music.gain.value = MUSIC_BUS_GAIN * musicVolume;
+}
+
 /** Call from a user gesture so later SFX are not blocked by autoplay policy. */
 export function unlockAudio(): void {
   const graph = getAudioGraph();
@@ -46,6 +63,7 @@ export function unlockAudio(): void {
     return;
   }
   syncMasterGain();
+  syncMusicGain();
   if (graph.context.state === 'suspended') {
     void graph.context.resume();
   }

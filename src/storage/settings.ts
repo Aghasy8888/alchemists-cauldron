@@ -5,6 +5,7 @@ const { classic } = THEME;
 export interface IPlayerSettings {
   muted: boolean;
   volume: number;
+  musicVolume: number;
   theme: Theme;
 }
 
@@ -13,6 +14,7 @@ export const SETTINGS_STORAGE_KEY = 'alchemists-cauldron:settings';
 export const DEFAULT_SETTINGS: IPlayerSettings = {
   muted: false,
   volume: 0.7,
+  musicVolume: 1,
   theme: classic,
 };
 
@@ -33,9 +35,9 @@ export function subscribeSettings(listener: () => void): () => void {
   };
 }
 
-function clampVolume(volume: number): number {
+function clampUnitVolume(volume: number, fallback: number): number {
   if (!Number.isFinite(volume)) {
-    return DEFAULT_SETTINGS.volume;
+    return fallback;
   }
   return Math.min(1, Math.max(0, volume));
 }
@@ -43,6 +45,7 @@ function clampVolume(volume: number): number {
 function isValidSettings(value: unknown): value is {
   muted: boolean;
   volume: number;
+  musicVolume?: number;
   theme?: Theme;
 } {
   if (typeof value !== 'object' || value === null) {
@@ -50,6 +53,13 @@ function isValidSettings(value: unknown): value is {
   }
   const record = value as Record<string, unknown>;
   if (typeof record.muted !== 'boolean' || typeof record.volume !== 'number') {
+    return false;
+  }
+  if (
+    'musicVolume' in record &&
+    record.musicVolume !== undefined &&
+    typeof record.musicVolume !== 'number'
+  ) {
     return false;
   }
   if (!('theme' in record) || record.theme === undefined) {
@@ -61,11 +71,16 @@ function isValidSettings(value: unknown): value is {
 function normalizeSettings(settings: {
   muted: boolean;
   volume: number;
+  musicVolume?: number;
   theme?: Theme;
 }): IPlayerSettings {
   return {
     muted: settings.muted,
-    volume: clampVolume(settings.volume),
+    volume: clampUnitVolume(settings.volume, DEFAULT_SETTINGS.volume),
+    musicVolume: clampUnitVolume(
+      settings.musicVolume ?? DEFAULT_SETTINGS.musicVolume,
+      DEFAULT_SETTINGS.musicVolume,
+    ),
     theme: settings.theme !== undefined && isTheme(settings.theme) ? settings.theme : classic,
   };
 }
@@ -122,6 +137,7 @@ export function updateSettings(partial: Partial<IPlayerSettings>): IPlayerSettin
   const next = normalizeSettings({
     muted: partial.muted ?? current.muted,
     volume: partial.volume ?? current.volume,
+    musicVolume: partial.musicVolume ?? current.musicVolume,
     theme: partial.theme ?? current.theme,
   });
   saveSettings(next);

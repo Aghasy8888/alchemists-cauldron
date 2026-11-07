@@ -6,7 +6,7 @@ function volumePercentLabel(volume: number): string {
 }
 
 export function SettingsSoundSection() {
-  const { muted, volume } = usePlayerSettings();
+  const { muted, volume, musicVolume } = usePlayerSettings();
 
   return (
     <section className="settings-dialog__sound" aria-labelledby="settings-sound-title">
@@ -44,6 +44,28 @@ export function SettingsSoundSection() {
           aria-valuetext={volumePercentLabel(volume)}
           onChange={(event) => {
             applySoundSettings({ volume: Number(event.target.value) });
+          }}
+        />
+      </label>
+      <label className="settings-dialog__volume" htmlFor="settings-music-volume">
+        <span className="settings-dialog__volume-label">
+          Music {volumePercentLabel(musicVolume)}
+        </span>
+        <input
+          id="settings-music-volume"
+          className="settings-dialog__volume-range"
+          type="range"
+          min={0}
+          max={1}
+          step={0.05}
+          value={musicVolume}
+          disabled={muted}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={Math.round(musicVolume * 100)}
+          aria-valuetext={volumePercentLabel(musicVolume)}
+          onChange={(event) => {
+            applySoundSettings({ musicVolume: Number(event.target.value) });
           }}
         />
       </label>

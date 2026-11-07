@@ -34,6 +34,12 @@ const HELP_SECTIONS: readonly HelpSection[] = [
     title: 'Settings',
     items: ['Choose difficulty in Settings before you start. You cannot change it mid-run.'],
   },
+  {
+    title: 'Music',
+    items: [
+      'Wizardtorium by Kevin MacLeod (incompetech.com), licensed under Creative Commons By Attribution 4.0.',
+    ],
+  },
 ];
 
 export function HelpDialog({ onBack }: HelpDialogProps) {

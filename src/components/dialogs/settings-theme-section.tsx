@@ -3,9 +3,9 @@ import { THEME, themeLabel, type Theme } from '../../data/theme';
 import { usePlayerSettings } from '../../hooks/use-player-settings';
 import { updateSettings } from '../../storage/settings';
 
-const { classic, ember } = THEME;
+const { classic, ember, mist, arcade } = THEME;
 
-const THEME_ORDER: readonly Theme[] = [classic, ember];
+const THEME_ORDER: readonly Theme[] = [classic, ember, mist, arcade];
 
 export function SettingsThemeSection() {
   const { theme: current } = usePlayerSettings();

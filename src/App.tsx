@@ -10,11 +10,13 @@ import { RecipePanel } from './components/recipe-panel';
 import { Shelf } from './components/shelf';
 import { GAME_STATUS } from './data/types';
 import { useAddIngredientSfx } from './hooks/use-add-ingredient-sfx';
+import { useBackgroundMusic } from './hooks/use-background-music';
 import { useBrewFx } from './hooks/use-brew-fx';
 import { useClearSaveOnGameOver } from './hooks/use-clear-save-on-game-over';
 import { useGame } from './hooks/use-game';
 import { useGameOverlay } from './hooks/use-game-overlay';
 import { useGameTimer } from './hooks/use-game-timer';
+import { useGamepadControls } from './hooks/use-gamepad-controls';
 import { useKeyboardShortcuts } from './hooks/use-keyboard-shortcuts';
 import { usePauseOnHidden } from './hooks/use-pause-on-hidden';
 import { usePersistGame } from './hooks/use-persist-game';
@@ -54,8 +56,10 @@ export function App() {
   useBrewFx({ cauldronRef, boardRef });
   useUrgentTimerChime();
   useAddIngredientSfx();
+  useBackgroundMusic();
   usePauseOnHidden({ shelfDragging });
   useKeyboardShortcuts({ overlayOpen });
+  useGamepadControls({ overlayOpen });
 
   const clearMenuOverlayOnEnter = useEffectEvent(() => {
     clearOverlay();

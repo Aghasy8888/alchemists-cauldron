@@ -24,6 +24,7 @@ const HELP_SECTIONS: readonly HelpSection[] = [
     title: 'Controls',
     items: [
       'While playing: Esc or P pauses, B brews, O pours out, and keys 1–8 add shelf ingredients. Resume with the Resume button.',
+      'Gamepad (standard layout): Start pauses, A brews, B pours out, and LB/RB/LT/RT plus the D-pad add shelf slots 1–8. Resume with the Resume button.',
     ],
   },
   {
@@ -32,7 +33,17 @@ const HELP_SECTIONS: readonly HelpSection[] = [
   },
   {
     title: 'Settings',
-    items: ['Choose difficulty in Settings before you start. You cannot change it mid-run.'],
+    items: [
+      'Choose difficulty in Settings before you start. You cannot change it mid-run.',
+      'Mute silences everything. Volume is the master level; Music adjusts background music only.',
+      'Themes in Settings: Classic (dark), Ember (warm), Mist (light), Arcade (retro neon). The choice is saved and applies immediately; Temperature, Density, and Magic colors stay the same in every theme.',
+    ],
+  },
+  {
+    title: 'Music',
+    items: [
+      'Wizardtorium by Kevin MacLeod (incompetech.com), licensed under Creative Commons By Attribution 4.0.',
+    ],
   },
 ];
 
